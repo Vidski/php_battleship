@@ -43,21 +43,49 @@
             //Neues WebSocket object erzeugen
             //var wsUri = "ws://ux-113.pb.bib.de:6969";
 			var wsUri = "ws://127.0.0.1:6969";
+            var username = "";
             websocket = new WebSocket(wsUri);
 
             //#### Verbindung zum Server wurde geöffnet??
             websocket.onopen = function(ev) {
-                //alert("verbunden");
+                websocket.send(JSON.stringify({
+                    "handler": "game_handler",
+                    "action": "set_username",
+                    "message": "Dave"
+                }));
             }
 
             //#### Nachricht vom Server??
             websocket.onmessage = function(ev) {
                 msgObject = JSON.parse(ev.data);
-
                 console.log(msgObject);
-                //TODO SWITCH CASE (?)
-                if (msgObject['handler'] == 'chat_handler' && msgObject['action'] == 'receive_message') {
-                    $('#message_box').append('<span>' + msgObject['content'] + '</span><br>');
+
+                switch (msgObject['handler']) {
+                    case 'chat_handler':
+                        switch (msgObject['action']) {
+                            case 'receive_message':
+                                var un = username ? username : "You";
+                                $('#message_box').append('<span>' + un + ": "+ msgObject['content'] + '</span><br>');
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                        break;
+                    
+                    case 'game_handler':
+                        switch (msgObject['action']) {
+                            case 'set_username':
+                                username = msgObject['content'];
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
 
                 console.log(ev.data);

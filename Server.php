@@ -1,7 +1,7 @@
 <?php
 
 require 'socketfunctions.inc.php';
-require dirname(__FILE__) . '\Game\Game.class.php';
+require dirname(__FILE__) . '\game\Game.class.php';
 
 class Server
 {
@@ -125,25 +125,18 @@ class Server
     //SERVER HAT EINE NACHRICHT VON EINEM CLIENT ERHALTEN
     private function on_message_received($socket, $msgObj)
     {
-        $action = null;
-        switch ($msgObj->handler) {
-            case 'chat_handler':
-                $action = $this->GAME->chat_action($msgObj);
-                break;
+        //GAME HANDLER
+        $action = $this->GAME->handler_action($msgObj);
 
-            default:
-                return;
-                break;
-        }
-
-        if ($action === null)
+        //print_r($action);
+        if ($action === null) {
             return;
+        }
 
         if ($action['function'] === 'send_message') {
             unset($action['function']);
             $this->send_message($socket, $action);
-        }
-        else if ($action['function'] === 'send_message_all') {
+        } else if ($action['function'] === 'send_message_all') {
             unset($action['function']);
             $this->send_message_all($action);
         }
@@ -168,7 +161,8 @@ class Server
         }
     }
 
-    private function encode_and_mask($message) 
+    //JSON ENCODEN UND MASKIEREN DER PACKETE
+    private function encode_and_mask($message)
     {
         return mask(json_encode($message));
     }
