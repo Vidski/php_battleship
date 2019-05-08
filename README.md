@@ -2,6 +2,6 @@
 
 Naming Conventions
 
-| Classes | Methods | Properties | Functions | variables |
-| --- | --- | --- | --- | --- |
-| PascalCase | camelCase | camelCase | lower_case | camelCase |
+| Classes | Methods | Properties | Functions | variables | Interfaces |
+| --- | --- | --- | --- | --- | --- |
+| PascalCase | camelCase | camelCase | lower_case | camelCase | iPascalCase |
