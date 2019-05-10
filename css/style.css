@@ -1,0 +1,27 @@
+.message_box {
+    background: #FFFFFF;
+    height: 300px;
+    overflow: auto;
+    padding: 10px;
+    border: 1px solid #999999;
+}
+
+input {
+    padding: 2px 2px 2px 5px;
+}
+
+#login_box form {
+    display: none;
+}
+
+#message {
+    width: 60%;
+}
+
+.system {
+    color: red;
+}
+
+.user {
+    color: green;
+}

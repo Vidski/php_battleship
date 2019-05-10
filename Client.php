@@ -3,140 +3,47 @@
 
 <head>
     <meta charset='UTF-8' />
-    <style type="text/css">
-		.message_box {
-            background: #FFFFFF;
-            height: 300px;
-            overflow: auto;
-            padding: 10px;
-            border: 1px solid #999999;
-        }
-        
-        input {
-            padding: 2px 2px 2px 5px;
-        }
-        
-		#chat_box {
-			/*display: none;*/
-		}
-		
-        #message {
-            width: 60%;
-        }
-        
-        .system {
-            color: red;
-        }
-        
-        .user {
-            color: green;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <script language="javascript" type="text/javascript">
-        $(document).ready(function() {
+    <div id="login_box" class="container">
+        <div class="row justify-content-center align-items-center" style="height:100vh">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body" style="height:140px">
+                        <div id="login_box_connecting">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-grow text-warning" style="width: 3rem; height: 3rem;" role="status"></div>
+                            </div>
+                            <p class="text-center"></p>
+                        </div>
+                        <form action="" autocomplete="off">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="inputUsername"
+                                    aria-describedby="inputUsernameHelp" placeholder="Name">
+                                <!-- <small id="inputUsernameHelp" class="form-text text-muted">We'll never share your email with
+                                    anyone else.</small> -->
+                            </div>
+                            <button type="button" id="btn_inputUsername" class="btn btn-primary btn-block">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            //Neues WebSocket object erzeugen
-            //var wsUri = "ws://ux-113.pb.bib.de:6969";
-			var wsUri = "ws://127.0.0.1:6969";
-            var username = "";
-            websocket = new WebSocket(wsUri);
-
-            //#### Verbindung zum Server wurde geöffnet??
-            websocket.onopen = function(ev) {
-                websocket.send(JSON.stringify({
-                    "handler": "game_handler",
-                    "action": "set_username",
-                    "message": "Dave"
-                }));
-
-                // websocket.send(JSON.stringify({
-                //     "handler": "rooms_handler",
-                //     "action": "room_informations",
-                //     "pin": ""
-                // }));
-            }
-
-            //#### Nachricht vom Server??
-            websocket.onmessage = function(ev) {
-                msgObject = JSON.parse(ev.data);
-                console.log(msgObject);
-
-                switch (msgObject['handler']) {
-                    case 'chat_handler':
-                        switch (msgObject['action']) {
-                            case 'receive_message':
-                                var un = username ? username : "You";
-                                $('#message_box').append('<span>' + un + ": "+ msgObject['content'] + '</span><br>');
-                                break;
-                        
-                            default:
-                                break;
-                        }
-                        break;
-                    
-                    case 'game_handler':
-                        switch (msgObject['action']) {
-                            case 'set_username':
-                                username = msgObject['content'];
-                                break;
-                        
-                            default:
-                                break;
-                        }
-                        break;
-
-                    case 'rooms_handler':
-                        switch (msgObject['action']) {
-                            case 'requested_room':
-                                $('#message_box').append('<span>' + "PIN: "+ msgObject['content'] + '</span><br>');
-                                break;
-                        
-                            default:
-                                break;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-
-                console.log(ev.data);
-            };
-
-            //#### Fehler??
-            websocket.onerror = function(ev) {
-                console.error("WebSocket error observed:", ev);
-            };
-
-            //#### Verbindung zum Server wurde getrennt??
-            websocket.onclose = function(ev) {
-                $('#message_box').append('<span class="system">Verbindung vom Server getrennt</span><br>');
-            };
-
-            $("#send-btn").click(function(event) {
-                event.preventDefault();
-                var message = $("#message").val();
-                websocket.send(JSON.stringify({
-                    "handler": "chat_handler",
-                    "action": "send_message_all",
-                    "message": message
-                }));
-            });
-
-        });
-    </script>
-	<div id="chat_box">
-        <div class="message_box" id="message_box"></div>
-        <form>
-            <input type="text" name="message" id="message" placeholder="Message"/>
-            <button id="send-btn">Send</button>
-        </form>
-	</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="js/client.js"></script>
 
 </body>
 

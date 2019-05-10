@@ -2,16 +2,17 @@
 
 require 'Room.class.php';
 
-class Rooms implements iHandler 
+class Rooms implements iHandler
 {
 
     private $rooms;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->rooms = array();
     }
 
-    public function new_room($owner) 
+    public function new_room($owner)
     {
         $newRoom = new Room();
         $newRoom->set_room_owner($owner);
@@ -20,7 +21,9 @@ class Rooms implements iHandler
         return $newRoom->get_room_pin();
     }
 
-    public function get_room($pin) {
+    public function get_room($pin)
+    {
+        $index = array_search($socket, $this->clientSockets);
         foreach ($this->rooms as $room) {
             if ($room->get_room_pin() === $pin) {
                 return $this->build_packet('send_message', 'room_info', $room->get_room_info());
@@ -30,12 +33,12 @@ class Rooms implements iHandler
         return false;
     }
 
-    public function connect_to_room($pin, $player) 
+    public function connect_to_room($pin, $player)
     {
 
     }
 
-    public function action($msgObj, $socket = null) 
+    public function action($msgObj, $socket = null)
     {
         switch ($msgObj->action) {
             case 'request_room':
@@ -52,13 +55,13 @@ class Rooms implements iHandler
         }
     }
 
-    public function build_packet($function, $action, $content) 
+    public function build_packet($function, $action, $content)
     {
         return array(
             'handler' => 'rooms_handler',
             'function' => 'send_message',
             'action' => $action,
-            'content' => $content
+            'content' => $content,
         );
     }
 

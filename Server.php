@@ -139,7 +139,7 @@ class Server
         } else if ($action['function'] === 'send_message_all') {
             unset($action['function']);
             $this->send_message_all($action);
-        } else if ($action['function'] == 'send_message_group') {
+        } else if ($action['function'] === 'send_message_group') {
             unset($action['function']);
             $this->send_message_group($action['group'], $action);
         }

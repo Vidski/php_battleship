@@ -1,31 +1,28 @@
 <?php
 
 require 'iHandler.interface.php';
-require 'Chat.class.php';
 require 'Rooms.class.php';
+require 'Player.class.php';
 
 class Game implements iHandler
 {
     private $server;
 
     //Handlers
-    private $chatHandler;
     private $roomsHandler;
+
+    private $players;
 
     public function __construct($server)
     {
         $this->server = $server;
-        $this->chatHandler = new Chat();
         $this->roomsHandler = new Rooms();
+        $this->players = array();
     }
 
     public function handler_action($msgObj, $socket)
     {
         switch ($msgObj->handler) {
-            case 'chat_handler':
-                return $this->chatHandler->action($msgObj, $socket);
-                break;
-
             case 'game_handler':
                 return $this->action($msgObj, $socket);
                 break;
@@ -43,8 +40,11 @@ class Game implements iHandler
     public function action($msgObj, $socket = null)
     {
         switch ($msgObj->action) {
-            case 'set_username':
-                return $this->build_packet('send_message', 'set_username', $msgObj->message);
+            case 'register':
+                if ($this->register_player($socket, $msgObj)) {
+                    return $this->build_packet('send_message', 'set_username', $msgObj->username);
+                }
+                return null;
                 break;
 
             default:
@@ -53,13 +53,31 @@ class Game implements iHandler
         }
     }
 
+    public function register_player($socket, $msgObj)
+    {
+        $player = new Player($msgObj->username, $socket);
+        array_push(new Player($msgObj->username, $socket));
+        return $player;
+    }
+
+    public function get_player($socket) 
+    {
+        foreach ($this->players as $player) {
+            if ($player->get_socket() === $socket) {
+                return $player;
+                break;
+            }
+        }
+        return false;
+    }
+
     public function build_packet($function, $action, $content)
     {
         return array(
             'handler' => 'game_handler',
             'function' => $function,
             'action' => $action,
-            'content' => $content
+            'content' => $content,
         );
     }
 
