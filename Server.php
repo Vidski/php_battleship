@@ -95,7 +95,7 @@ class Server
 
                     $this->on_client_disconnected($clientIP);
                 } else {
-                    if (isset($msgObj->message)) {
+                    if (isset($msgObj)) {
                         $this->on_message_received($socket, $msgObj);
                     }
                 }
@@ -126,9 +126,9 @@ class Server
     private function on_message_received($socket, $msgObj)
     {
         //GAME HANDLER
-        $action = $this->GAME->handler_action($msgObj);
+        $action = $this->GAME->handler_action($msgObj, $socket);
 
-        //print_r($action);
+        print_r($action);
         if ($action === null) {
             return;
         }
@@ -139,19 +139,32 @@ class Server
         } else if ($action['function'] === 'send_message_all') {
             unset($action['function']);
             $this->send_message_all($action);
+        } else if ($action['function'] == 'send_message_group') {
+            unset($action['function']);
+            $this->send_message_group($action['group'], $action);
         }
     }
 
-    //SENDE NACHRICHT AN CLIENT
+    ////MESSAGE FUNKTIONEN
     //$message ist ein Array z.B. array("foo" => "bar", "foo" => "bar");
+    
+    //SENDE NACHRICHT AN CLIENT
     private function send_message($socket, $message)
     {
         $message = $this->encode_and_mask($message);
         socket_write($socket, $message, strlen($message));
     }
+  
+    //SENDE NACHRICHT AN GRUPPE VON CLIENTS (z.B. ein Room->get_room_players())
+    private function send_message_group($sockets, $message)
+    {
+        $message = $this->encode_and_mask($message);
+        foreach ($sockets as $socket) {
+            socket_write($socket, $message, strlen($message));
+        }
+    }
 
     //SENDE NACHRICHT AN ALLE CLIENTS
-    //$message ist ein Array z.B. array("foo" => "bar", "foo" => "bar");
     private function send_message_all($message)
     {
         $clientSockets = $this->clientSockets;
@@ -160,6 +173,7 @@ class Server
             socket_write($socket, $message, strlen($message));
         }
     }
+    ////
 
     //JSON ENCODEN UND MASKIEREN DER PACKETE
     private function encode_and_mask($message)

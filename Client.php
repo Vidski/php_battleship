@@ -53,6 +53,12 @@
                     "action": "set_username",
                     "message": "Dave"
                 }));
+
+                // websocket.send(JSON.stringify({
+                //     "handler": "rooms_handler",
+                //     "action": "room_informations",
+                //     "pin": ""
+                // }));
             }
 
             //#### Nachricht vom Server??
@@ -77,6 +83,17 @@
                         switch (msgObject['action']) {
                             case 'set_username':
                                 username = msgObject['content'];
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                        break;
+
+                    case 'rooms_handler':
+                        switch (msgObject['action']) {
+                            case 'requested_room':
+                                $('#message_box').append('<span>' + "PIN: "+ msgObject['content'] + '</span><br>');
                                 break;
                         
                             default:

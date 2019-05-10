@@ -1,6 +1,8 @@
 <?php
 
+require 'iHandler.interface.php';
 require 'Chat.class.php';
+require 'Rooms.class.php';
 
 class Game implements iHandler
 {
@@ -8,22 +10,28 @@ class Game implements iHandler
 
     //Handlers
     private $chatHandler;
+    private $roomsHandler;
 
     public function __construct($server)
     {
         $this->server = $server;
         $this->chatHandler = new Chat();
+        $this->roomsHandler = new Rooms();
     }
 
-    public function handler_action($msgObj)
+    public function handler_action($msgObj, $socket)
     {
         switch ($msgObj->handler) {
             case 'chat_handler':
-                return $this->chatHandler->action($msgObj);
+                return $this->chatHandler->action($msgObj, $socket);
                 break;
 
             case 'game_handler':
-                return $this->action($msgObj);
+                return $this->action($msgObj, $socket);
+                break;
+
+            case 'rooms_handler':
+                return $this->roomsHandler->action($msgObj, $socket);
                 break;
 
             default:
@@ -32,11 +40,11 @@ class Game implements iHandler
         }
     }
 
-    public function action($msgObj)
+    public function action($msgObj, $socket = null)
     {
         switch ($msgObj->action) {
             case 'set_username':
-                return $this->build_packet(false, 'set_username', $msgObj->message);
+                return $this->build_packet('send_message', 'set_username', $msgObj->message);
                 break;
 
             default:
@@ -45,13 +53,13 @@ class Game implements iHandler
         }
     }
 
-    public function build_packet($messageAll, $action, $content)
+    public function build_packet($function, $action, $content)
     {
         return array(
             'handler' => 'game_handler',
-            'function' => $messageAll ? 'send_message_all' : 'send_message',
+            'function' => $function,
             'action' => $action,
-            'content' => $content,
+            'content' => $content
         );
     }
 
