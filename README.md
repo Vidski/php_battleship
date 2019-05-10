@@ -1,7 +1,11 @@
 # php_server
 
-Naming Conventions
+**Naming Conventions**
 
 | Classes | Methods | Properties | Functions | Variables | Interfaces |
 | --- | --- | --- | --- | --- | --- |
 | PascalCase | camelCase | camelCase | lower_case | camelCase | iPascalCase |
+
+**TODO:**
+
+- [ ] Lobby/Raum
