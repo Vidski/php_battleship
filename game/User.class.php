@@ -17,11 +17,6 @@ class User
         $this->username = "Player";
     }
 
-    public function __destruct()
-    {
-        echo($this->id . " __destruct()");
-    }
-
     public function get_id()
     {
         return $this->id;
