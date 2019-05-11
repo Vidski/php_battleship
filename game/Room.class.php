@@ -21,6 +21,9 @@ class Room
 
     public function add_player($socket)
     {
+        if(in_array($socket, $this->roomPlayers)) {
+            return false;
+        }
         array_push($this->roomPlayers, $socket);
     }
 

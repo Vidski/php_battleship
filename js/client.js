@@ -16,8 +16,10 @@ $(document).ready(function () {
         switch (msgObject['handler']) {
             case 'game_handler':
                 switch (msgObject['action']) {
-                    case 'set_username':
+                    case 'registered':
                         username = msgObject['content'];
+                        $('#login_box').hide();
+                        $('#menu_box').show();
                         break;
 
                     default:
@@ -28,6 +30,9 @@ $(document).ready(function () {
             case 'rooms_handler':
                 switch (msgObject['action']) {
                     case 'requested_room':
+                        if (msgObject['content']) {
+                            $('#createRoomPin').val(msgObject['content']);
+                        }
                         break;
 
                     default:
@@ -64,16 +69,34 @@ $(document).ready(function () {
             "action": "register",
             "username": name
         }));
-        $('#btn_inputUsername').prop("disabled",true);
+        $('#btn_inputUsername').prop("disabled", true);
     });
 
+    $("#btn_createRoom").click(function (event) {
+        event.preventDefault();
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "create_room"
+        }));
+        $('#btn_inputUsername').prop("disabled", true);
+    });
+
+    $("#btn_joinRoom").click(function (event) {
+        event.preventDefault();
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "join_room",
+            "pin": $('#joinRoomPin').val()
+        }));
+        $('#btn_inputUsername').prop("disabled", true);
+    });
 
     //FUNCTIONS
 
     function loginBoxSuccess() {
         $('#login_box_connecting .spinner-grow').removeClass('text-warning');
         $('#login_box_connecting .spinner-grow').addClass('text-success');
-        $('#login_box_connecting').fadeOut(2000, function(){$('#login_box form').fadeIn();});
+        $('#login_box_connecting').fadeOut(2000, function () { $('#login_box form').fadeIn(); });
     }
 
     function loginBoxError() {

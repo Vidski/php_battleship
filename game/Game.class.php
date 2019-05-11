@@ -2,7 +2,6 @@
 
 require 'iHandler.interface.php';
 require 'Rooms.class.php';
-require 'Player.class.php';
 
 class Game implements iHandler
 {
@@ -37,38 +36,18 @@ class Game implements iHandler
         }
     }
 
-    public function action($msgObj, $socket = null)
+    public function action($messageObj, $user = null)
     {
-        switch ($msgObj->action) {
-            case 'register':
-                if ($this->register_player($socket, $msgObj)) {
-                    return $this->build_packet('send_message', 'set_username', $msgObj->username);
-                }
+        switch ($messageObj->action) {
+            case 'set_username':
+                $user->set_username(trim($messageObj->username));
+                return $this->build_packet('send_message', 'registered', $messageObj->username);
+                
                 return null;
-                break;
 
             default:
                 return null;
-                break;
         }
-    }
-
-    public function register_player($socket, $msgObj)
-    {
-        $player = new Player($msgObj->username, $socket);
-        array_push(new Player($msgObj->username, $socket));
-        return $player;
-    }
-
-    public function get_player($socket) 
-    {
-        foreach ($this->players as $player) {
-            if ($player->get_socket() === $socket) {
-                return $player;
-                break;
-            }
-        }
-        return false;
     }
 
     public function build_packet($function, $action, $content)

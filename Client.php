@@ -17,18 +17,41 @@
                     <div class="card-body" style="height:140px">
                         <div id="login_box_connecting">
                             <div class="d-flex justify-content-center">
-                                <div class="spinner-grow text-warning" style="width: 3rem; height: 3rem;" role="status"></div>
+                                <div class="spinner-grow text-warning" style="width: 3rem; height: 3rem;" role="status">
+                                </div>
                             </div>
                             <p class="text-center"></p>
                         </div>
                         <form action="" autocomplete="off">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="inputUsername"
-                                    aria-describedby="inputUsernameHelp" placeholder="Name">
-                                <!-- <small id="inputUsernameHelp" class="form-text text-muted">We'll never share your email with
-                                    anyone else.</small> -->
+                                <input type="text" class="form-control" id="inputUsername" placeholder="Name">
                             </div>
                             <button type="button" id="btn_inputUsername" class="btn btn-primary btn-block">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu_box" class="container">
+        <div class="row justify-content-center align-items-center" style="height:100vh">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body" style="height:140px">
+                        <form action="" autocomplete="off">
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" disabled id="createRoomPin">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" id="btn_createRoom">Create</button>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" placeholder="0000" id="joinRoomPin">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" id="btn_joinRoom">Join</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

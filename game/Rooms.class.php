@@ -23,30 +23,36 @@ class Rooms implements iHandler
 
     public function get_room($pin)
     {
-        $index = array_search($socket, $this->clientSockets);
         foreach ($this->rooms as $room) {
-            if ($room->get_room_pin() === $pin) {
-                return $this->build_packet('send_message', 'room_info', $room->get_room_info());
+            if ($room->get_room_pin() == $pin) {
+                return $room;
                 break;
             }
         }
         return false;
     }
 
-    public function connect_to_room($pin, $player)
-    {
-
-    }
-
     public function action($msgObj, $socket = null)
     {
         switch ($msgObj->action) {
-            case 'request_room':
+            case 'create_room':
                 return $this->build_packet('send_message', 'requested_room', $this->new_room($socket));
                 break;
 
+            case 'join_room':
+                if (isset($msgObj->pin)) {
+                    $room = $this->get_room($msgObj->pin);
+                    if ($room) {
+                        if ($room->add_player($socket)) {
+                            return $this->build_packet('send_message', 'join_room', true);
+                        }
+                    }
+                }
+                return $this->build_packet('send_message', 'join_room', false);
+                break;
+
             case 'room_info':
-                return $this->get_room($msgObj->pin);
+                return $this->build_packet('send_message', 'room_info', $this->get_room($msgObj->pin)->get_room_info());
                 break;
 
             default:
