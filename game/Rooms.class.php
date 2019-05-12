@@ -14,50 +14,62 @@ class Rooms implements iHandler
 
     public function new_room($owner)
     {
-        $newRoom = new Room();
-        $newRoom->set_room_owner($owner);
-        $newRoom->add_player($owner);
+        $newRoom = new Room($owner);
         array_push($this->rooms, $newRoom);
-        return $newRoom->get_room_pin();
+        return $newRoom;
     }
 
     public function get_room($pin)
     {
         foreach ($this->rooms as $room) {
-            if ($room->get_room_pin() == $pin) {
+            if ($room->is_empty()) {
+                unset($this->rooms->$room);
+                continue;
+            }
+            if ($room->get_pin() === $pin) {
                 return $room;
-                break;
             }
         }
-        return false;
+        return null;
     }
 
-    public function action($msgObj, $socket = null)
+    public function action($messageObj, $user = null)
     {
-        switch ($msgObj->action) {
+        switch ($messageObj->action) {
             case 'create_room':
-                return $this->build_packet('send_message', 'requested_room', $this->new_room($socket));
-                break;
+                if ($user->get_room())
+                    return null;
+                $newRoom = $this->new_room($user);
+                $user->set_room($newRoom);
+                return $this->build_packet('send_message', 'create_room', array('pin' => $newRoom->get_pin()));
 
             case 'join_room':
-                if (isset($msgObj->pin)) {
-                    $room = $this->get_room($msgObj->pin);
-                    if ($room) {
-                        if ($room->add_player($socket)) {
-                            return $this->build_packet('send_message', 'join_room', true);
-                        }
+                $room = $this->get_room($messageObj->pin);
+                if ($room) {
+                    if ($room->add_player($user)) {
+                        return $this->build_packet('send_message', 'join_room', $room->get_info());
                     }
                 }
-                return $this->build_packet('send_message', 'join_room', false);
-                break;
+                return $this->build_packet('send_message', 'join_room', array('message' => 'Room not found.'));
 
-            case 'room_info':
-                return $this->build_packet('send_message', 'room_info', $this->get_room($msgObj->pin)->get_room_info());
-                break;
+            case 'leave_room':
+                $room = $user->get_room();
+                if ($room) {
+                    if ($room->leave_room($user)) {
+                        return $this->build_packet('send_message', 'leave_room', array('message' => 'You left the room.'));
+                    }
+                }
+                return null;
+
+            case 'my_room':
+                $room = $user->get_room();
+                if ($room) {
+                    return $this->build_packet('send_message', 'my_room', $user->get_room()->get_info());
+                }
+                return null;
 
             default:
                 return null;
-                break;
         }
     }
 
@@ -65,7 +77,7 @@ class Rooms implements iHandler
     {
         return array(
             'handler' => 'rooms_handler',
-            'function' => 'send_message',
+            'function' => $function,
             'action' => $action,
             'content' => $content,
         );

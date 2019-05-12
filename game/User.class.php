@@ -8,13 +8,16 @@ class User
     private $handshake;
 
     private $username;
+    private $room;
 
     public function __construct($id, $socket)
     {
         $this->id = $id;
         $this->socket = $socket;
         $this->handshake = false;
+
         $this->username = "Player";
+        $this->room = null;
     }
 
     public function get_id()
@@ -27,7 +30,7 @@ class User
         return $this->socket;
     }
 
-    public function handshake() 
+    public function handshake()
     {
         $this->handshake = true;
     }
@@ -40,13 +43,24 @@ class User
     public function set_username($username)
     {
         $length = strlen($username);
-        if ($length < 16 && $length > 0)
+        if ($length < 16 && $length > 0) {
             $this->username = htmlspecialchars($username);
+        }
     }
 
     public function get_username()
     {
         return $this->username;
+    }
+
+    public function set_room($room)
+    {
+        $this->room = $room;
+    }
+
+    public function get_room()
+    {
+        return $this->room;
     }
 
 }

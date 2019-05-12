@@ -14,37 +14,17 @@ $(document).ready(function () {
         console.log(msgObject);
 
         switch (msgObject['handler']) {
-            case 'game_handler':
-                switch (msgObject['action']) {
-                    case 'registered':
-                        username = msgObject['content'];
-                        $('#login_box').hide();
-                        $('#menu_box').show();
-                        break;
-
-                    default:
-                        break;
-                }
+            case 'users_handler':
+                users_handler(msgObject);
                 break;
 
             case 'rooms_handler':
-                switch (msgObject['action']) {
-                    case 'requested_room':
-                        if (msgObject['content']) {
-                            $('#createRoomPin').val(msgObject['content']);
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
+                rooms_handler(msgObject);
                 break;
 
             default:
                 break;
         }
-
-        console.log(ev.data);
     };
 
     //Fehler
@@ -59,35 +39,67 @@ $(document).ready(function () {
     };
 
 
-    //CLICK EVENTS
+    //Handlers
+
+    function users_handler(data) {
+        
+    }
+
+    function rooms_handler(data) {
+
+    }
+
+    //Handler functions
+
+    function uh_set_username(username) {
+        websocket.send(JSON.stringify({
+            "handler": "users_handler",
+            "action": "set_username",
+            "username": username
+        }));
+    }
+
+    function rh_create_room() {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "create_room"
+        }));
+    }
+
+    function rh_join_room(pin) {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "join_room",
+            "pin": pin
+        }));
+    }
+
+    function rh_my_room() {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "my_room"
+        }));
+    }
+
+    //Click events
 
     $("#btn_inputUsername").click(function (event) {
         event.preventDefault();
         var name = $("#inputUsername").val();
-        websocket.send(JSON.stringify({
-            "handler": "game_handler",
-            "action": "register",
-            "username": name
-        }));
+        uh_set_username(name);
         $('#btn_inputUsername').prop("disabled", true);
     });
 
     $("#btn_createRoom").click(function (event) {
         event.preventDefault();
-        websocket.send(JSON.stringify({
-            "handler": "rooms_handler",
-            "action": "create_room"
-        }));
+        rh_create_room();
         $('#btn_inputUsername').prop("disabled", true);
     });
 
     $("#btn_joinRoom").click(function (event) {
         event.preventDefault();
-        websocket.send(JSON.stringify({
-            "handler": "rooms_handler",
-            "action": "join_room",
-            "pin": $('#joinRoomPin').val()
-        }));
+        var pin = $('#joinRoomPin').val()
+        rh_join_room(pin);
         $('#btn_inputUsername').prop("disabled", true);
     });
 

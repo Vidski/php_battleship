@@ -11,51 +11,74 @@ class Room
     //TODO:
     //FALLS RAUM INAKTIV NACH 5MIN LÖSCHEN
     private $lastAction;
+    private $isEmpty;
 
-    public function __construct()
+    public function __construct($roomOwner)
     {
         $this->roomSize = 2;
+        $this->roomOwner = $roomOwner;
         $this->roomPlayers = array();
+        $this->add_player($this->roomOwner);
         $this->roomPin = $this->random_pin();
+        $this->isEmpty = false;
     }
 
-    public function add_player($socket)
+    public function add_player($user)
     {
-        if(in_array($socket, $this->roomPlayers)) {
+        if (in_array($user, $this->roomPlayers)) {
             return false;
         }
-        array_push($this->roomPlayers, $socket);
+        array_push($this->roomPlayers, $user);
+        return true;
     }
 
-    public function set_room_owner($socket)
+    public function leave_room($user)
     {
-        $this->roomOwner = $socket;
+        if (!in_array($user, $this->roomPlayers)) {
+            return false;
+        }
+        unset($this->roomPlayers[$user]);
+        $user->set_room(null);
+        if (count($this->roomPlayers === 0 || $user === $this->roomOwner)) {
+            $this->isEmpty = true;
+        }
+        return true;
     }
 
-    public function get_room_info()
-    {
-        socket_getpeername($this->roomOwner, $clientIP);
-        return array(
-            'pin' => $this->roomPin,
-            'owner' => $clientIP,
-            'size' => $this->roomSize,
-            'players' => count($this->roomPlayers),
-        );
-    }
-
-    public function get_room_owner()
+    public function get_owner()
     {
         return $this->roomOwner;
     }
 
-    public function get_room_players()
+    public function get_players()
     {
         return $this->roomPlayers;
     }
 
-    public function get_room_pin()
+    public function get_pin()
     {
         return $this->roomPin;
+    }
+
+    public function get_info()
+    {
+        $players = array();
+
+        foreach ($this->roomPlayers as $player) {
+            array_push($players, $player->get_username());
+        }
+
+        return array(
+            'pin' => $this->roomPin,
+            'owner' => $this->roomOwner->get_username(),
+            'size' => count($this->roomPlayers),
+            'players' => $players,
+        );
+    }
+
+    public function is_empty() 
+    {
+        return $this->isEmpty;
     }
 
     private function random_pin()

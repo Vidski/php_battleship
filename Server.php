@@ -33,7 +33,8 @@ abstract class Server
         $this->server_loop();
     }
 
-    abstract protected function action($user, $message);
+    abstract protected function started();
+    abstract protected function action($user, $messageObj);
     abstract protected function connected($user);
     abstract protected function disconnected($user);
 
@@ -82,7 +83,13 @@ abstract class Server
                             $this->on_client_disconnect($user->get_socket());
                         } else {
                             if (isset($messageObj->handler)) {
-                                $this->action($user, $messageObj);
+                                try {
+                                    $this->action($user, $messageObj);
+                                } catch (\Throwable $th) {
+                                    print("Something went wrong processing this package:\n");
+                                    print_r($messageObj);
+                                    print($th);
+                                }
                             }
                         }
                     }
@@ -95,6 +102,7 @@ abstract class Server
     protected function on_server_started()
     {
         printf("Server running on %s:%d \n\n", $this->host, $this->port);
+        $this->started();
     }
 
     //EINE NEUER CLIENT WURDE GEFUNDEN
