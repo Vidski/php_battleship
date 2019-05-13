@@ -47,7 +47,7 @@ class Rooms implements iHandler
                 $room = $this->get_room($messageObj->pin);
                 if ($room) {
                     if ($room->add_player($user)) {
-                        return $this->build_packet('send_message', 'join_room', $room->get_info());
+                        return $this->build_packet('send_message_room', 'join_room', array('message' => $user->get_username() . ' joined the room.', 'users' => $room->get_players()));
                     }
                 }
                 return $this->build_packet('send_message', 'join_room', array('message' => 'Room not found.'));
@@ -56,7 +56,7 @@ class Rooms implements iHandler
                 $room = $user->get_room();
                 if ($room) {
                     if ($room->leave_room($user)) {
-                        return $this->build_packet('send_message', 'leave_room', array('message' => 'You left the room.'));
+                        return $this->build_packet('send_message_room', 'leave_room', array('message' => $user->get_username() . ' left the room.', 'users' => $room->get_players()));
                     }
                 }
                 return null;

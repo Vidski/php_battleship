@@ -1,6 +1,6 @@
 <?php
 require 'socketfunctions.inc.php';
-require dirname(__FILE__) . '\game\User.class.php';
+require dirname(__FILE__) . '/game/User.class.php';
 
 abstract class Server
 {

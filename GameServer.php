@@ -1,9 +1,9 @@
 <?php
 
 require 'Server.php';
-require dirname(__FILE__) . '\game\iHandler.interface.php';
-require dirname(__FILE__) . '\game\Rooms.class.php';
-require dirname(__FILE__) . '\game\Users.class.php';
+require dirname(__FILE__) . '/game/iHandler.interface.php';
+require dirname(__FILE__) . '/game/Rooms.class.php';
+require dirname(__FILE__) . '/game/Users.class.php';
 
 class GameServer extends Server
 {
@@ -43,11 +43,20 @@ class GameServer extends Server
                 $this->send_message($user, $action);
                 break;
 
+			case 'send_message_room':
+                unset($action['function']);
+				$users = $action['content']['users'];
+				unset($action['content']['users']);
+				foreach ($users as $user) {
+					$this->send_message($user, $action);
+				}
+                break;
+				
             default:
                 # code...
                 break;
         }
-        print_r($action);
+        //print_r($action);
     }
 
     protected function connected($user)
