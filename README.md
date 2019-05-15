@@ -20,7 +20,7 @@
 - Schiffe versenken
 - Mehrere Spiele zeitgleich möglich
     - Ein Spieler kann einen privaten Raum erstellen und bekommt einen Pin, über diesen Pin kann ein anderer Spieler sich verbinden.
-        - Wenn am Ende noch Zeit ist, werden öffentliche Räume erstellt um zufällige Gegner zu bekommen.
+    - Wenn am Ende noch Zeit ist, werden öffentliche Räume erstellt um zufällige Gegner zu bekommen.
 - Regeln
     - Das Feld ist 10x10  Kästchen groß.
     - Jeder hat 10 Schiffe
