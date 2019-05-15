@@ -33,7 +33,7 @@
     - Die Schiffe dürfen **nicht** über Eck gebaut sein oder Ausbuchtungen besitzen
     - Die Schiffe dürfen **nicht** diagonal aufgestellt werden
     - Die Schiffe dürfen auch am Rand liegen
-    
+    - 
     - Ein Schiff gilt als versenkt, wenn alle Felder des Schiffes getroffen wurden. 
     - Wer beginnt wird Zufällig ausgewählt.
     - Wenn ein Treffer gelandet wurde, ist der Spieler nochmal am Zug, ansonsten wechselt der Spieler.
