@@ -28,9 +28,9 @@
         - zwei Kreuzer (je 4 Kästchen)
         - drei Zerstörer (je 3 Kästchen)
         - vier U-Boore (je 2 Kästchen)
-    - Die Schiffe dürfen nicht aneinander stoßen
-    - Die Schiffe dürfen nicht über Eck gebaut sein oder Ausbuchtungen besitzen
-    - Die Schiffe dürfen nicht diagonal aufgestellt werden
+    - Die Schiffe dürfen **nicht** aneinander stoßen
+    - Die Schiffe dürfen **nicht** über Eck gebaut sein oder Ausbuchtungen besitzen
+    - Die Schiffe dürfen **nicht** diagonal aufgestellt werden
     - Die Schiffe dürfen auch am Rand liegen
     - Ein Schiff gilt als versenkt, wenn alle Felder des Schiffes getroffen wurden. 
     - Wer beginnt wird Zufällig ausgewählt.
