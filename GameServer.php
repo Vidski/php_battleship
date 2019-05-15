@@ -51,12 +51,13 @@ class GameServer extends Server
 					$this->send_message($user, $action);
 				}
                 break;
-				
+                
             default:
-                # code...
+                
                 break;
         }
-        //print_r($action);
+        //LOGGING
+        print_r($action);
     }
 
     protected function connected($user)

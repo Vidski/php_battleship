@@ -10,7 +10,7 @@ input {
     padding: 2px 2px 2px 5px;
 }
 
-#login_box form {
+#login_box_form {
     display: none;
 }
 
@@ -22,6 +22,27 @@ input {
     width: 60%;
 }
 
+#battleship_game_box {
+    display: none;
+}
+
+#chat_box {
+    overflow: auto;
+    height: 200px;
+}
+
+#chat_box p {
+    line-height: 1;
+}
+
+#left_side {
+    border-color: blue;
+}
+
+#right_side {
+    border-color: red;
+}
+
 .system {
     color: red;
 }
@@ -30,13 +51,37 @@ input {
     color: green;
 }
 
+
+/* .cell {
+    display: table-cell;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    width: 30px;
+    height: 30px;
+}
+
+.row {
+    display: table-row;
+    clear: both;
+    overflow: hidden;
+}
+
+.table {
+    display: table;
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+    display: table;
+} */
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+    -moz-appearance: textfield;
+    /* Firefox */
 }

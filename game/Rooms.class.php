@@ -23,10 +23,11 @@ class Rooms implements iHandler
     {
         foreach ($this->rooms as $room) {
             if ($room->is_empty()) {
+                echo("EMPTY");
                 unset($this->rooms->$room);
                 continue;
             }
-            if ($room->get_pin() === $pin) {
+            if ($room->get_pin() == $pin) {
                 return $room;
             }
         }
@@ -45,10 +46,11 @@ class Rooms implements iHandler
 
             case 'join_room':
                 $room = $this->get_room($messageObj->pin);
-                if ($room) {
+                if (!is_null($room)) {
                     if ($room->add_player($user)) {
                         return $this->build_packet('send_message_room', 'join_room', array('message' => $user->get_username() . ' joined the room.', 'users' => $room->get_players()));
                     }
+                    return $this->build_packet('send_message', 'join_room', array('message' => 'You are already in this room.'));
                 }
                 return $this->build_packet('send_message', 'join_room', array('message' => 'Room not found.'));
 
@@ -67,6 +69,8 @@ class Rooms implements iHandler
                     return $this->build_packet('send_message', 'my_room', $user->get_room()->get_info());
                 }
                 return null;
+
+            //case 'send_room'
 
             default:
                 return null;
