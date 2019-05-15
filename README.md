@@ -15,7 +15,7 @@
 - [X] Lobby/Raum
 
 
-**GAME_INFOS**
+**GAMEINFOS:**
 
 - Schiffe versenken
 - Mehrere Spiele zeitgleich möglich
