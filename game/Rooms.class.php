@@ -23,7 +23,7 @@ class Rooms implements iHandler
     {
         foreach ($this->rooms as $room) {
             if ($room->is_empty()) {
-                echo("EMPTY");
+                echo ("EMPTY");
                 unset($this->rooms->$room);
                 continue;
             }
@@ -38,8 +38,10 @@ class Rooms implements iHandler
     {
         switch ($messageObj->action) {
             case 'create_room':
-                if ($user->get_room())
+                if ($user->get_room()) {
                     return null;
+                }
+
                 $newRoom = $this->new_room($user);
                 $user->set_room($newRoom);
                 return $this->build_packet('send_message', 'create_room', array('pin' => $newRoom->get_pin()));
@@ -70,7 +72,14 @@ class Rooms implements iHandler
                 }
                 return null;
 
-            //case 'send_room'
+            case 'send_message_room':
+                $room = $user->get_room();
+                print_r($messageObj);
+                $message = htmlspecialchars($messageObj->message);
+                if ($room) {
+                    return $this->build_packet('send_message_room', 'send_message_room', array('message' => $user->get_username() . ': ' . $message, 'users' => $room->get_players()));
+                }
+                return null;
 
             default:
                 return null;

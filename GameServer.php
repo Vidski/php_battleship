@@ -37,6 +37,9 @@ class GameServer extends Server
                 break;
         }
 
+        if (!$action)
+            return;
+            
         switch ($action['function']) {
             case 'send_message':
                 unset($action['function']);

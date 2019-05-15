@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
-    //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6969";
+    var wsUri = "ws://127.0.0.1:6969";
+    //var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -45,8 +45,9 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'set_username':
                 username = msgObject['content']['username'];
-                $('#login_box').fadeOut();
-                $('#menu_box').fadeIn();
+                $('#login_box').fadeOut(function() {
+                    $('#menu_box').fadeIn();
+                });
                 break;
 
             default:
@@ -63,6 +64,11 @@ $(document).ready(function() {
             case 'join_room':
                 $('#menu_box').fadeOut();
                 $('#battleship_game_box').fadeIn();
+                $('#chat_box').append("<p>"+msgObject['content']['message']+"</p>")
+                break;
+
+            case 'send_message_room':
+                $('#chat_box').append("<p>"+msgObject['content']['message']+"</p>")
                 break;
 
             default:
@@ -102,6 +108,16 @@ $(document).ready(function() {
         }));
     }
 
+    function rh_send_message() {
+        var message = $('#input_sendMessage').val();
+        console.log(message);
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "send_message_room",
+            "message": message
+        }));
+    }
+
     //Click events
 
     $("#btn_inputUsername").click(function(event) {
@@ -121,6 +137,12 @@ $(document).ready(function() {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_join_room(pin);
+    });
+
+    $("#btn_sendMessage").click(function(event) {
+        event.preventDefault();
+        var pin = $('#joinRoomPin').val()
+        rh_send_message();
     });
 
     //FUNCTIONS
