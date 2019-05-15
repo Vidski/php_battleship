@@ -17,6 +17,82 @@
 
 **Kommunikationsprotokoll:**
 
+Kommunikation für den Login:
+
+    Login:
+    Client-> Server
+   {
+        "handler": "users_handler",
+        "action": "set_username",
+        "username": username
+    }
+
+    Server -> Client
+    {
+        action: "set_username"
+        content: {username: "Stefan"}
+        handler: "users_handler"
+    }
+
+    Raumerstellen:
+    Client-> Server
+    {
+        "handler": "rooms_handler",
+        "action": "create_room"
+    }   
+
+    Server -> Client
+    {
+        action: "create_room"
+        content: {pin: 7194}
+        handler: "rooms_handler"
+    }
+
+    Raum beitreten:
+    Client-> Server
+    {
+        "handler": "rooms_handler",
+        "action": "join_room",
+        "pin": pin
+    }   
+
+    Server -> Client
+    {
+        action: "join_room"
+        content: {message: "Room not found."}
+        handler: "rooms_handler"
+    }
+
+    Schiffe setzen: 
+    Client-> Server
+    {
+        "handler": "battleship_handler",
+        "action": "place_ship",
+        "koordinaten": array
+    }   
+
+    Server -> Client
+    {
+        action: "place_ship"
+        content: {message: "Ort okay/Ort nicht erlaubt"}
+        handler: "battleship_handler"
+    }
+
+    Schießen:
+    Client-> Server
+    {
+        "handler": "battleship_handler",
+        "action": "shoot",
+        "koordinaten": (x,y)
+    }
+
+    Server -> Client
+    {
+        action: "shoot"
+        content: {message: "Getroffen/Daneben/Versenkt(welches schiff)"}
+        handler: "battleship_handler"
+    }
+
 
 
 **GAMEINFOS:**
