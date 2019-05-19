@@ -34,6 +34,7 @@ class GameServer extends Server
                 break;
 
             default:
+                return;
                 break;
         }
 

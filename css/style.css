@@ -32,6 +32,7 @@ td, th {
     width: 48px;
     height: 48px;
     text-align: center;
+    vertical-align: middle!important;
 }
 
 .table {
