@@ -1,7 +1,30 @@
 $(document).ready(function() {
 
+    var ships = {
+        ship2: 0,
+        ship2_limit: 4,
+        ship3: 0,
+        ship3_limit: 3,
+        ship4: 0,
+        ship4_limit: 2,
+        ship5: 0,
+        ship5_limit: 1
+    }
+
+    var ship2V = { height: 2, width: 1 };
+    var ship3V = { height: 3, width: 1 };
+    var ship4V = { height: 4, width: 1 };
+    var ship5V = { height: 5, width: 1 };
+
+    var ship2H = { height: 1, width: 2 };
+    var ship3H = { height: 1, width: 3 };
+    var ship4H = { height: 1, width: 4 };
+    var ship5H = { height: 1, width: 5 };
+
+    var currentModus = "placement";
+
     //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6966";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -71,8 +94,7 @@ $(document).ready(function() {
                 break;
 
             case 'join_room':
-                if (!msgObject['content']['error']) {
-                    alert(msgObject['content']['message']);
+                if (msgObject['content']['error']) {
                     return;
                 }
                 generateTable();
@@ -187,33 +209,35 @@ $(document).ready(function() {
         rh_send_message();
     });
 
-    $("table").on("click", "td",function() {
-        console.log($(this));
-        var x = $(this).attr('data-col');
-        var y = $(this).attr('data-row');
-        bh_shoot(x,y);
+    $("table").on("click", "td", function() {
+        console.log($(this).data());
     });
 
     //FUNCTIONS
 
     function Drop(event, ui) {
-        console.log($(this));
-        var x = $(this).attr('data-col');
-        var y = $(this).attr('data-row');
-        console.log("Dropped at " + x + " " + y);
+        if (currentModus == "placement") {
+            checkPlacement($(this).attr('data-col'), $(this).attr('data-row'), ui['draggable'][0]['id']);
+        }
     }
 
-    function loginBoxSuccess() {
-        $('#login_box_connecting .spinner-grow').removeClass('text-warning');
-        $('#login_box_connecting .spinner-grow').addClass('text-success');
-        $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
-    }
+    function checkPlacement(x, y, id) {
+        console.log(x + " " + y + " " + id);
+        console.log(ship2V);
 
-    function loginBoxError() {
-        $('#login_box_connecting p').text("Could not connect to Server");
-        $('#login_box_connecting .spinner-grow').removeClass('text-warning');
-        $('#login_box_connecting .spinner-grow').addClass('text-danger');
-        console.error("WebSocket error observed:", ev);
+        y = parseInt(y);
+        switch (id) {
+            case "ship2":
+                var asd = ship2V['height'] + y;
+                console.log(ship2V['height'] + " + " + y + " = " + asd);
+                if (ship2V['height'] + y > 10) {
+                    console.log("Cant place here");
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     function generateTable() {
@@ -227,26 +251,35 @@ $(document).ready(function() {
             for (var j = 0; j < fieldSize; j++) {
                 if (j == 0) {
                     table += '<th scope="row">' + (i + 1) + '</th>';
-                } 
-                table += '<td data-row="' + i + '" data-col="' + j + '"></td>';
-                
+                }
+                table += '<td data-row=' + i + ' data-col=' + j + '></td>';
+
             }
             table += "</tr>";
         }
         table += '</tbody>';
-        $("table").html(table);
-        $('#ship2').draggable({ helper: "clone", snap: '.table td' });
-        $('#ship3').draggable({ helper: "clone", snap: '.table td' });
-        $('#ship4').draggable({ helper: "clone", snap: '.table td' });
-        $('#ship5').draggable({ helper: "clone", snap: '.table td' });
-        $('#ship2').css('width', $('.td').width());
-        $('#ship3').css('width', $('.td').width());
-        $('#ship4').css('width', $('.td').width());
-        $('#ship5').css('width', $('.td').width());
+        $('table').html(table);
+        $('#ship2').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship3').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship4').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship5').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
 
         $('td').droppable({
             tolerance: "pointer",
             drop: Drop
         });
+    }
+
+    function loginBoxSuccess() {
+        $('#login_box_connecting .spinner-grow').removeClass('text-warning');
+        $('#login_box_connecting .spinner-grow').addClass('text-success');
+        $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
+    }
+
+    function loginBoxError() {
+        $('#login_box_connecting p').text("Could not connect to Server");
+        $('#login_box_connecting .spinner-grow').removeClass('text-warning');
+        $('#login_box_connecting .spinner-grow').addClass('text-danger');
+        console.error("WebSocket error observed:", ev);
     }
 });

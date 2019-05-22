@@ -3,8 +3,7 @@
 
 <head>
     <meta charset='UTF-8' />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
@@ -15,21 +14,18 @@
     <?php require dirname(__FILE__) . '/html/menu_box.html'; ?>
 
     <div id="battleship_game_box" class="container" style="padding-top: 50px;">
-    <!-- Ships -->
-    <div class="row justify-content-center align-items-center">
-            <div class="col-12">
+        <!-- Battlefield -->
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <div id="ship2" class="ship">2</div>
-                        <div id="ship3" class="ship">3</div>
-                        <div id="ship4" class="ship">4</div>
-                        <div id="ship5" class="ship">5</div>
+                        <div id="ship2" class="ship ship2">2</div>
+                        <div id="ship3" class="ship ship3">3</div>
+                        <div id="ship4" class="ship ship4">4</div>
+                        <div id="ship5" class="ship ship5">5</div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Battlefield -->
-        <div class="row justify-content-center align-items-center">
             <div class="col-md-6" id="field_left">
                 <div class="card">
                     <div class="card-body">
@@ -38,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6" id="field_right">
+            <div class="col-md-6" style="display:none;" id="field_right">
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-sm">
