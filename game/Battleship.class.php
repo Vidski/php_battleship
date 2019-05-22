@@ -22,17 +22,19 @@ class Battleship implements iHandler
 
     public function action($messageObj, $user = null)
     {
-        switch ($messageObj->action) {
+        switch ($messageObj->content->action) {
             case 'shoot':
-                $x = $messageObj->position[0];
-                $y = $messageObj->position[1];
+                $x = $messageObj->content->position->x;
+                $y = $messageObj->content->position->y;
                 $player = $user;
-                
-                if(check_hit($x, $y, $player)){
-                    return $this->build_packet('send_message_room', 'shoot', array('users' => $user->get_room()->get_players(), 'Position X' => x, 'Position Y' => $messageObj->position[1]));
+                print("test");
+                if($this->check_hit($x, $y, $player)){
+                    print("test2");
+                    return $this->build_packet('send_message_room', 'shoot', array('users' => $user->get_room()->get_players(), 'Position X' => $x, 'Position Y' => $y));
 
                 }
                 break;
+            
         }
     }
 

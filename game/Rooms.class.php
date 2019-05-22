@@ -39,11 +39,12 @@ class Rooms implements iHandler
         switch ($messageObj->action) {
 
             case 'game_action':
-                $game = $user->get_game();    
+                $game = $user->get_room()->get_game();
                 if ($game) {
-                    $game->action($messageObj, $user);
+                    return $game->action($messageObj, $user);
                 }
-            break;
+                
+            return null;
 
             case 'create_room':
                 if ($user->get_room()) {
