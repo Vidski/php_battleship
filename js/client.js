@@ -218,15 +218,17 @@ $(document).ready(function() {
             table += "</tr>";
         }
         table += '</tbody>';
-        $("table").html(table);
+        $('table').html(table);
         $('#ship2').draggable({ helper: "clone", snap: '.table td' });
         $('#ship3').draggable({ helper: "clone", snap: '.table td' });
         $('#ship4').draggable({ helper: "clone", snap: '.table td' });
         $('#ship5').draggable({ helper: "clone", snap: '.table td' });
-        $('#ship2').css('width', $('.td').width());
-        $('#ship3').css('width', $('.td').width());
-        $('#ship4').css('width', $('.td').width());
-        $('#ship5').css('width', $('.td').width());
+
+        $('ship2').height(96);
+        $('ship3').height(144);
+        $('ship4').height(192);
+        $('ship5').height(240);
+
 
         $('td').droppable({
             tolerance: "pointer",

@@ -60,14 +60,15 @@ th {
 /* SHIPS */
 
 .ship {
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
-    border-bottom-left-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     float: left;
     z-index: 1000;
     height: 96px;
     width: 44px;
+    margin: 5px;
     background-color: red;
 }
 
