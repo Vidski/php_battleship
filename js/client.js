@@ -190,14 +190,14 @@ $(document).ready(function() {
 
     //FUNCTIONS
 
-    $('.table td').droppable({ drop: Drop });
-    $('#ship4_1').draggable({ snap: '.table td', revert: true });
-    $('#ship4_2').draggable({ snap: '.table td', revert: true });
+
 
 
     function Drop(event, ui) {
-        var draggableId = ui.draggable.attr("id");
-        var droppableId = $(this);
+        console.log($(this));
+        var x = $(this).attr('data-col');
+        var y = $(this).attr('data-row');
+        console.log("Dropped at " + x + " " + y);
     }
 
     function loginBoxSuccess() {
@@ -213,29 +213,6 @@ $(document).ready(function() {
         console.error("WebSocket error observed:", ev);
     }
 
-    var createGrid = function(x, y, container) {
-        var x = 10;
-        var y = 10;
-        var arrY = new Array(),
-            arrX,
-            container = $("#field_left div div");
-        for (var iy = 0; iy < y; iy++) {
-            arrX = new Array();
-            for (var ix = 0; ix < x; ix++) {
-                arrX[ix] = '<div class="cell">&nbsp;</div>';
-            }
-            arrY[iy] = '<div class="row">' + arrX.join("O") + '</div>';
-        }
-        container.append(arrY.join("\r\n"));
-    };
-
-    /**
-     * @author Stefan Hackstein
-     * 
-     * Funktion um die Spielfelder zu generieren.
-     * @var fieldSize Variable um die Spielfeldgröße eventuell schnell zu verändern.
-     * 
-     */
     function generateTable() {
         var table = "";
         var fieldSize = 10;
@@ -255,5 +232,18 @@ $(document).ready(function() {
         }
         table += '</tbody>';
         $("table").html(table);
+        $('#ship2').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship3').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship4').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship5').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship2').css('width', $('.td').width());
+        $('#ship3').css('width', $('.td').width());
+        $('#ship4').css('width', $('.td').width());
+        $('#ship5').css('width', $('.td').width());
+
+        $('td').droppable({
+            tolerance: "pointer",
+            drop: Drop
+        });
     }
 });

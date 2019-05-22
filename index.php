@@ -20,8 +20,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div id="ship4_1" style="z-index: 1000; height:96px; width: 48px; background-color: red;">4</div>
-                        <div id="ship4_2" style="z-index: 1000; height:96px; width: 48px; background-color: blue;">4</div>
+                        <div id="ship2" class="ship">2</div>
+                        <div id="ship3" class="ship">3</div>
+                        <div id="ship4" class="ship">4</div>
+                        <div id="ship5" class="ship">5</div>
                     </div>
                 </div>
             </div>
@@ -31,8 +33,7 @@
             <div class="col-md-6" id="field_left">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table">
-                 
+                        <table class="table table-sm">
                         </table>
                     </div>
                 </div>
@@ -41,7 +42,6 @@
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-sm">
-                           
                         </table>
                     </div>
                 </div>

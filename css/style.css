@@ -56,6 +56,21 @@ th {
     border-radius: 25px;
 }
 
+
+/* SHIPS */
+
+.ship {
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    float: left;
+    z-index: 1000;
+    height: 96px;
+    width: 44px;
+    background-color: red;
+}
+
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
