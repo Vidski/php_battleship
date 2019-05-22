@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6969";
+    var wsUri = "ws://172.18.1.113:6966";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -145,8 +145,16 @@ $(document).ready(function() {
         }));
     }
 
-    function bh_shoot() {
-
+    function bh_shoot(posX, posY) {
+        var message = {
+            "x" : posX,
+            "y" : posY
+        };
+        websocket.send(JSON.stringify({
+            "handler": "battleship_handler",
+            "action": "shoot",
+            "message": message
+        }));
     }
 
     //Click events
@@ -176,6 +184,10 @@ $(document).ready(function() {
         rh_send_message();
     });
 
+    $("table").on("click", "td",function() {
+       console.log($(this).data());
+    });
+
     //FUNCTIONS
 
 
@@ -203,17 +215,18 @@ $(document).ready(function() {
 
     function generateTable() {
         var table = "";
-        for (var i = 0; i < 10; i++) {
+        var fieldSize = 10;
+        for (var i = 0; i < fieldSize; i++) {
             if (i == 0) {
                 table += '<thead><tr><th scope="col"></th> <th scope="col">A</th> <th scope="col">B</th> <th scope="col">C</th> <th scope="col">D</th> <th scope="col">E</th> <th scope="col">F</th> <th scope="col">G</th> <th scope="col">H</th> <th scope="col">I</th> <th scope="col">J</th> </tr></thead><tbody>';
             }
             table += "<tr>";
-            for (var j = 0; j < 10; j++) {
+            for (var j = 0; j < fieldSize; j++) {
                 if (j == 0) {
                     table += '<th scope="row">' + (i + 1) + '</th>';
-                }
+                } 
                 table += '<td data-row="' + i + '" data-col="' + j + '"></td>';
-
+                
             }
             table += "</tr>";
         }
