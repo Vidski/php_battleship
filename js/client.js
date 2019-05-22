@@ -208,7 +208,7 @@ $(document).ready(function () {
                 if(j == 0){
                     table += '<th scope="row">' + (i+1) + '</th>';
                 } else {
-                    table += '<td data-row="'+ i + '" data-col="'+ j +'">0</td>';
+                    table += '<td data-row="'+ i + '" data-col="'+ j +'"></td>';
                 }
             }
             table += "</tr>";
