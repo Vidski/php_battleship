@@ -71,6 +71,7 @@ $(document).ready(function() {
                     alert(msgObject['content']['message']);
                     return;
                 }
+                generateTable();
                 $('#menu_box').fadeOut();
                 $('#battleship_game_box').fadeIn();
                 $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
@@ -80,6 +81,22 @@ $(document).ready(function() {
                 $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
                 break;
 
+            default:
+
+                break;
+        }
+    }
+
+
+    function battlship_handler(data) {
+        switch (msgObject['action']) {
+            case 'shoot':
+                $('#createRoomPin').val(msgObject['content']['pin']);
+                break;
+
+            case 'place_ship':
+
+                break;
             default:
 
                 break;
@@ -125,6 +142,10 @@ $(document).ready(function() {
             "action": "send_message_room",
             "message": message
         }));
+    }
+
+    function bh_shoot() {
+
     }
 
     //Click events
@@ -195,4 +216,23 @@ $(document).ready(function() {
         container.append(arrY.join("\r\n"));
     };
 
+    function generateTable() {
+        var table = "";
+        for (var i = 0; i < 10; i++) {
+            if (i == 0) {
+                table += '<thead><tr><th scope="col"></th> <th scope="col">A</th> <th scope="col">B</th> <th scope="col">C</th> <th scope="col">D</th> <th scope="col">E</th> <th scope="col">F</th> <th scope="col">G</th> <th scope="col">H</th> <th scope="col">I</th> <th scope="col">J</th> </tr></thead><tbody>';
+            }
+            table += "<tr>";
+            for (var j = 0; j < 11; j++) {
+                if (j == 0) {
+                    table += '<th scope="row">' + (i + 1) + '</th>';
+                } else {
+                    table += '<td data-row="' + i + '" data-col="' + j + '"></td>';
+                }
+            }
+            table += "</tr>";
+        }
+        table += '</tbody>';
+        $("table").html(table);
+    }
 });
