@@ -64,6 +64,7 @@ $(document).ready(function() {
                     });
                     $('#chat_box').append("<p style='color: red'>Room PIN: " + msgObject['content']['pin'] + "</p>")
                 }
+                generateTable();
                 break;
 
             case 'join_room':
@@ -177,14 +178,14 @@ $(document).ready(function() {
 
     //FUNCTIONS
 
-    $('.table td').droppable({ drop: Drop });
-    $('#ship4_1').draggable({ snap: '.table td', revert: true });
-    $('#ship4_2').draggable({ snap: '.table td', revert: true });
+
 
 
     function Drop(event, ui) {
-        var draggableId = ui.draggable.attr("id");
-        var droppableId = $(this);
+        console.log($(this));
+        var x = $(this).attr('data-col');
+        var y = $(this).attr('data-row');
+        console.log("Dropped at " + x + " " + y);
     }
 
     function loginBoxSuccess() {
@@ -200,22 +201,6 @@ $(document).ready(function() {
         console.error("WebSocket error observed:", ev);
     }
 
-    var createGrid = function(x, y, container) {
-        var x = 10;
-        var y = 10;
-        var arrY = new Array(),
-            arrX,
-            container = $("#field_left div div");
-        for (var iy = 0; iy < y; iy++) {
-            arrX = new Array();
-            for (var ix = 0; ix < x; ix++) {
-                arrX[ix] = '<div class="cell">&nbsp;</div>';
-            }
-            arrY[iy] = '<div class="row">' + arrX.join("O") + '</div>';
-        }
-        container.append(arrY.join("\r\n"));
-    };
-
     function generateTable() {
         var table = "";
         for (var i = 0; i < 10; i++) {
@@ -223,16 +208,29 @@ $(document).ready(function() {
                 table += '<thead><tr><th scope="col"></th> <th scope="col">A</th> <th scope="col">B</th> <th scope="col">C</th> <th scope="col">D</th> <th scope="col">E</th> <th scope="col">F</th> <th scope="col">G</th> <th scope="col">H</th> <th scope="col">I</th> <th scope="col">J</th> </tr></thead><tbody>';
             }
             table += "<tr>";
-            for (var j = 0; j < 11; j++) {
+            for (var j = 0; j < 10; j++) {
                 if (j == 0) {
                     table += '<th scope="row">' + (i + 1) + '</th>';
-                } else {
-                    table += '<td data-row="' + i + '" data-col="' + j + '"></td>';
                 }
+                table += '<td data-row="' + i + '" data-col="' + j + '"></td>';
+
             }
             table += "</tr>";
         }
         table += '</tbody>';
         $("table").html(table);
+        $('#ship2').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship3').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship4').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship5').draggable({ helper: "clone", snap: '.table td' });
+        $('#ship2').css('width', $('.td').width());
+        $('#ship3').css('width', $('.td').width());
+        $('#ship4').css('width', $('.td').width());
+        $('#ship5').css('width', $('.td').width());
+
+        $('td').droppable({
+            tolerance: "pointer",
+            drop: Drop
+        });
     }
 });
