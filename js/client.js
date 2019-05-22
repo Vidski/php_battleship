@@ -23,6 +23,9 @@ $(document).ready(function() {
                 rooms_handler(msgObject);
                 break;
 
+            case 'battleship_handler':
+                battleship_handler(msgObject);
+                break;
             default:
                 break;
         }
@@ -89,10 +92,10 @@ $(document).ready(function() {
     }
 
 
-    function battlship_handler(data) {
+    function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
-                $('#createRoomPin').val(msgObject['content']['pin']);
+                Console.log("TEst Handler");
                 break;
 
             case 'place_ship':
@@ -146,14 +149,14 @@ $(document).ready(function() {
     }
 
     function bh_shoot(posX, posY) {
-        var message = {
+        var position = {
             "x" : posX,
             "y" : posY
         };
         websocket.send(JSON.stringify({
             "handler": "battleship_handler",
             "action": "shoot",
-            "message": message
+            "position": position
         }));
     }
 
@@ -185,13 +188,13 @@ $(document).ready(function() {
     });
 
     $("table").on("click", "td",function() {
-       console.log($(this).data());
+        console.log($(this));
+        var x = $(this).attr('data-col');
+        var y = $(this).attr('data-row');
+        bh_shoot(x,y);
     });
 
     //FUNCTIONS
-
-
-
 
     function Drop(event, ui) {
         console.log($(this));
