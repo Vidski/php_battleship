@@ -66,10 +66,25 @@ th {
     border-bottom-right-radius: 10px;
     float: left;
     z-index: 1000;
-    height: 96px;
     width: 44px;
     margin: 5px;
     background-color: red;
+}
+
+.ship2 {
+    height: 96px;
+}
+
+.ship3 {
+    height: 144px;
+}
+
+.ship4 {
+    height: 192px;
+}
+
+.ship5 {
+    height: 240px;
 }
 
 .noselect {

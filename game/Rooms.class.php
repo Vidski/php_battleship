@@ -37,6 +37,14 @@ class Rooms implements iHandler
     public function action($messageObj, $user = null)
     {
         switch ($messageObj->action) {
+
+            case 'game_action':
+                $game = $user->get_game();    
+                if ($game) {
+                    $game->action($messageObj, $user);
+                }
+            break;
+
             case 'create_room':
                 if ($user->get_room()) {
                     return null;
@@ -44,12 +52,15 @@ class Rooms implements iHandler
 
                 $newRoom = $this->new_room($user);
                 $user->set_room($newRoom);
+                $user->get_room()->new_game(new Battleship($user, null));
                 return $this->build_packet('send_message', 'create_room', array('pin' => $newRoom->get_pin()));
 
             case 'join_room':
                 $room = $this->get_room($messageObj->pin);
                 if (!is_null($room)) {
                     if ($room->add_player($user)) {
+                        $user->set_room($room);
+                        $room->get_game()->set_player_two($user);
                         return $this->build_packet('send_message_room', 'join_room', array('message' => $user->get_username() . ' joined the room.', 'users' => $room->get_players()));
                     }
                     return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'You are already in this room.'));

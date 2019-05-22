@@ -39,6 +39,11 @@ class Battleship implements iHandler
         );
     }
 
+    public function set_player_two($player) 
+    {
+        $this->playerTwo = $player;
+    }
+
     public function check_ship_placement() 
     {
         print($this->playerOneField['11']);

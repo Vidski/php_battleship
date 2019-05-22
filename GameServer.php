@@ -4,6 +4,7 @@ require 'Server.php';
 require dirname(__FILE__) . '/game/iHandler.interface.php';
 require dirname(__FILE__) . '/game/Rooms.class.php';
 require dirname(__FILE__) . '/game/Users.class.php';
+require dirname(__FILE__) . '/game/Battleship.class.php';
 
 class GameServer extends Server
 {

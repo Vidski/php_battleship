@@ -8,6 +8,8 @@ class Room
     private $roomPlayers;
     private $roomPin;
 
+    private $game;
+
     //TODO:
     //FALLS RAUM INAKTIV NACH 5MIN LÖSCHEN
     private $lastAction;
@@ -21,6 +23,7 @@ class Room
         $this->add_player($this->roomOwner);
         $this->roomPin = $this->random_pin();
         $this->isEmpty = false;
+        $this->game = null;
     }
 
     public function add_player($user)
@@ -34,7 +37,7 @@ class Room
 
     public function leave_room($user)
     {
-		$index = array_search($user, $this->roomPlayers);
+        $index = array_search($user, $this->roomPlayers);
         if (!$index) {
             return false;
         }
@@ -44,6 +47,11 @@ class Room
             $this->isEmpty = true;
         }
         return true;
+    }
+
+    public function new_game($game) 
+    {
+        $this->game = $game;
     }
 
     public function get_owner()
@@ -59,6 +67,11 @@ class Room
     public function get_pin()
     {
         return $this->roomPin;
+    }
+
+    public function get_game()
+    {
+        return $this->game;
     }
 
     public function get_info()
@@ -77,7 +90,7 @@ class Room
         );
     }
 
-    public function is_empty() 
+    public function is_empty()
     {
         return $this->isEmpty;
     }
