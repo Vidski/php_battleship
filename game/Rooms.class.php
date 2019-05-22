@@ -52,9 +52,9 @@ class Rooms implements iHandler
                     if ($room->add_player($user)) {
                         return $this->build_packet('send_message_room', 'join_room', array('message' => $user->get_username() . ' joined the room.', 'users' => $room->get_players()));
                     }
-                    return $this->build_packet('send_message', 'join_room', array('message' => 'You are already in this room.'));
+                    return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'You are already in this room.'));
                 }
-                return $this->build_packet('send_message', 'join_room', array('message' => 'Room not found.'));
+                return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'Room not found.'));
 
             case 'leave_room':
                 $room = $user->get_room();

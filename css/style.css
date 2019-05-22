@@ -27,7 +27,8 @@
     border-color: red;
 }
 
-td, th {
+td,
+th {
     padding: 0!important;
     width: 48px;
     height: 48px;
@@ -37,4 +38,42 @@ td, th {
 
 .table {
     width: unset!important;
+    margin-bottom: 0;
+}
+
+.table td,
+.table th {
+    border: 1px solid black;
+}
+
+.table thead th {
+    border-bottom: 0;
+}
+
+#field_right .table td:hover {
+    background-color: #ff000082;
+    border: 1px solid;
+    border-radius: 25px;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
 }

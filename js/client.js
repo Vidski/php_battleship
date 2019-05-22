@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
-    var wsUri = "ws://127.0.0.1:6969";
-    //var wsUri = "ws://172.18.1.113:6969";
+    //var wsUri = "ws://127.0.0.1:6969";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -39,7 +39,6 @@ $(document).ready(function() {
         $('#message_box').append('<span class="system">Verbindung vom Server getrennt</span><br>');
     };
 
-
     //Handlers
     function users_handler(data) {
         switch (msgObject['action']) {
@@ -59,16 +58,26 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'create_room':
                 $('#createRoomPin').val(msgObject['content']['pin']);
+                if (msgObject['content']['pin']) {
+                    $('#menu_box').fadeOut(function() {
+                        $('#battleship_game_box').fadeIn();
+                    });
+                    $('#chat_box').append("<p style='color: red'>Room PIN: " + msgObject['content']['pin'] + "</p>")
+                }
                 break;
 
             case 'join_room':
+                if (!msgObject['content']['error']) {
+                    alert(msgObject['content']['message']);
+                    return;
+                }
                 $('#menu_box').fadeOut();
                 $('#battleship_game_box').fadeIn();
-                $('#chat_box').append("<p>"+msgObject['content']['message']+"</p>")
+                $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
                 break;
 
             case 'send_message_room':
-                $('#chat_box').append("<p>"+msgObject['content']['message']+"</p>")
+                $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
                 break;
 
             default:
@@ -146,6 +155,16 @@ $(document).ready(function() {
     });
 
     //FUNCTIONS
+
+    $('.table td').droppable({ drop: Drop });
+    $('#ship4_1').draggable({ snap: '.table td', revert: true });
+    $('#ship4_2').draggable({ snap: '.table td', revert: true });
+
+
+    function Drop(event, ui) {
+        var draggableId = ui.draggable.attr("id");
+        var droppableId = $(this);
+    }
 
     function loginBoxSuccess() {
         $('#login_box_connecting .spinner-grow').removeClass('text-warning');
