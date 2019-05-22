@@ -1,16 +1,16 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
-    var wsUri = "ws://127.0.0.1:6969";
-    //var wsUri = "ws://172.18.1.113:6969";
+    //var wsUri = "ws://127.0.0.1:6966";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
-    websocket.onopen = function(ev) {
+    websocket.onopen = function (ev) {
         loginBoxSuccess();
     }
 
     //Nachricht vom Server
-    websocket.onmessage = function(ev) {
+    websocket.onmessage = function (ev) {
         msgObject = JSON.parse(ev.data);
         console.log(msgObject);
 
@@ -29,13 +29,13 @@ $(document).ready(function() {
     };
 
     //Fehler
-    websocket.onerror = function(ev) {
+    websocket.onerror = function (ev) {
         loginBoxError();
         console.error("WebSocket error observed:", ev);
     };
 
     //Verbindung zum Server wurde getrennt
-    websocket.onclose = function(ev) {
+    websocket.onclose = function (ev) {
         $('#message_box').append('<span class="system">Verbindung vom Server getrennt</span><br>');
     };
 
@@ -45,7 +45,7 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'set_username':
                 username = msgObject['content']['username'];
-                $('#login_box').fadeOut(function() {
+                $('#login_box').fadeOut(function () {
                     $('#menu_box').fadeIn();
                 });
                 break;
@@ -62,15 +62,32 @@ $(document).ready(function() {
                 break;
 
             case 'join_room':
+                generateTable();
                 $('#menu_box').fadeOut();
                 $('#battleship_game_box').fadeIn();
-                $('#chat_box').append("<p>"+msgObject['content']['message']+"</p>")
+                $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
                 break;
 
             case 'send_message_room':
-                $('#chat_box').append("<p>"+msgObject['content']['message']+"</p>")
+                $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
                 break;
 
+            default:
+
+                break;
+        }
+    }
+
+
+    function battlship_handler(data) {
+        switch (msgObject['action']) {
+            case 'shoot':
+                $('#createRoomPin').val(msgObject['content']['pin']);
+                break;
+
+            case 'place_ship':
+
+                break;
             default:
 
                 break;
@@ -118,28 +135,32 @@ $(document).ready(function() {
         }));
     }
 
+    function bh_shoot() {
+
+    }
+
     //Click events
 
-    $("#btn_inputUsername").click(function(event) {
+    $("#btn_inputUsername").click(function (event) {
         event.preventDefault();
         var name = $("#inputUsername").val();
         uh_set_username(name);
         $('#btn_inputUsername').prop("disabled", true);
     });
 
-    $("#btn_createRoom").click(function(event) {
+    $("#btn_createRoom").click(function (event) {
         event.preventDefault();
         rh_create_room();
         $('#btn_inputUsername').prop("disabled", true);
     });
 
-    $("#btn_joinRoom").click(function(event) {
+    $("#btn_joinRoom").click(function (event) {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_join_room(pin);
     });
 
-    $("#btn_sendMessage").click(function(event) {
+    $("#btn_sendMessage").click(function (event) {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_send_message();
@@ -150,7 +171,7 @@ $(document).ready(function() {
     function loginBoxSuccess() {
         $('#login_box_connecting .spinner-grow').removeClass('text-warning');
         $('#login_box_connecting .spinner-grow').addClass('text-success');
-        $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
+        $('#login_box_connecting').fadeOut(2000, function () { $('#login_box_form').fadeIn(); });
     }
 
     function loginBoxError() {
@@ -160,7 +181,7 @@ $(document).ready(function() {
         console.error("WebSocket error observed:", ev);
     }
 
-    var createGrid = function(x, y, container) {
+    var createGrid = function (x, y, container) {
         var x = 10;
         var y = 10;
         var arrY = new Array(),
@@ -176,4 +197,23 @@ $(document).ready(function() {
         container.append(arrY.join("\r\n"));
     };
 
+    function generateTable() {
+        var table = "";
+        for (var i = 0; i < 10; i++) {
+            if(i == 0){
+               table+='<thead><tr><th scope="col"></th> <th scope="col">A</th> <th scope="col">B</th> <th scope="col">C</th> <th scope="col">D</th> <th scope="col">E</th> <th scope="col">F</th> <th scope="col">G</th> <th scope="col">H</th> <th scope="col">I</th> <th scope="col">J</th> </tr></thead><tbody>';
+            }
+            table += "<tr>";
+            for (var j = 0; j < 11; j++) {
+                if(j == 0){
+                    table += '<th scope="row">' + (i+1) + '</th>';
+                } else {
+                    table += '<td data-row="'+ i + '" data-col="'+ j +'">0</td>';
+                }
+            }
+            table += "</tr>";
+        }
+        table+= '</tbody>';
+        $("table").html(table);
+    }
 });
