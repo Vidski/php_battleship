@@ -49,9 +49,14 @@ class Room
         return true;
     }
 
-    public function new_game($game) 
+    public function new_game($game)
     {
         $this->game = $game;
+    }
+
+    public function get_game()
+    {
+        return $this->game;
     }
 
     public function get_owner()
@@ -67,11 +72,6 @@ class Room
     public function get_pin()
     {
         return $this->roomPin;
-    }
-
-    public function get_game()
-    {
-        return $this->game;
     }
 
     public function get_info()
