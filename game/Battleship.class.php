@@ -32,12 +32,12 @@ class Battleship implements iHandler
             
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
-
                 
                 return $this->build_packet('send_message_room', 'shoot', array(
                     'users' => $user->get_room()->get_players(),
                     'positionX' => $x, 
                     'positionY' => $y, 
+                    'userid' => $this->playerTurn->get_id(),
                     'ergebnis' => $this->check_hit($x, $y)
                 ));
                 break;
@@ -67,10 +67,6 @@ class Battleship implements iHandler
 
     public function check_hit($x, $y)
     {
-
-        print($this->playerTurn->get_id());
-        print($this->playerOne->get_id());
-
         switch ($this->playerTurn) {
             case $this->playerOne:
                 $this->playerTurn = $this->playerTwo;
