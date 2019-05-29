@@ -23,8 +23,8 @@ $(document).ready(function() {
 
     var currentModus = "placement";
 
-    var wsUri = "ws://127.0.0.1:6969";
-    //var wsUri = "ws://172.18.1.113:6966";
+    //var wsUri = "ws://127.0.0.1:6966";
+    var wsUri = "ws://172.18.1.113:6966";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -120,8 +120,10 @@ $(document).ready(function() {
             case 'shoot':
                 console.log(data);
                 console.log(msgObject['content']);
-                $($('td').attr('data-col', msgObject['content']['positionX'])).css('background-color', 'black');
-                //$('td').attr('data-row') = data[content][positionX];
+                if(msgObject['content']['ergebnis']){
+                    $($('#field_right td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');
+                   
+                }
                 break;
 
             case 'place_ship':
@@ -254,7 +256,7 @@ $(document).ready(function() {
             if (i == 0) {
                 table += '<thead><tr><th scope="col"></th> <th scope="col">A</th> <th scope="col">B</th> <th scope="col">C</th> <th scope="col">D</th> <th scope="col">E</th> <th scope="col">F</th> <th scope="col">G</th> <th scope="col">H</th> <th scope="col">I</th> <th scope="col">J</th> </tr></thead><tbody>';
             }
-            table += "<tr>";
+            table += '<tr>';
             for (var j = 0; j < fieldSize; j++) {
                 if (j == 0) {
                     table += '<th scope="row">' + (i + 1) + '</th>';
