@@ -23,8 +23,8 @@ $(document).ready(function() {
 
     var currentModus = "placement";
 
-    var wsUri = "ws://127.0.0.1:6969";
-    //var wsUri = "ws://172.18.1.113:6966";
+    //var wsUri = "ws://127.0.0.1:6969";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -108,7 +108,6 @@ $(document).ready(function() {
                 break;
 
             default:
-
                 break;
         }
     }
@@ -118,14 +117,14 @@ $(document).ready(function() {
     function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
-                console.log("TEst Handler");
+
                 break;
 
             case 'place_ship':
 
                 break;
-            default:
 
+            default:
                 break;
         }
     }
@@ -172,16 +171,16 @@ $(document).ready(function() {
     }
 
     function bh_shoot(posX, posY) {
-        var position = { 
-            "x" : posX,
-            "y" : posY
+        var position = {
+            "x": posX,
+            "y": posY
         };
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
             "action": "game_action",
             "content": {
-                position : position,
-                'action' : 'shoot'
+                position: position,
+                'action': 'shoot'
             }
         }));
     }
@@ -282,6 +281,20 @@ $(document).ready(function() {
             console.log("[WIDTH] Can't place here!");
             return;
         }
+
+        var position = {
+            "x": x,
+            "y": y
+        };
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "game_action",
+            "content": {
+                'position': position,
+                'ship': id,
+                'action': 'place'
+            }
+        }));
     }
 
     function generateTable() {

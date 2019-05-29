@@ -12,7 +12,6 @@ class GameServer extends Server
     //Handlers
     private $roomsHandler;
     private $usersHandler;
-    private $battleshipHandler;
 
     protected function started()
     {

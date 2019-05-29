@@ -23,22 +23,13 @@ class Battleship implements iHandler
     public function action($messageObj, $user = null)
     {
         switch ($messageObj->content->action) {
-
             case 'shoot':
-<<<<<<< HEAD
                 return $this->build_packet('send_message_room', 'shoot', array('users' => $user->get_room()->get_players()));
             
             case 'place':
+                print_r($messageObj);
+                
                 return null;
-=======
-                $x = $messageObj->content->position->x;
-                $y = $messageObj->content->position->y;
-                $player = $user;
-                if ($this->check_hit($x, $y, $player)) {
-                    return $this->build_packet('send_message_room', 'shoot', array('users' => $user->get_room()->get_players(), 'Position X' => $x, 'Position Y' => $y));
-                }
-                break;
->>>>>>> 90fd5df0ad770e35567911c236dfbec5f17cf629
         }
     }
 
@@ -57,20 +48,7 @@ class Battleship implements iHandler
         $this->playerTwo = $player;
     }
 
-<<<<<<< HEAD
-    public function place_ship($x, $y, $ship, $user) 
-    {
-        if ($user == $playerOne) {
-            if ($playerOneField[xy] == "0") {
-                
-            }
-        }
-    }
-
-    public function check_ship_placement() 
-=======
     public function check_ship_placement()
->>>>>>> 90fd5df0ad770e35567911c236dfbec5f17cf629
     {
         print($this->playerOneField['11']);
     }
