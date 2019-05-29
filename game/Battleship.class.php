@@ -46,43 +46,32 @@ class Battleship implements iHandler
 
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
-
                 $temp = $this->playerTurn;
-
-                if($this->playerTurn == $this->playerOne)
+                if ($this->playerTurn == $this->playerOne) {
                     $other_player = $this->playerTwo;
-                else
+                } else {
                     $other_player = $this->playerOne;
+                }
 
                 $result = $this->check_hit($x, $y);
                 $this->playerTurn = $other_player;
 
-                $message = array(
-                    'x' => $x,
-                    'y' => $y,
-                );
-
-                // socket_write($temp, mask(json_encode()), strlen());
-
-                return null;
-
-                // return $this->build_packet('send_message_for_shoot', 'shoot', array(
-                //     array(
-                //         'user' => $temp,
-                //         'positionX' => $x,
-                //         'positionY' => $y,
-                //         'field' => 'right',
-                //         'result' => $result,
-                //     ),
-                //     array(
-                //         'user' => $other_player,
-                //         'positionX' => $x,
-                //         'positionY' => $y,
-                //         'field' => 'left',
-                //         'result' => $result,
-                //     ),
-                // ));
-
+                return $this->build_packet('send_message_for_shoot', 'shoot', array(
+                    array(
+                        'user' => $temp,
+                        'positionX' => $x,
+                        'positionY' => $y,
+                        'field' => 'right',
+                        'result' => $result,
+                    ),
+                    array(
+                        'user' => $other_player,
+                        'positionX' => $x,
+                        'positionY' => $y,
+                        'field' => 'left',
+                        'result' => $result,
+                    ),
+                ));
 
             case 'place':
                 print_r($messageObj);
