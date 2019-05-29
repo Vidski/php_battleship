@@ -55,7 +55,17 @@ class GameServer extends Server
 					$this->send_message($user, $action);
 				}
                 break;
-                
+            
+                //TODO user 2 fix
+            case 'send_message_for_shoot':
+                unset($action['function']);
+                $user1 = $action['content'][0]['user'];
+                $user2 = $action['content'][1]['user'];
+                unset($action['content'][0]['user']);
+                unset($action['content'][1]['user']);
+                $this->send_message($user1, $action['content'][0]);
+                $this->send_message($user2, $action['content'][1]);
+                break;
             default:
                 
                 break;

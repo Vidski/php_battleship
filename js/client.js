@@ -23,10 +23,9 @@ $(document).ready(function() {
 
     var currentModus = "placement";
 
-    //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6969";
+    //var wsUri = "ws://127.0.0.1:6966";
+    var wsUri = "ws://172.18.1.113:6966";
     var username = "";
-    var userid = null;
     websocket = new WebSocket(wsUri);
 
     websocket.onopen = function(ev) {
@@ -71,7 +70,6 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'set_username':
                 username = msgObject['content']['username'];
-                userid = msgObject['content']['userid'];
                 $('#login_box').fadeOut(function() {
                     $('#menu_box').fadeIn();
                 });
@@ -119,9 +117,9 @@ $(document).ready(function() {
     function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
-
-                if(msgObject['content']['ergebnis']){
-                    if(msgObject['content']['userid'] == userid){
+                console.log(msgObject['action']);
+                if(msgObject['content']['result']){
+                    if(msgObject['content']['field'] == 'right'){
                         $($('#field_right td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');
                     } else{
                         $($('#field_left td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');

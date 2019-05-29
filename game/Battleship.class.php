@@ -32,12 +32,31 @@ class Battleship implements iHandler
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
 
-                return $this->build_packet('send_message_room', 'shoot', array(
-                    'users' => $user->get_room()->get_players(),
-                    'positionX' => $x,
-                    'positionY' => $y,
-                    'userid' => $this->playerTurn->get_id(),
-                    'ergebnis' => $this->check_hit($x, $y)
+                $temp = $this->playerTurn;
+
+                if($this->playerTurn == $this->playerOne)
+                    $other_player = $this->playerOne;
+                else
+                    $other_player = $this->playerTwo;
+
+                $result = $this->check_hit($x, $y);
+                $this->playerTurn = $other_player;
+                
+                return $this->build_packet('send_message_for_shoot', 'shoot',array(
+                    array(
+                        'user' => $temp,
+                        'positionX' => $x,
+                        'positionY' => $y,
+                        'field' => 'right',
+                        'result' => $result
+                    ),
+                    array(
+                        'user' => $other_player,
+                        'positionX' => $x,
+                        'positionY' => $y,
+                        'field' => 'left',
+                        'result' => $result
+                    )
                 ));
 
             case 'place':
@@ -74,7 +93,6 @@ class Battleship implements iHandler
     {
         switch ($this->playerTurn) {
             case $this->playerOne:
-                $this->playerTurn = $this->playerTwo;
                 if ($this->playerTwoField[$x . $y] == "0") {
                     $this->playerTwoField[$x . $y] = "3";
                     return false;
@@ -84,7 +102,6 @@ class Battleship implements iHandler
                 }
                 break;
             case $this->playerTwo:
-                $this->playerTurn = $this->playerOne;
                 if ($this->playerOneField[$x . $y] == "0") {
                     $this->playerOneField[$x . $y] = "3";
                     return false;
