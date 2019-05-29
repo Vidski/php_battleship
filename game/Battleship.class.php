@@ -2,14 +2,28 @@
 
 class Battleship implements iHandler
 {
+    private $shipLimit = array(2 => 4, 3 => 3, 4 => 2, 5 => 1);
+    private $shipSizes = array(
+        "ship2V"=> array(x => 1, y => 2),
+        "ship3V"=> array(x => 1, y => 3),
+        "ship4V"=> array(x => 1, y => 4),
+        "ship5V"=> array(x => 1, y => 5),
+        "ship2H"=> array(x => 2, y => 1),
+        "ship3H"=> array(x => 3, y => 1),
+        "ship4H"=> array(x => 4, y => 1),
+        "ship5H"=> array(x => 5, y => 1),
+    );
+
     private $playerTurn;
     private $lastMove;
 
     private $playerOne;
     private $playerOneField;
+    private $playerOneShips = array(2 => 0, 3 => 0, 4 => 0, 5 => 0);
 
     private $playerTwo;
     private $playerTwoField;
+    private $playerTwoShips = array(2 => 0, 3 => 0, 4 => 0, 5 => 0);
 
     public function __construct($playerOne, $playerTwo)
     {
@@ -28,7 +42,7 @@ class Battleship implements iHandler
             case 'shoot':
                 if ($this->playerTurn != $user)
                     return null;
-                    
+
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
 
@@ -45,7 +59,6 @@ class Battleship implements iHandler
 
             default:
                 return null;
-
         }
     }
 
@@ -64,18 +77,36 @@ class Battleship implements iHandler
         $this->playerTwo = $player;
     }
 
-    public function check_ship_placement()
+    public function check_ship_placement($x, $y, $ship)
     {
+        switch ($this->playerTurn) {
+
+            case $this->playerOne:
+                if ($this->playerOneField[$x . $y] == 0) {
+                    for ($y = 0; $y < 10; $y++) {
+                        for ($x = 0; $x < 10; $x++) {
+                            $this->playerOneField[$x . $y] = "1";
+                            $this->playerTwoField[$x . $y] = "1";
+                        }
+                    }
+                }
+            break;
+            
+            case $this->playerTwo:
+                
+            break;
+
+            default:
+                # code...
+                break;
+        }
         print($this->playerOneField['11']);
     }
 
     public function check_hit($x, $y)
     {
-
-        print($this->playerTurn->get_id());
-        print($this->playerOne->get_id());
-
         switch ($this->playerTurn) {
+
             case $this->playerOne:
                 $this->playerTurn = $this->playerTwo;
                 if ($this->playerTwoField[$x . $y] == "0") {
@@ -86,6 +117,7 @@ class Battleship implements iHandler
                     return true;
                 }
                 break;
+
             case $this->playerTwo:
                 $this->playerTurn = $this->playerOne;
                 if ($this->playerOneField[$x . $y] == "0") {
@@ -96,6 +128,9 @@ class Battleship implements iHandler
                     return true;
                 }
                 break;
+
+            default:
+                return null;
         }
     }
 
