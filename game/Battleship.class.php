@@ -62,7 +62,7 @@ class Battleship implements iHandler
                     'y' => $y,
                 );
 
-                socket_write($temp, mask(json_encode()), strlen())
+                // socket_write($temp, mask(json_encode()), strlen());
 
                 return null;
 
