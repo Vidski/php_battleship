@@ -129,8 +129,8 @@ $(document).ready(function() {
                 }
                 break;
 
-            case 'place_ship':
-
+            case 'place':
+                console.log(msgObject['action']);
                 break;
 
             default:
