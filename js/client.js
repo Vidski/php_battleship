@@ -22,9 +22,9 @@ $(document).ready(function() {
     var ship5H = { height: 1, width: 5 };
 
     var currentModus = "placement";
-
-    //var wsUri = "ws://127.0.0.1:6966";
-    var wsUri = "ws://172.18.1.113:6966";
+    
+    var wsUri = "ws://127.0.0.1:6969";
+    //var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -281,7 +281,7 @@ $(document).ready(function() {
         if (ship['height'] + y > 10 || ship['height'] + y < 0) {
             console.log("[HEIGHT] Can't place here!");
             return;
-        }
+        }c
 
         if (ship['width'] + x > 10) {
             console.log("[WIDTH] Can't place here!");

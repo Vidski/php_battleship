@@ -31,8 +31,8 @@ class Battleship implements iHandler
         $this->playerTwo = $playerTwo;
         $this->playerOneField = array();
         $this->playerTwoField = array();
-        $this->fill_field();
         $this->playerTurn = $playerOne;
+        $this->fill_field();
     }
 
     public function action($messageObj, $user = null)
@@ -40,38 +40,49 @@ class Battleship implements iHandler
         switch ($messageObj->content->action) {
 
             case 'shoot':
-                if ($this->playerTurn != $user)
+                if ($this->playerTurn != $user) {
                     return null;
+                }
 
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
 
                 $temp = $this->playerTurn;
 
-                if($this->playerTurn == $this->playerOne)
+                if ($this->playerTurn == $this->playerOne) {
                     $other_player = $this->playerOne;
-                else
+                } else {
                     $other_player = $this->playerTwo;
+                }
 
                 $result = $this->check_hit($x, $y);
                 $this->playerTurn = $other_player;
-                
-                return $this->build_packet('send_message_for_shoot', 'shoot',array(
-                    array(
-                        'user' => $temp,
-                        'positionX' => $x,
-                        'positionY' => $y,
-                        'field' => 'right',
-                        'result' => $result
-                    ),
-                    array(
-                        'user' => $other_player,
-                        'positionX' => $x,
-                        'positionY' => $y,
-                        'field' => 'left',
-                        'result' => $result
-                    )
-                ));
+
+                $message = array(
+                    'x' => $x,
+                    'y' => $y,
+                );
+
+                socket_write($temp, mask(json_encode()), strlen())
+
+                return null;
+
+                // return $this->build_packet('send_message_for_shoot', 'shoot', array(
+                //     array(
+                //         'user' => $temp,
+                //         'positionX' => $x,
+                //         'positionY' => $y,
+                //         'field' => 'right',
+                //         'result' => $result,
+                //     ),
+                //     array(
+                //         'user' => $other_player,
+                //         'positionX' => $x,
+                //         'positionY' => $y,
+                //         'field' => 'left',
+                //         'result' => $result,
+                //     ),
+                // ));
 
             case 'place':
                 print_r($messageObj);
