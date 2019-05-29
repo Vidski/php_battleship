@@ -50,6 +50,7 @@ class Battleship implements iHandler
                     'users' => $user->get_room()->get_players(),
                     'positionX' => $x,
                     'positionY' => $y,
+                    'userid' => $this->playerTurn->get_id(),
                     'ergebnis' => $this->check_hit($x, $y)
                 ));
 
