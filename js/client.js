@@ -23,8 +23,8 @@ $(document).ready(function() {
 
     var currentModus = "placement";
 
-    //var wsUri = "ws://127.0.0.1:6966";
-    var wsUri = "ws://172.18.1.113:6966";
+    //var wsUri = "ws://127.0.0.1:6969";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     var userid = null;
     websocket = new WebSocket(wsUri);
@@ -102,15 +102,14 @@ $(document).ready(function() {
                 generateTable();
                 $('#menu_box').fadeOut();
                 $('#battleship_game_box').fadeIn();
-                $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
+                $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + msgObject['content']['message'] + "</p>")
                 break;
 
             case 'send_message_room':
-                $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
+                $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + msgObject['content']['message'] + "</p>")
                 break;
-                
-            default:
 
+            default:
                 break;
         }
     }
@@ -120,24 +119,21 @@ $(document).ready(function() {
     function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
-                console.log(data);
-                console.log(msgObject['content']);
-                console.log(userid);
+
                 if(msgObject['content']['ergebnis']){
                     if(msgObject['content']['userid'] == userid){
                         $($('#field_right td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');
                     } else{
                         $($('#field_left td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');
                     }
-                   
                 }
                 break;
 
             case 'place_ship':
 
                 break;
-            default:
 
+            default:
                 break;
         }
     }
@@ -184,16 +180,16 @@ $(document).ready(function() {
     }
 
     function bh_shoot(posX, posY) {
-        var position = { 
-            "x" : posX,
-            "y" : posY
+        var position = {
+            "x": posX,
+            "y": posY
         };
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
             "action": "game_action",
             "content": {
-                position : position,
-                'action' : 'shoot'
+                position: position,
+                'action': 'shoot'
             }
         }));
     }
@@ -231,6 +227,11 @@ $(document).ready(function() {
 
     //FUNCTIONS
 
+    function getCurrentTime() {
+        var d = new Date();
+        return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2);
+    }
+
     function Drop(event, ui) {
         if (currentModus == "placement") {
             checkPlacement($(this).attr('data-col'), $(this).attr('data-row'), ui['draggable'][0]['id']);
@@ -238,22 +239,70 @@ $(document).ready(function() {
     }
 
     function checkPlacement(x, y, id) {
-        console.log(x + " " + y + " " + id);
-        console.log(ship2V);
-
+        console.log("X:" + x + " Y:" + y + " ID:" + id);
+        var ship = null;
         y = parseInt(y);
+        x = parseInt(x);
         switch (id) {
-            case "ship2":
-                var asd = ship2V['height'] + y;
-                console.log(ship2V['height'] + " + " + y + " = " + asd);
-                if (ship2V['height'] + y > 10) {
-                    console.log("Cant place here");
-                }
+            case "ship2V":
+                ship = ship2V;
+                break;
+
+            case "ship3V":
+                ship = ship3V;
+                break;
+
+            case "ship4V":
+                ship = ship4V;
+                break;
+
+            case "ship5V":
+                ship = ship5V;
+                break;
+
+            case "ship2H":
+                ship = ship2H;
+                break;
+
+            case "ship3H":
+                ship = ship3H;
+                break;
+
+            case "ship4H":
+                ship = ship4H;
+                break;
+
+            case "ship5H":
+                ship = ship5H;
                 break;
 
             default:
                 break;
         }
+
+        if (ship['height'] + y > 10 || ship['height'] + y < 0) {
+            console.log("[HEIGHT] Can't place here!");
+            return;
+        }
+
+        if (ship['width'] + x > 10) {
+            console.log("[WIDTH] Can't place here!");
+            return;
+        }
+
+        var position = {
+            "x": x,
+            "y": y
+        };
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "game_action",
+            "content": {
+                'position': position,
+                'ship': id,
+                'action': 'place'
+            }
+        }));
     }
 
     function generateTable() {
@@ -275,10 +324,14 @@ $(document).ready(function() {
         }
         table += '</tbody>';
         $('table').html(table);
-        $('#ship2').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
-        $('#ship3').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
-        $('#ship4').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
-        $('#ship5').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship2V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship3V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship4V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship5V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship2H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship3H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship4H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
+        $('#ship5H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: 24, left: 24 } });
 
         $('td').droppable({
             tolerance: "pointer",

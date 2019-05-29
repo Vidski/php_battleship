@@ -26,21 +26,26 @@ class Battleship implements iHandler
         switch ($messageObj->content->action) {
 
             case 'shoot':
-                if($this->playerTurn != $user){
+                if ($this->playerTurn != $user)
                     return null;
-                }    
-            
+
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
-                
+
                 return $this->build_packet('send_message_room', 'shoot', array(
                     'users' => $user->get_room()->get_players(),
-                    'positionX' => $x, 
-                    'positionY' => $y, 
+                    'positionX' => $x,
+                    'positionY' => $y,
                     'userid' => $this->playerTurn->get_id(),
                     'ergebnis' => $this->check_hit($x, $y)
                 ));
-                break;
+
+            case 'place':
+                print_r($messageObj);
+                return null;
+
+            default:
+                return null;
 
         }
     }
@@ -70,21 +75,21 @@ class Battleship implements iHandler
         switch ($this->playerTurn) {
             case $this->playerOne:
                 $this->playerTurn = $this->playerTwo;
-                if ($this->playerTwoField[$x.$y] == "0") {
-                    $this->playerTwoField[$x.$y] = "3";
+                if ($this->playerTwoField[$x . $y] == "0") {
+                    $this->playerTwoField[$x . $y] = "3";
                     return false;
-                } else if ($this->playerTwoField[$x.$y] == "1") {
-                    $this->playerTwoField[$x.$y] = "2";
+                } else if ($this->playerTwoField[$x . $y] == "1") {
+                    $this->playerTwoField[$x . $y] = "2";
                     return true;
                 }
                 break;
             case $this->playerTwo:
                 $this->playerTurn = $this->playerOne;
-                if ($this->playerOneField[$x.$y] == "0") {
-                    $this->playerOneField[$x.$y] = "3";
+                if ($this->playerOneField[$x . $y] == "0") {
+                    $this->playerOneField[$x . $y] = "3";
                     return false;
-                } else if ($this->playerOneField[$x.$y] == "1") {
-                    $this->playerOneField[$x.$y] = "2";
+                } else if ($this->playerOneField[$x . $y] == "1") {
+                    $this->playerOneField[$x . $y] = "2";
                     return true;
                 }
                 break;
@@ -96,8 +101,8 @@ class Battleship implements iHandler
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {
 
-                $this->playerOneField[$x.$y] = "1";
-                $this->playerTwoField[$x.$y] = "1";
+                $this->playerOneField[$x . $y] = "1";
+                $this->playerTwoField[$x . $y] = "1";
             }
         }
     }
