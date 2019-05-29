@@ -106,7 +106,7 @@ $(document).ready(function() {
             case 'send_message_room':
                 $('#chat_box').append("<p>" + msgObject['content']['message'] + "</p>")
                 break;
-
+                
             default:
 
                 break;
@@ -118,7 +118,10 @@ $(document).ready(function() {
     function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
-                console.log("TEst Handler");
+                console.log(data);
+                console.log(msgObject['content']);
+                $($('td').attr('data-col', msgObject['content']['positionX'])).css('background-color', 'black');
+                //$('td').attr('data-row') = data[content][positionX];
                 break;
 
             case 'place_ship':
@@ -214,7 +217,6 @@ $(document).ready(function() {
     });
 
     $("table").on("click", "td", function() {
-        console.log($(this).data());
         bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
