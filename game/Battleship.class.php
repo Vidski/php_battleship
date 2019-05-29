@@ -49,11 +49,10 @@ class Battleship implements iHandler
 
                 $temp = $this->playerTurn;
 
-                if ($this->playerTurn == $this->playerOne) {
-                    $other_player = $this->playerOne;
-                } else {
+                if($this->playerTurn == $this->playerOne)
                     $other_player = $this->playerTwo;
-                }
+                else
+                    $other_player = $this->playerOne;
 
                 $result = $this->check_hit($x, $y);
                 $this->playerTurn = $other_player;
@@ -83,6 +82,7 @@ class Battleship implements iHandler
                 //         'result' => $result,
                 //     ),
                 // ));
+
 
             case 'place':
                 print_r($messageObj);
@@ -181,8 +181,8 @@ class Battleship implements iHandler
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {
 
-                $this->playerOneField[$x . $y] = "0";
-                $this->playerTwoField[$x . $y] = "0";
+                $this->playerOneField[$x . $y] = "1";
+                $this->playerTwoField[$x . $y] = "1";
             }
         }
     }

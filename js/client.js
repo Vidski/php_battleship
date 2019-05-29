@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
     var ships = {
         ship2: 0,
@@ -28,12 +28,12 @@ $(document).ready(function() {
     var username = "";
     websocket = new WebSocket(wsUri);
 
-    websocket.onopen = function(ev) {
+    websocket.onopen = function (ev) {
         loginBoxSuccess();
     }
 
     //Nachricht vom Server
-    websocket.onmessage = function(ev) {
+    websocket.onmessage = function (ev) {
         msgObject = JSON.parse(ev.data);
         console.log(msgObject);
 
@@ -55,13 +55,13 @@ $(document).ready(function() {
     };
 
     //Fehler
-    websocket.onerror = function(ev) {
+    websocket.onerror = function (ev) {
         loginBoxError();
         console.error("WebSocket error observed:", ev);
     };
 
     //Verbindung zum Server wurde getrennt
-    websocket.onclose = function(ev) {
+    websocket.onclose = function (ev) {
         $('#message_box').append('<span class="system">Verbindung vom Server getrennt</span><br>');
     };
 
@@ -70,7 +70,7 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'set_username':
                 username = msgObject['content']['username'];
-                $('#login_box').fadeOut(function() {
+                $('#login_box').fadeOut(function () {
                     $('#menu_box').fadeIn();
                 });
                 break;
@@ -85,7 +85,7 @@ $(document).ready(function() {
             case 'create_room':
                 $('#createRoomPin').val(msgObject['content']['pin']);
                 if (msgObject['content']['pin']) {
-                    $('#menu_box').fadeOut(function() {
+                    $('#menu_box').fadeOut(function () {
                         $('#battleship_game_box').fadeIn();
                     });
                     $('#chat_box').append("<p style='color: red'>Room PIN: " + msgObject['content']['pin'] + "</p>")
@@ -118,11 +118,11 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'shoot':
                 console.log(msgObject['action']);
-                if(msgObject['content']['result']){
-                    if(msgObject['content']['field'] == 'right'){
-                        $($('#field_right td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');
-                    } else{
-                        $($('#field_left td[data-col="'+ msgObject['content']['positionX'] +'"][data-row="'+ msgObject['content']['positionY'] +'"]')).css('background-color', 'black');
+                if (msgObject['content']['result']) {
+                    if (msgObject['content']['field'] == 'right') {
+                        $($('#field_right td[data-col="' + msgObject['content']['positionX'] + '"][data-row="' + msgObject['content']['positionY'] + '"]')).css('background-color', 'black');
+                    } else {
+                        $($('#field_left td[data-col="' + msgObject['content']['positionX'] + '"][data-row="' + msgObject['content']['positionY'] + '"]')).css('background-color', 'black');
                     }
                 }
                 break;
@@ -194,32 +194,32 @@ $(document).ready(function() {
 
     //Click events
 
-    $("#btn_inputUsername").click(function(event) {
+    $("#btn_inputUsername").click(function (event) {
         event.preventDefault();
         var name = $("#inputUsername").val();
         uh_set_username(name);
         $('#btn_inputUsername').prop("disabled", true);
     });
 
-    $("#btn_createRoom").click(function(event) {
+    $("#btn_createRoom").click(function (event) {
         event.preventDefault();
         rh_create_room();
         $('#btn_inputUsername').prop("disabled", true);
     });
 
-    $("#btn_joinRoom").click(function(event) {
+    $("#btn_joinRoom").click(function (event) {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_join_room(pin);
     });
 
-    $("#btn_sendMessage").click(function(event) {
+    $("#btn_sendMessage").click(function (event) {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_send_message();
     });
 
-    $("table").on("click", "td", function() {
+    $("table").on("click", "td", function () {
         bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
@@ -340,7 +340,7 @@ $(document).ready(function() {
     function loginBoxSuccess() {
         $('#login_box_connecting .spinner-grow').removeClass('text-warning');
         $('#login_box_connecting .spinner-grow').addClass('text-success');
-        $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
+        $('#login_box_connecting').fadeOut(2000, function () { $('#login_box_form').fadeIn(); });
     }
 
     function loginBoxError() {
