@@ -23,7 +23,6 @@ class Rooms implements iHandler
     {
         foreach ($this->rooms as $room) {
             if ($room->is_empty()) {
-                echo ("EMPTY");
                 unset($this->rooms->$room);
                 continue;
             }
@@ -49,7 +48,6 @@ class Rooms implements iHandler
                 if ($user->get_room()) {
                     return null;
                 }
-
                 $newRoom = $this->new_room($user);
                 $user->set_room($newRoom);
                 $user->get_room()->new_game(new Battleship($user, null));
@@ -85,7 +83,6 @@ class Rooms implements iHandler
 
             case 'send_message_room':
                 $room = $user->get_room();
-                print_r($messageObj);
                 $message = htmlspecialchars($messageObj->message);
                 if ($room) {
                     return $this->build_packet('send_message_room', 'send_message_room', array('message' => $user->get_username() . ': ' . $message, 'users' => $room->get_players()));

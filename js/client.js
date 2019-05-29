@@ -23,8 +23,8 @@ $(document).ready(function() {
 
     var currentModus = "placement";
 
-    //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6969";
+    var wsUri = "ws://127.0.0.1:6969";
+    //var wsUri = "ws://172.18.1.113:6966";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -46,6 +46,9 @@ $(document).ready(function() {
                 rooms_handler(msgObject);
                 break;
 
+            case 'battleship_handler':
+                battleship_handler(msgObject);
+                break;
             default:
                 break;
         }
@@ -111,10 +114,11 @@ $(document).ready(function() {
     }
 
 
-    function battlship_handler(data) {
+    //HIER KOMMT DAS REIN WAS GEÄNDERT WERDEN SOLL
+    function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
-                $('#createRoomPin').val(msgObject['content']['pin']);
+                console.log("TEst Handler");
                 break;
 
             case 'place_ship':
@@ -168,14 +172,17 @@ $(document).ready(function() {
     }
 
     function bh_shoot(posX, posY) {
-        var message = {
-            "x": posX,
-            "y": posY
+        var position = { 
+            "x" : posX,
+            "y" : posY
         };
         websocket.send(JSON.stringify({
-            "handler": "battleship_handler",
-            "action": "shoot",
-            "message": message
+            "handler": "rooms_handler",
+            "action": "game_action",
+            "content": {
+                position : position,
+                'action' : 'shoot'
+            }
         }));
     }
 
@@ -208,6 +215,7 @@ $(document).ready(function() {
 
     $("table").on("click", "td", function() {
         console.log($(this).data());
+        bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
     //FUNCTIONS

@@ -12,6 +12,7 @@ class GameServer extends Server
     //Handlers
     private $roomsHandler;
     private $usersHandler;
+    private $battleshipHandler;
 
     protected function started()
     {
@@ -33,7 +34,6 @@ class GameServer extends Server
             case 'users_handler':
                 $action = $this->usersHandler->action($messageObj, $user);
                 break;
-
             default:
                 return;
                 break;

@@ -7,7 +7,7 @@ class Users implements iHandler
     {
         switch ($messageObj->action) {
             case 'set_username':
-                $user->set_username($messageObj->username);
+                $user->set_username(ucfirst($messageObj->username));
                 return $this->build_packet('send_message', 'set_username', array('username' => $user->get_username()));
                 break;
         }
