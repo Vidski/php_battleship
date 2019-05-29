@@ -117,7 +117,12 @@ $(document).ready(function() {
     function battleship_handler(data) {
         switch (msgObject['action']) {
             case 'shoot':
+                console.log(data);
+                console.log(msgObject['content']);
+                if (msgObject['content']['ergebnis']) {
+                    $($('#field_right td[data-col="' + msgObject['content']['positionX'] + '"][data-row="' + msgObject['content']['positionY'] + '"]')).css('background-color', 'black');
 
+                }
                 break;
 
             case 'place_ship':
@@ -213,7 +218,6 @@ $(document).ready(function() {
     });
 
     $("table").on("click", "td", function() {
-        console.log($(this).data());
         bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
@@ -304,7 +308,7 @@ $(document).ready(function() {
             if (i == 0) {
                 table += '<thead><tr><th scope="col"></th> <th scope="col">A</th> <th scope="col">B</th> <th scope="col">C</th> <th scope="col">D</th> <th scope="col">E</th> <th scope="col">F</th> <th scope="col">G</th> <th scope="col">H</th> <th scope="col">I</th> <th scope="col">J</th> </tr></thead><tbody>';
             }
-            table += "<tr>";
+            table += '<tr>';
             for (var j = 0; j < fieldSize; j++) {
                 if (j == 0) {
                     table += '<th scope="row">' + (i + 1) + '</th>';

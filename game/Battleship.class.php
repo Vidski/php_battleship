@@ -18,18 +18,34 @@ class Battleship implements iHandler
         $this->playerOneField = array();
         $this->playerTwoField = array();
         $this->fill_field();
+        $this->playerTurn = $playerOne;
     }
 
     public function action($messageObj, $user = null)
     {
         switch ($messageObj->content->action) {
+
             case 'shoot':
-                return $this->build_packet('send_message_room', 'shoot', array('users' => $user->get_room()->get_players()));
-            
+                if ($this->playerTurn != $user)
+                    return null;
+                    
+                $x = $messageObj->content->position->x;
+                $y = $messageObj->content->position->y;
+
+                return $this->build_packet('send_message_room', 'shoot', array(
+                    'users' => $user->get_room()->get_players(),
+                    'positionX' => $x,
+                    'positionY' => $y,
+                    'ergebnis' => $this->check_hit($x, $y)
+                ));
+
             case 'place':
                 print_r($messageObj);
-                
                 return null;
+
+            default:
+                return null;
+
         }
     }
 
@@ -53,17 +69,43 @@ class Battleship implements iHandler
         print($this->playerOneField['11']);
     }
 
-    public function check_hit($x, $y, $player)
+    public function check_hit($x, $y)
     {
-        return true;
+
+        print($this->playerTurn->get_id());
+        print($this->playerOne->get_id());
+
+        switch ($this->playerTurn) {
+            case $this->playerOne:
+                $this->playerTurn = $this->playerTwo;
+                if ($this->playerTwoField[$x . $y] == "0") {
+                    $this->playerTwoField[$x . $y] = "3";
+                    return false;
+                } else if ($this->playerTwoField[$x . $y] == "1") {
+                    $this->playerTwoField[$x . $y] = "2";
+                    return true;
+                }
+                break;
+            case $this->playerTwo:
+                $this->playerTurn = $this->playerOne;
+                if ($this->playerOneField[$x . $y] == "0") {
+                    $this->playerOneField[$x . $y] = "3";
+                    return false;
+                } else if ($this->playerOneField[$x . $y] == "1") {
+                    $this->playerOneField[$x . $y] = "2";
+                    return true;
+                }
+                break;
+        }
     }
 
     public function fill_field()
     {
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {
-                $this->playerOneField[$x.$y] = "0";
-                $this->playerTwoField[$x.$y] = "0";
+
+                $this->playerOneField[$x . $y] = "1";
+                $this->playerTwoField[$x . $y] = "1";
             }
         }
     }

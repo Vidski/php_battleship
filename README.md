@@ -15,6 +15,14 @@
 - [X] Lobby/Raum
 
 
+**PLAYERFIELDS**
+
+0 Leer
+1 Schiff
+2 Getroffen
+3 verfehlt
+4 blockiert
+
 **GAMEINFOS:**
 
 Wir wollen in dem Projekt das Spiel „Schiffe versenken“ realisieren.
