@@ -14,7 +14,7 @@ class Battleship implements iHandler
     public function __construct($playerOne, $playerTwo)
     {
         $this->playerOne = $playerOne;
-        $this->playerTWo = $playerTwo;
+        $this->playerTwo = $playerTwo;
         $this->playerOneField = array();
         $this->playerTwoField = array();
         $this->fill_field();
@@ -24,6 +24,7 @@ class Battleship implements iHandler
     public function action($messageObj, $user = null)
     {
         switch ($messageObj->content->action) {
+
             case 'shoot':
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
@@ -67,20 +68,20 @@ class Battleship implements iHandler
 
         switch ($this->playerTurn) {
             case $this->playerOne:
-                if ($this->playerTwoField[$shootX][$shootY] == "0") {
-                    $this->playerTwoField[$shootX][$shootY] == "3";
+                if ($this->playerTwoField[$shootX.$shootY] == "0") {
+                    $this->playerTwoField[$shootX.$shootY] == "3";
                     return false;
-                } else if ($this->playerTwoField[$shootX][$shootY] == "1") {
-                    $this->playerTwoField[$shootX][$shootY] == "2";
+                } else if ($this->playerTwoField[$shootX.$shootY] == "1") {
+                    $this->playerTwoField[$shootX.$shootY] == "2";
                     return true;
                 }
                 break;
             case $this->playerTwo:
-                if ($this->playerOneField[$shootX][$shootY] == "0") {
-                    $this->playerOneField[$shootX][$shootY] == "3";
+                if ($this->playerOneField[$shootX.$shootY] == "0") {
+                    $this->playerOneField[$shootX.$shootY] == "3";
                     return false;
-                } else if ($this->playerOneField[$shootX][$shootY] == "1") {
-                    $this->playerOneField[$shootX][$shootY] == "2";
+                } else if ($this->playerOneField[$shootX.$shootY] == "1") {
+                    $this->playerOneField[$shootX.$shootY] == "2";
                     return true;
                 }
                 break;
@@ -91,8 +92,9 @@ class Battleship implements iHandler
     {
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {
-                $this->playerOneField[$x][$y] = "0";
-                $this->playerTwoField[$x][$y] = "0";
+
+                $this->playerOneField[$x.$y] = "0";
+                $this->playerTwoField[$x.$y] = "0";
             }
         }
     }
