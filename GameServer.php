@@ -55,36 +55,8 @@ class GameServer extends Server
 					$this->send_message($user, $action);
 				}
                 break;
-            
-                //TODO user 2 fix
-            case 'send_message_for_shoot':
-                unset($action['function']);
 
-                $user1 = $action['content'][0]['user'];
-                $user2 = $action['content'][1]['user'];
-
-                unset($action['content'][0]['user']);
-                unset($action['content'][1]['user']);
-
-                // Action wird als neuer Array für die beiden Spieler angelegt um im Client nicht [content][0] und [content][1] zu haben. 
-                // Somit gibt es für beide Nachrichten beim Client nur noch [content]
-                $action1 = array(
-                    'handler' => 'battleship_handler',
-                    'action' => $action['action'],
-                    'content' => $action['content'][0],
-                );
-
-                $action2 = array(
-                    'handler' => 'battleship_handler',
-                    'action' => $action['action'],
-                    'content' => $action['content'][1],
-                );
-
-                $this->send_message($user1, $action1);
-                $this->send_message($user2, $action2);
-                break;
             default:
-                
                 break;
         }
         //LOGGING

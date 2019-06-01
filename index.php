@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6" style="display:none;" id="field_right">
+            <div class="col-md-6" id="field_right">
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-sm">
