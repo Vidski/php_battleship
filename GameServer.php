@@ -33,34 +33,57 @@ class GameServer extends Server
             case 'users_handler':
                 $action = $this->usersHandler->action($messageObj, $user);
                 break;
+
             default:
                 return;
                 break;
         }
 
-        if (!$action)
+        if (!$action) {
             return;
-            
+        }
+
+
+        //LOGGING
+        print_r($action);
+
         switch ($action['function']) {
+            // $this->build_packet('send_message', 'test', array('message' => 'Hello World'));
             case 'send_message':
                 unset($action['function']);
                 $this->send_message($user, $action);
                 break;
 
-			case 'send_message_room':
+            // $this->build_packet('send_message_room', 'test', array('message' => $message, 'users' => array($user, $user2, $user3)));
+            case 'send_message_room':
                 unset($action['function']);
-				$users = $action['content']['users'];
-				unset($action['content']['users']);
-				foreach ($users as $user) {
-					$this->send_message($user, $action);
-				}
+                $users = $action['content']['users'];
+                unset($action['content']['users']);
+                foreach ($users as $user) {
+                    $this->send_message($user, $action);
+                }
+                break;
+
+            // $this->build_packet('send_messages', 'test', array('users' => array($user1, $user2), 'message' => array($user1Msg, $user2Msg)));
+            case 'send_messages':
+                unset($action['function']);
+                $users = $action['content']['users'];
+                unset($action['content']['users']);
+                $messages = $action['content']['message'];
+                unset($action['content']['message']);
+                
+                $i = 0;
+                foreach ($users as $user) {
+                    $action['content'] = $messages[$i];
+                    $this->send_message($user, $action);
+                    $i++;
+                }
                 break;
 
             default:
                 break;
         }
-        //LOGGING
-        print_r($action);
+
     }
 
     protected function connected($user)

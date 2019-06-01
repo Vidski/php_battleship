@@ -51,7 +51,11 @@ class Rooms implements iHandler
                 $newRoom = $this->new_room($user);
                 $user->set_room($newRoom);
                 $user->get_room()->new_game(new Battleship($user, null));
-                return $this->build_packet('send_message', 'create_room', array('pin' => $newRoom->get_pin()));
+                return $this->build_packet('send_message', 'create_room',
+                    array(
+                        'pin' => $newRoom->get_pin(),
+                    )
+                );
 
             case 'join_room':
                 $room = $this->get_room($messageObj->pin);
@@ -91,6 +95,16 @@ class Rooms implements iHandler
 
             default:
                 return null;
+        }
+    }
+
+    public function on_user_disconnect($user)
+    {
+        if ($room = $user->get_room()) {
+            if ($room->leave_room($user)) {
+                return $this->build_packet('send_message_room', 'leave_room', array('message' => $user->get_username() . ' left the room.', 'users' => $room->get_players()));
+            }
+            return null;
         }
     }
 

@@ -53,24 +53,19 @@ class Battleship implements iHandler
                     $other_player = $this->playerOne;
                 }
 
+                //TODO FALLS SPIELER GETROFFEN HAT DARF ER NOCHMAL!
                 $result = $this->check_hit($x, $y);
                 $this->playerTurn = $other_player;
 
-                //TODO FUNKTIONIERT, GEFÄLLT MIR ABER NICHT
-                $pOne = $this->build_packet('send_message_for_shoot', 'shoot', array(
+                $pOne = array(
                     'x' => $x,
                     'y' => $y,
                     'field' => 'right',
                     'hit' => $result,
-                ));
+                );
                 $pTwo = $pOne;
-                $pTwo['content']['field'] = 'left';
-                $pOne = mask(json_encode($pOne));
-                $pTwo = mask(json_encode($pTwo));
-                socket_write($temp->get_socket(), $pOne, strlen($pOne));
-                socket_write($other_player->get_socket(), $pTwo, strlen($pTwo));
-                //###########################################
-                return null;
+                $pTwo['field'] = 'left';
+                return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
 
             case 'place':
                 print_r($messageObj);
