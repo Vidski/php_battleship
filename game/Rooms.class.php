@@ -51,11 +51,7 @@ class Rooms implements iHandler
                 $newRoom = $this->new_room($user);
                 $user->set_room($newRoom);
                 $user->get_room()->new_game(new Battleship($user, null));
-                return $this->build_packet('send_message', 'create_room',
-                    array(
-                        'pin' => $newRoom->get_pin(),
-                    )
-                );
+                return $this->build_packet('send_message', 'create_room', array('pin' => $newRoom->get_pin()));
 
             case 'join_room':
                 $room = $this->get_room($messageObj->pin);

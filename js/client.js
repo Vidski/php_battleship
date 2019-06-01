@@ -219,7 +219,7 @@ $(document).ready(function () {
         rh_send_message();
     });
 
-    $("table").on("click", "td", function () {
+    $("#field_right table").on("click", "td", function () {
         bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
@@ -281,7 +281,7 @@ $(document).ready(function () {
         if (ship['height'] + y > 10 || ship['height'] + y < 0) {
             console.log("[HEIGHT] Can't place here!");
             return;
-        }c
+        }
 
         if (ship['width'] + x > 10) {
             console.log("[WIDTH] Can't place here!");

@@ -4,14 +4,14 @@ class Battleship implements iHandler
 {
     private $shipLimit = array(2 => 4, 3 => 3, 4 => 2, 5 => 1);
     private $shipSizes = array(
-        "ship2V" => array(x => 1, y => 2),
-        "ship3V" => array(x => 1, y => 3),
-        "ship4V" => array(x => 1, y => 4),
-        "ship5V" => array(x => 1, y => 5),
-        "ship2H" => array(x => 2, y => 1),
-        "ship3H" => array(x => 3, y => 1),
-        "ship4H" => array(x => 4, y => 1),
-        "ship5H" => array(x => 5, y => 1),
+        "ship2V" => array('x' => 1, 'y' => 2),
+        "ship3V" => array('x' => 1, 'y' => 3),
+        "ship4V" => array('x' => 1, 'y' => 4),
+        "ship5V" => array('x' => 1, 'y' => 5),
+        "ship2H" => array('x' => 2, 'y' => 1),
+        "ship3H" => array('x' => 3, 'y' => 1),
+        "ship4H" => array('x' => 4, 'y' => 1),
+        "ship5H" => array('x' => 5, 'y' => 1),
     );
 
     private $playerTurn;
@@ -46,6 +46,7 @@ class Battleship implements iHandler
 
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
+
                 $temp = $this->playerTurn;
                 if ($this->playerTurn == $this->playerOne) {
                     $other_player = $this->playerTwo;
@@ -53,9 +54,10 @@ class Battleship implements iHandler
                     $other_player = $this->playerOne;
                 }
 
-                //TODO FALLS SPIELER GETROFFEN HAT DARF ER NOCHMAL!
                 $result = $this->check_hit($x, $y);
-                $this->playerTurn = $other_player;
+                if (!$result) {
+                    $this->playerTurn = $other_player;
+                }
 
                 $pOne = array(
                     'x' => $x,
@@ -65,15 +67,14 @@ class Battleship implements iHandler
                 );
                 $pTwo = $pOne;
                 $pTwo['field'] = 'left';
+
                 return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
 
             case 'place':
-                print_r($messageObj);
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
                 $ship = $messageObj->content->ship;
-                $this->check_ship_placement($x, $y, $ship);
-                return null;
+                return $this->check_ship_placement($x, $y, $ship);
 
             default:
                 return null;
@@ -97,20 +98,35 @@ class Battleship implements iHandler
 
     public function check_ship_placement($posX, $posY, $ship)
     {
-        //echo($ship . " " . $this->playerOneShips[substr($ship, 0, -1)]);
         switch ($this->playerTurn) {
 
+            //TODO VERSCHÖNERN, ZU VIEL CODE (AUSLAGERN), FÜR PLAYERTWO EINBAUEN
             case $this->playerOne:
                 if ($this->playerOneField[$posX . $posY] == 0) {
                     for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
                         for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
+                            if ($x < 0 || $y < 0 || $x > 10 || $y > 10) {
+                                continue;
+                            }
+
                             if ($this->playerOneField[$x . $y] == "1") {
-                                echo ("CANT PLACE HERE!");
-                                return;
+                                return $this->build_packet('send_message', 'place', 'Cant place here');
                             }
                         }
                     }
+                } else {
+                    return $this->build_packet('send_message', 'place', 'Cant place here');
                 }
+                //BLOCKIEREN
+                for ($y = $posY - 1; $y <= $posY + $this->shipSizes[$ship]['y']; $y++) {
+                    for ($x = $posX - 1; $x <= $posX + $this->shipSizes[$ship]['x']; $x++) {
+                        if ($x < 0 || $y < 0 || $x > 10 || $y > 10) {
+                            continue;
+                        }
+                        $this->playerOneField[$x . $y] = "4";
+                    }
+                }
+                //SCHIFF PLATZIEREN
                 $ary = array();
                 for ($y = $posY; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
                     for ($x = $posX; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
@@ -118,6 +134,16 @@ class Battleship implements iHandler
                         array_push($ary, $x . $y);
                     }
                 }
+                //DEBUGGING
+                // $st = "";
+                // for ($y = 0; $y < 10; $y++) {
+                //     for ($x = 0; $x < 10; $x++) {
+                //         $st .= $this->playerOneField[$x . $y] . " ";
+                //     }
+                //     $st .= "\n";
+                // }
+                // print($st);
+                //##########
                 return $this->build_packet('send_message', 'place', $ary);
 
             case $this->playerTwo:
@@ -155,7 +181,7 @@ class Battleship implements iHandler
                 break;
 
             default:
-                return null;
+                return false;
         }
     }
 
@@ -163,9 +189,8 @@ class Battleship implements iHandler
     {
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {
-
-                $this->playerOneField[$x . $y] = "1";
-                $this->playerTwoField[$x . $y] = "1";
+                $this->playerOneField[$x . $y] = "0";
+                $this->playerTwoField[$x . $y] = "0";
             }
         }
     }
