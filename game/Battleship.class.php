@@ -56,6 +56,7 @@ class Battleship implements iHandler
                 $result = $this->check_hit($x, $y);
                 $this->playerTurn = $other_player;
 
+                //TODO FUNKTIONIERT, GEFÄLLT MIR ABER NICHT
                 $pOne = $this->build_packet('send_message_for_shoot', 'shoot', array(
                     'x' => $x,
                     'y' => $y,
@@ -68,6 +69,7 @@ class Battleship implements iHandler
                 $pTwo = mask(json_encode($pTwo));
                 socket_write($temp->get_socket(), $pOne, strlen($pOne));
                 socket_write($other_player->get_socket(), $pTwo, strlen($pTwo));
+                //###########################################
                 return null;
 
             case 'place':
