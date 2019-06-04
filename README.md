@@ -10,11 +10,6 @@
 
 **SERVER**->on_message_received->**GAME**->handler_action->**HANDLER**->action **RETURN** JSON
 
-**TODO:**
-
-- [X] Lobby/Raum
-
-
 **PLAYERFIELDS**
 
 0 Leer
