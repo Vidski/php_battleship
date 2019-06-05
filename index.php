@@ -3,6 +3,7 @@
 
 <head>
     <meta charset='UTF-8' />
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -19,14 +20,14 @@
             <div class="col-md-6" id="ships">
                 <div class="card">
                     <div class="card-body">
-                        <div id="ship2V" class="ship ship2V">2</div>
-                        <div id="ship3V" class="ship ship3V">3</div>
-                        <div id="ship4V" class="ship ship4V">4</div>
-                        <div id="ship5V" class="ship ship5V">5</div>
-                        <div id="ship2H" class="ship ship2H">2</div>
-                        <div id="ship3H" class="ship ship3H">3</div>
-                        <div id="ship4H" class="ship ship4H">4</div>
-                        <div id="ship5H" class="ship ship5H">5</div>
+                        <div id="ship2V" class="ship ship2V"></div>
+                        <div id="ship3V" class="ship ship3V"></div>
+                        <div id="ship4V" class="ship ship4V"></div>
+                        <div id="ship5V" class="ship ship5V"></div>
+                        <div id="ship2H" class="ship ship2H"></div>
+                        <div id="ship3H" class="ship ship3H"></div>
+                        <div id="ship4H" class="ship ship4H"></div>
+                        <div id="ship5H" class="ship ship5H"></div>
                     </div>
                 </div>
             </div>
