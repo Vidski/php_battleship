@@ -43,10 +43,6 @@ class GameServer extends Server
             return;
         }
 
-
-        //LOGGING
-        print_r($action);
-
         switch ($action['function']) {
             // $this->build_packet('send_message', 'test', array('message' => 'Hello World'));
             case 'send_message':
@@ -84,6 +80,8 @@ class GameServer extends Server
                 break;
         }
 
+        //LOGGING
+        print_r($action);
     }
 
     protected function connected($user)

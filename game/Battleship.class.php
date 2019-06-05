@@ -56,12 +56,13 @@ class Battleship implements iHandler
 
                 $result = $this->check_hit($x, $y);
 
-                if($result == null) return null;
+                if (is_null($result))
+                    return null;
 
                 if (!$result) {
                     $this->playerTurn = $other_player;
                 }
-                
+
                 $pOne = array(
                     'x' => $x,
                     'y' => $y,
@@ -84,7 +85,7 @@ class Battleship implements iHandler
                         $data = $this->check_ship_placement($x, $y, $ship, $this->playerOneField);
                         break;
 
-        
+
                     case $this->playerTwo:
                         $data = $this->check_ship_placement($x, $y, $ship, $this->playerTwoField);
                         break;
@@ -112,7 +113,7 @@ class Battleship implements iHandler
     }
 
     public function check_ship_placement($posX, $posY, $ship, &$field)
-    {   
+    {
         if ($field[$posX . $posY] == 0) {
             for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
                 for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
@@ -120,7 +121,7 @@ class Battleship implements iHandler
                         continue;
                     }
                     print($field[$x . $y]);
-                    if ($field[$x . $y] == "1") {
+                    if ($field[$x . $y] == 1) {
                         return $this->build_packet('send_message', 'place', 'Cant place here');
                     }
                 }
@@ -136,7 +137,7 @@ class Battleship implements iHandler
                 if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
                     continue;
                 }
-                $field[$x . $y] = "4";
+                $field[$x . $y] = 4;
                 array_push($blocked, $x . $y);
             }
         }
@@ -145,7 +146,7 @@ class Battleship implements iHandler
         $placed = array();
         for ($y = $posY; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
             for ($x = $posX; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
-                $field[$x . $y] = "1";
+                $field[$x . $y] = 1;
                 array_push($placed, $x . $y);
             }
         }
@@ -167,30 +168,24 @@ class Battleship implements iHandler
         switch ($this->playerTurn) {
 
             case $this->playerOne:
-                if ($this->playerTwoField[$x . $y] != "0" && $this->playerTwoField[$x . $y] != "1")
-                    return null;
-
-                if ($this->playerTwoField[$x . $y] == "0") {
-                    $this->playerTwoField[$x . $y] = "3";
+                if ($this->playerTwoField[$x . $y] == 0 || $this->playerTwoField[$x . $y] == 4) {
+                    $this->playerTwoField[$x . $y] = 3;
                     return false;
-                } else if ($this->playerTwoField[$x . $y] == "1") {
-                    $this->playerTwoField[$x . $y] = "2";
+                } else if ($this->playerTwoField[$x . $y] == 1) {
+                    $this->playerTwoField[$x . $y] = 2;
                     return true;
                 }
-                break;
+                return null;
 
             case $this->playerTwo:
-
-                if ($this->playerOneField[$x . $y] != "0" && $this->playerOneField[$x . $y] != "1")
-                    return null;
-                if ($this->playerOneField[$x . $y] == "0") {
-                    $this->playerOneField[$x . $y] = "3";
+                if ($this->playerOneField[$x . $y] == 0 || $this->playerOneField[$x . $y] == 4) {
+                    $this->playerOneField[$x . $y] = 3;
                     return false;
-                } else if ($this->playerOneField[$x . $y] == "1") {
-                    $this->playerOneField[$x . $y] = "2";
+                } else if ($this->playerOneField[$x . $y] == 1) {
+                    $this->playerOneField[$x . $y] = 2;
                     return true;
                 }
-                break;
+                return null;
 
             default:
                 return false;
@@ -201,8 +196,8 @@ class Battleship implements iHandler
     {
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {
-                $this->playerOneField[$x . $y] = "0";
-                $this->playerTwoField[$x . $y] = "0";
+                $this->playerOneField[$x . $y] = 0;
+                $this->playerTwoField[$x . $y] = 0;
             }
         }
     }
