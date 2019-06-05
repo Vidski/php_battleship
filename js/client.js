@@ -25,7 +25,7 @@ $(document).ready(function() {
     var owner = false;
 
     //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6966";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -93,7 +93,7 @@ $(document).ready(function() {
                 }
                 generateTable();
                 owner = true;
-                $('#field_right .card').css('border', '2px solid blue');
+                $('#field_right .card').addClass('myturn');
                 break;
 
             case 'join_room':
@@ -105,7 +105,7 @@ $(document).ready(function() {
                 $('#battleship_game_box').fadeIn();
                 $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + msgObject['content']['message'] + "</p>")
                 if (!owner)
-                    $('#field_left .card').css('border', '2px solid blue');
+                    $('#field_right .card').addClass('notmyturn');
                 break;
 
             case 'send_message_room':
@@ -124,16 +124,17 @@ $(document).ready(function() {
             case 'shoot':
                 console.log(msgObject['action']);
                 if (msgObject['content']['myturn'] == true) {
-                    $('#field_left .card').css('border', '1px solid rgba(0,0,0,.125)');
-                    $('#field_right .card').css('border', '2px solid blue');
+                    $('#field_right .card').removeClass('notmyturn');
+                    $('#field_right .card').addClass('myturn');
                 } else {
-                    $('#field_right .card').css('border', '1px solid rgba(0,0,0,.125)');
-                    $('#field_left .card').css('border', '2px solid blue');
+                    $('#field_right .card').removeClass('myturn');
+                    $('#field_right .card').addClass('notmyturn');
                 }
                 if (msgObject['content']['hit'] == 1) {
-                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
+                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').addClass('hit');
                 } else {
-                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'yellow');
+                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').addClass('missed');
+                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').removeClass('ui-droppable');
                 }
                 break;
 
@@ -141,7 +142,7 @@ $(document).ready(function() {
                 console.log(msgObject['action']);
                 if (msgObject['content']['placed']) {
                     for (let index = 0; index < msgObject['content']['blocked'].length; index++) {
-                        $('#field_left td[data-col="' + msgObject['content']['blocked'][index][0] + '"][data-row="' + msgObject['content']['blocked'][index][1] + '"]').css('background-color', 'grey');
+                        $('#field_left td[data-col="' + msgObject['content']['blocked'][index][0] + '"][data-row="' + msgObject['content']['blocked'][index][1] + '"]').css('background-color', '#b3b3b3');
                     }
                     for (let index = 0; index < msgObject['content']['placed'].length; index++) {
                         $('#field_left td[data-col="' + msgObject['content']['placed'][index][0] + '"][data-row="' + msgObject['content']['placed'][index][1] + '"]').css('background-color', 'red');
