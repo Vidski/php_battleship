@@ -166,6 +166,9 @@ class Battleship implements iHandler
                 array_push($placed, $x . $y);
             }
         }
+
+        
+        //$this->playerOneShips[substr($ship, 0, -1)]++;
         //DEBUGGING
         // $st = "";
         // for ($y = 0; $y < 10; $y++) {
@@ -175,7 +178,6 @@ class Battleship implements iHandler
         //     $st .= "\n";
         // }
         // print($st);
-
         return $this->build_packet('send_message', 'place', array('placed' => $placed, 'blocked' => $blocked));
     }
 

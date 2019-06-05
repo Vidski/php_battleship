@@ -67,6 +67,7 @@ th {
     background-image: url("../assets/dot.png");
     background-position: center;
     background-repeat: no-repeat;
+    pointer-events: none;
 }
 
 .hit {
