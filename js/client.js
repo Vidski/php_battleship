@@ -25,7 +25,7 @@ $(document).ready(function() {
     var owner = false;
 
     //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6969";
+    var wsUri = "ws://172.18.1.113:6966";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -131,17 +131,9 @@ $(document).ready(function() {
                     $('#field_left .card').css('border', '2px solid blue');
                 }
                 if (msgObject['content']['hit'] == 1) {
-                    if (msgObject['content']['field'] == 'right') {
-                        $('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
-                    } else {
-                        $('#field_left td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
-                    }
+                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
                 } else {
-                    if (msgObject['content']['field'] == 'right') {
-                        $('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'yellow');
-                    } else {
-                        $('#field_left td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'yellow');
-                    }
+                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'yellow');
                 }
                 break;
 
