@@ -146,7 +146,7 @@ $(document).ready(function () {
 
                     $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').addClass('missed');
                     $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').removeClass('ui-droppable');
-                
+
                 }
                 break;
 
@@ -154,7 +154,7 @@ $(document).ready(function () {
                 console.log(msgObject['action']);
                 if (msgObject['content']['placed']) {
                     for (let index = 0; index < msgObject['content']['blocked'].length; index++) {
-                        $('#field_left td[data-col="' + msgObject['content']['blocked'][index][0] + '"][data-row="' + msgObject['content']['blocked'][index][1] + '"]').css('background-color', '#b3b3b3');
+                        $('#field_left td[data-col="' + msgObject['content']['blocked'][index][0] + '"][data-row="' + msgObject['content']['blocked'][index][1] + '"]').addClass('blocked');
                     }
                     for (let index = 0; index < msgObject['content']['placed'].length; index++) {
                         $('#field_left td[data-col="' + msgObject['content']['placed'][index][0] + '"][data-row="' + msgObject['content']['placed'][index][1] + '"]').css('background-color', 'red');
@@ -223,6 +223,9 @@ $(document).ready(function () {
         }));
     }
 
+
+
+
     //Click events
 
     $("#btn_inputUsername").click(function (event) {
@@ -250,11 +253,33 @@ $(document).ready(function () {
         rh_send_message();
     });
 
+    $("#btn_ready").click(function (e) { 
+        e.preventDefault();
+        ready();
+        
+    });
+
     $("#field_right table").on("click", "td", function () {
         bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
+
+
     //FUNCTIONS
+
+    function ready() {
+        var table = document.getElementById("left");
+        for (var i = 0, row; row = table.rows[i]; i++) {
+            for (var j = 0, col; col = row.cells[j]; j++) {
+                console.log(col);
+                $(col).removeClass('blocked')
+            }
+        }
+        $('#btn_ready').hide();
+        $('#ships').hide();
+        $('#field_right').show();
+
+    }
 
     function getCurrentTime() {
         var d = new Date();

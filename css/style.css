@@ -27,6 +27,9 @@
     border-color: red;
 }
 
+#field_right {
+    display: none;
+}
 
 /* BATTLEFIELD */
 
@@ -83,6 +86,10 @@ th {
     border: 1px solid rgba(0, 0, 255, 1);
     opacity: 1;
     pointer-events: unset;
+}
+
+.blocked {
+    background-color: #b3b3b3;
 }
 
 
