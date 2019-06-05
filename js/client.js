@@ -118,11 +118,17 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'shoot':
                 console.log(msgObject['action']);
-                if (msgObject['content']['hit']) {
+                if (msgObject['content']['hit'] == 1) {
                     if (msgObject['content']['field'] == 'right') {
                         $('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
                     } else {
                         $('#field_left td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
+                    }
+                } else {
+                    if (msgObject['content']['field'] == 'right') {
+                        $('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'yellow');
+                    } else {
+                        $('#field_left td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'yellow');
                     }
                 }
                 break;
