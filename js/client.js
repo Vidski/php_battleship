@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
     var ships = {
         ship2: 0,
@@ -22,18 +22,18 @@ $(document).ready(function () {
     var ship5H = { height: 1, width: 5 };
 
     var currentModus = "placement";
-    
-    var wsUri = "ws://127.0.0.1:6969";
-    //var wsUri = "ws://172.18.1.113:6969";
+
+    //var wsUri = "ws://127.0.0.1:6969";
+    var wsUri = "ws://172.18.1.113:6969";
     var username = "";
     websocket = new WebSocket(wsUri);
 
-    websocket.onopen = function (ev) {
+    websocket.onopen = function(ev) {
         loginBoxSuccess();
     }
 
     //Nachricht vom Server
-    websocket.onmessage = function (ev) {
+    websocket.onmessage = function(ev) {
         msgObject = JSON.parse(ev.data);
         console.log(msgObject);
 
@@ -55,13 +55,13 @@ $(document).ready(function () {
     };
 
     //Fehler
-    websocket.onerror = function (ev) {
+    websocket.onerror = function(ev) {
         loginBoxError();
         console.error("WebSocket error observed:", ev);
     };
 
     //Verbindung zum Server wurde getrennt
-    websocket.onclose = function (ev) {
+    websocket.onclose = function(ev) {
         $('#message_box').append('<span class="system">Verbindung vom Server getrennt</span><br>');
     };
 
@@ -70,7 +70,7 @@ $(document).ready(function () {
         switch (msgObject['action']) {
             case 'set_username':
                 username = msgObject['content']['username'];
-                $('#login_box').fadeOut(function () {
+                $('#login_box').fadeOut(function() {
                     $('#menu_box').fadeIn();
                 });
                 break;
@@ -85,7 +85,7 @@ $(document).ready(function () {
             case 'create_room':
                 $('#createRoomPin').val(msgObject['content']['pin']);
                 if (msgObject['content']['pin']) {
-                    $('#menu_box').fadeOut(function () {
+                    $('#menu_box').fadeOut(function() {
                         $('#battleship_game_box').fadeIn();
                     });
                     $('#chat_box').append("<p style='color: red'>Room PIN: " + msgObject['content']['pin'] + "</p>")
@@ -120,15 +120,23 @@ $(document).ready(function () {
                 console.log(msgObject['action']);
                 if (msgObject['content']['hit']) {
                     if (msgObject['content']['field'] == 'right') {
-                        $($('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]')).css('background-color', 'black');
+                        $('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
                     } else {
-                        $($('#field_left td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]')).css('background-color', 'black');
+                        $('#field_left td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');
                     }
                 }
                 break;
 
             case 'place':
                 console.log(msgObject['action']);
+                if (msgObject['content']['placed']) {
+                    for (let index = 0; index < msgObject['content']['blocked'].length; index++) {
+                        $('#field_left td[data-col="' + msgObject['content']['blocked'][index][0] + '"][data-row="' + msgObject['content']['blocked'][index][1] + '"]').css('background-color', 'grey');
+                    }
+                    for (let index = 0; index < msgObject['content']['placed'].length; index++) {
+                        $('#field_left td[data-col="' + msgObject['content']['placed'][index][0] + '"][data-row="' + msgObject['content']['placed'][index][1] + '"]').css('background-color', 'red');
+                    }
+                }
                 break;
 
             default:
@@ -194,32 +202,32 @@ $(document).ready(function () {
 
     //Click events
 
-    $("#btn_inputUsername").click(function (event) {
+    $("#btn_inputUsername").click(function(event) {
         event.preventDefault();
         var name = $("#inputUsername").val();
         uh_set_username(name);
         $('#btn_inputUsername').prop("disabled", true);
     });
 
-    $("#btn_createRoom").click(function (event) {
+    $("#btn_createRoom").click(function(event) {
         event.preventDefault();
         rh_create_room();
         $('#btn_inputUsername').prop("disabled", true);
     });
 
-    $("#btn_joinRoom").click(function (event) {
+    $("#btn_joinRoom").click(function(event) {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_join_room(pin);
     });
 
-    $("#btn_sendMessage").click(function (event) {
+    $("#btn_sendMessage").click(function(event) {
         event.preventDefault();
         var pin = $('#joinRoomPin').val()
         rh_send_message();
     });
 
-    $("#field_right table").on("click", "td", function () {
+    $("#field_right table").on("click", "td", function() {
         bh_shoot($(this).attr('data-col'), $(this).attr('data-row'));
     });
 
@@ -340,7 +348,7 @@ $(document).ready(function () {
     function loginBoxSuccess() {
         $('#login_box_connecting .spinner-grow').removeClass('text-warning');
         $('#login_box_connecting .spinner-grow').addClass('text-success');
-        $('#login_box_connecting').fadeOut(2000, function () { $('#login_box_form').fadeIn(); });
+        $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
     }
 
     function loginBoxError() {

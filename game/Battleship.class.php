@@ -74,7 +74,19 @@ class Battleship implements iHandler
                 $x = $messageObj->content->position->x;
                 $y = $messageObj->content->position->y;
                 $ship = $messageObj->content->ship;
-                return $this->check_ship_placement($x, $y, $ship);
+                $data = null;
+                switch ($user) {
+
+                    case $this->playerOne:
+                        $data = $this->check_ship_placement($x, $y, $ship, $this->playerOneField);
+                        break;
+
+        
+                    case $this->playerTwo:
+                        $data = $this->check_ship_placement($x, $y, $ship, $this->playerTwoField);
+                        break;
+                }
+                return $data;
 
             default:
                 return null;
@@ -96,64 +108,55 @@ class Battleship implements iHandler
         $this->playerTwo = $player;
     }
 
-    public function check_ship_placement($posX, $posY, $ship)
-    {
-        switch ($this->playerTurn) {
-
-            //TODO VERSCHÖNERN, ZU VIEL CODE (AUSLAGERN), FÜR PLAYERTWO EINBAUEN
-            case $this->playerOne:
-                if ($this->playerOneField[$posX . $posY] == 0) {
-                    for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
-                        for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
-                            if ($x < 0 || $y < 0 || $x > 10 || $y > 10) {
-                                continue;
-                            }
-
-                            if ($this->playerOneField[$x . $y] == "1") {
-                                return $this->build_packet('send_message', 'place', 'Cant place here');
-                            }
-                        }
+    public function check_ship_placement($posX, $posY, $ship, &$field)
+    {   
+        if ($field[$posX . $posY] == 0) {
+            for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
+                for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
+                    if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
+                        continue;
                     }
-                } else {
-                    return $this->build_packet('send_message', 'place', 'Cant place here');
-                }
-                //BLOCKIEREN
-                for ($y = $posY - 1; $y <= $posY + $this->shipSizes[$ship]['y']; $y++) {
-                    for ($x = $posX - 1; $x <= $posX + $this->shipSizes[$ship]['x']; $x++) {
-                        if ($x < 0 || $y < 0 || $x > 10 || $y > 10) {
-                            continue;
-                        }
-                        $this->playerOneField[$x . $y] = "4";
+                    print($field[$x . $y]);
+                    if ($field[$x . $y] == "1") {
+                        return $this->build_packet('send_message', 'place', 'Cant place here');
                     }
                 }
-                //SCHIFF PLATZIEREN
-                $ary = array();
-                for ($y = $posY; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
-                    for ($x = $posX; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
-                        $this->playerOneField[$x . $y] = "1";
-                        array_push($ary, $x . $y);
-                    }
-                }
-                //DEBUGGING
-                // $st = "";
-                // for ($y = 0; $y < 10; $y++) {
-                //     for ($x = 0; $x < 10; $x++) {
-                //         $st .= $this->playerOneField[$x . $y] . " ";
-                //     }
-                //     $st .= "\n";
-                // }
-                // print($st);
-                //##########
-                return $this->build_packet('send_message', 'place', $ary);
-
-            case $this->playerTwo:
-
-                break;
-
-            default:
-                # code...
-                break;
+            }
+        } else {
+            return $this->build_packet('send_message', 'place', 'Cant place here');
         }
+
+        //BLOCKIEREN
+        $blocked = array();
+        for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y'] + 1; $y++) {
+            for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
+                if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
+                    continue;
+                }
+                $field[$x . $y] = "4";
+                array_push($blocked, $x . $y);
+            }
+        }
+
+        //SCHIFF PLATZIEREN
+        $placed = array();
+        for ($y = $posY; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
+            for ($x = $posX; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
+                $field[$x . $y] = "1";
+                array_push($placed, $x . $y);
+            }
+        }
+        //DEBUGGING
+        // $st = "";
+        // for ($y = 0; $y < 10; $y++) {
+        //     for ($x = 0; $x < 10; $x++) {
+        //         $st .= $field[$x . $y] . " ";
+        //     }
+        //     $st .= "\n";
+        // }
+        // print($st);
+
+        return $this->build_packet('send_message', 'place', array('placed' => $placed, 'blocked' => $blocked));
     }
 
     public function check_hit($x, $y)
