@@ -55,10 +55,13 @@ class Battleship implements iHandler
                 }
 
                 $result = $this->check_hit($x, $y);
+
+                if($result == null) return null;
+
                 if (!$result) {
                     $this->playerTurn = $other_player;
                 }
-
+                
                 $pOne = array(
                     'x' => $x,
                     'y' => $y,
@@ -164,6 +167,9 @@ class Battleship implements iHandler
         switch ($this->playerTurn) {
 
             case $this->playerOne:
+                if ($this->playerTwoField[$x . $y] != "0" && $this->playerTwoField[$x . $y] != "1")
+                    return null;
+
                 if ($this->playerTwoField[$x . $y] == "0") {
                     $this->playerTwoField[$x . $y] = "3";
                     return false;
@@ -174,6 +180,9 @@ class Battleship implements iHandler
                 break;
 
             case $this->playerTwo:
+
+                if ($this->playerOneField[$x . $y] != "0" && $this->playerOneField[$x . $y] != "1")
+                    return null;
                 if ($this->playerOneField[$x . $y] == "0") {
                     $this->playerOneField[$x . $y] = "3";
                     return false;
