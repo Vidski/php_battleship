@@ -27,6 +27,9 @@
     border-color: red;
 }
 
+
+/* BATTLEFIELD */
+
 td,
 th {
     padding: 0!important;
@@ -50,20 +53,46 @@ th {
     border-bottom: 0;
 }
 
-#field_right .table td:hover {
-    background-color: #ff000082;
-    border: 1px solid;
-    border-radius: 25px;
+#field_right .table .ui-droppable:hover {
+    background-image: url("../assets/cross.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.missed {
+    background-color: rgba(255, 255, 0, 0.5)!important;
+    background-image: url("../assets/dot.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hit {
+    background-color: rgba(255, 0, 0, 0.5)!important;
+    background-image: url("../assets/cross.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.notmyturn {
+    border: 1px solid rgba(0, 0, 0, .125);
+    opacity: .5;
+    pointer-events: none;
+}
+
+.myturn {
+    border: 1px solid rgba(0, 0, 255, 1);
+    opacity: 1;
+    pointer-events: unset;
 }
 
 
 /* SHIPS */
 
 .ship {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
     float: left;
     z-index: 1000;
     margin: 5px;
