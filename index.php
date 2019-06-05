@@ -33,7 +33,7 @@
             <div class="col-md-6" id="field_left">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-sm"  id="left">
+                        <table class="table table-sm" id="left">
                         </table>
                     </div>
                 </div>
