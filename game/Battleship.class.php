@@ -54,7 +54,22 @@ class Battleship implements iHandler
                     $other_player = $this->playerOne;
                 }
 
-                $result = $this->check_hit($x, $y);
+                $targetField;
+                switch ($this->playerTurn) {
+
+                    case $this->playerOne:
+                        $targetField = $this->playerTwoField;
+                        break;
+
+                    case $this->playerTwo:
+                        $targetField = $this->playerOneField;
+                        break;
+
+                    default:
+                        return null;
+                }
+
+                $result = $this->check_hit($x, $y, $targetField);
 
                 if (is_null($result))
                     return null;
@@ -164,33 +179,16 @@ class Battleship implements iHandler
         return $this->build_packet('send_message', 'place', array('placed' => $placed, 'blocked' => $blocked));
     }
 
-    public function check_hit($x, $y)
+    public function check_hit($x, $y, &$field)
     {
-        switch ($this->playerTurn) {
-
-            case $this->playerOne:
-                if ($this->playerTwoField[$x . $y] == 0 || $this->playerTwoField[$x . $y] == 4) {
-                    $this->playerTwoField[$x . $y] = 3;
-                    return false;
-                } else if ($this->playerTwoField[$x . $y] == 1) {
-                    $this->playerTwoField[$x . $y] = 2;
-                    return true;
-                }
-                return null;
-
-            case $this->playerTwo:
-                if ($this->playerOneField[$x . $y] == 0 || $this->playerOneField[$x . $y] == 4) {
-                    $this->playerOneField[$x . $y] = 3;
-                    return false;
-                } else if ($this->playerOneField[$x . $y] == 1) {
-                    $this->playerOneField[$x . $y] = 2;
-                    return true;
-                }
-                return null;
-
-            default:
-                return false;
+        if ($field[$x . $y] == 0 || $field[$x . $y] == 4) {
+            $field[$x . $y] = 3;
+            return false;
+        } else if ($field[$x . $y] == 1) {
+            $field[$x . $y] = 2;
+            return true;
         }
+        return null;
     }
 
     public function fill_field()

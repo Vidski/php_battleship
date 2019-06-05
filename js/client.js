@@ -24,8 +24,8 @@ $(document).ready(function () {
     var currentModus = "placement";
     var owner = false;
 
-    //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6966";
+    var wsUri = "ws://127.0.0.1:6969";
+    //var wsUri = "ws://172.18.1.113:6966";
     var username = "";
     websocket = new WebSocket(wsUri);
 
@@ -120,19 +120,22 @@ $(document).ready(function () {
 
     //HIER KOMMT DAS REIN WAS GEÄNDERT WERDEN SOLL
     function battleship_handler(data) {
+        console.log(msgObject['action']);
         switch (msgObject['action']) {
             case 'shoot':
-                console.log(msgObject['action']);
                 if (msgObject['content']['myturn'] == true) {
                     $('#field_right .card').removeClass('notmyturn');
                     $('#field_right .card').addClass('myturn');
+                    $('#field_left .card').addClass('notmyturn');
                 } else {
                     $('#field_right .card').removeClass('myturn');
                     $('#field_right .card').addClass('notmyturn');
+                    $('#field_left .card').removeClass('notmyturn');
                 }
                 if (msgObject['content']['hit'] == 1) {
 
                     $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').addClass('hit');
+                    $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').removeClass('ui-droppable');
 
                     $x = parseInt(msgObject['content']['x']);
                     $y = parseInt(msgObject['content']['y'])
@@ -143,15 +146,12 @@ $(document).ready(function () {
                     $('#field_' + msgObject['content']['field'] + ' td[data-col="' + ($x + 1) + '"][data-row="' + ($y + 1) + '"]').addClass('missed');
 
                 } else {
-
                     $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').addClass('missed');
                     $('#field_' + msgObject['content']['field'] + ' td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').removeClass('ui-droppable');
-
                 }
                 break;
 
             case 'place':
-                console.log(msgObject['action']);
                 if (msgObject['content']['placed']) {
                     for (let index = 0; index < msgObject['content']['blocked'].length; index++) {
                         $('#field_left td[data-col="' + msgObject['content']['blocked'][index][0] + '"][data-row="' + msgObject['content']['blocked'][index][1] + '"]').addClass('blocked');

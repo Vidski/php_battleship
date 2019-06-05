@@ -90,60 +90,64 @@ th {
 
 .blocked {
     background-color: #b3b3b3;
+    pointer-events: none;
 }
 
 
 /* SHIPS */
 
 .ship {
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
     float: left;
     z-index: 1000;
     margin: 5px;
+    background-color: red;
+    background-image: url("../assets/grid.png");
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.ship_field {
     background-color: red;
 }
 
 .ship2V {
     width: 44px;
-    height: 96px;
+    height: 88px;
 }
 
 .ship3V {
     width: 44px;
-    height: 144px;
+    height: 132px;
 }
 
 .ship4V {
     width: 44px;
-    height: 192px;
+    height: 176px;
 }
 
 .ship5V {
     width: 44px;
-    height: 240px;
+    height: 220px;
 }
 
 .ship2H {
     height: 44px;
-    width: 96px;
+    width: 88px;
 }
 
 .ship3H {
     height: 44px;
-    width: 144px;
+    width: 132px;
 }
 
 .ship4H {
     height: 44px;
-    width: 192px;
+    width: 176px;
 }
 
 .ship5H {
     height: 44px;
-    width: 240px;
+    width: 220px;
 }
 
 .noselect {
