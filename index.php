@@ -20,14 +20,14 @@
             <div class="col-md-6" id="ships">
                 <div class="card">
                     <div class="card-body">
-                        <div id="ship2V" class="ship ship2V">2</div>
-                        <div id="ship3V" class="ship ship3V">3</div>
-                        <div id="ship4V" class="ship ship4V">4</div>
-                        <div id="ship5V" class="ship ship5V">5</div>
-                        <div id="ship2H" class="ship ship2H">2</div>
-                        <div id="ship3H" class="ship ship3H">3</div>
-                        <div id="ship4H" class="ship ship4H">4</div>
-                        <div id="ship5H" class="ship ship5H">5</div>
+                        <div id="ship2V" class="ship ship2V"></div>
+                        <div id="ship3V" class="ship ship3V"></div>
+                        <div id="ship4V" class="ship ship4V"></div>
+                        <div id="ship5V" class="ship ship5V"></div>
+                        <div id="ship2H" class="ship ship2H"></div>
+                        <div id="ship3H" class="ship ship3H"></div>
+                        <div id="ship4H" class="ship ship4H"></div>
+                        <div id="ship5H" class="ship ship5H"></div>
                     </div>
                 </div>
             </div>

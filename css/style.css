@@ -104,7 +104,6 @@ th {
     background-color: red;
     background-image: url("../assets/grid.png");
     background-repeat: repeat;
-    background-size: contain;
 }
 
 .ship_field {
