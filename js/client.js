@@ -23,8 +23,8 @@ $(document).ready(function () {
 
     var currentModus = "placement";
     
-    var wsUri = "ws://127.0.0.1:6969";
-    //var wsUri = "ws://172.18.1.113:6969";
+    //var wsUri = "ws://127.0.0.1:6966";
+    var wsUri = "ws://172.18.1.113:6966";
     var username = "";
     websocket = new WebSocket(wsUri);
 
