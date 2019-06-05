@@ -22,6 +22,7 @@ $(document).ready(function() {
     var ship5H = { height: 1, width: 5 };
 
     var currentModus = "placement";
+    var owner = false;
 
     //var wsUri = "ws://127.0.0.1:6969";
     var wsUri = "ws://172.18.1.113:6969";
@@ -91,6 +92,8 @@ $(document).ready(function() {
                     $('#chat_box').append("<p style='color: red'>Room PIN: " + msgObject['content']['pin'] + "</p>")
                 }
                 generateTable();
+                owner = true;
+                $('#field_right .card').css('border', '2px solid blue');
                 break;
 
             case 'join_room':
@@ -101,6 +104,8 @@ $(document).ready(function() {
                 $('#menu_box').fadeOut();
                 $('#battleship_game_box').fadeIn();
                 $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + msgObject['content']['message'] + "</p>")
+                if (!owner)
+                    $('#field_left .card').css('border', '2px solid blue');
                 break;
 
             case 'send_message_room':
@@ -118,6 +123,13 @@ $(document).ready(function() {
         switch (msgObject['action']) {
             case 'shoot':
                 console.log(msgObject['action']);
+                if (msgObject['content']['myturn'] == true) {
+                    $('#field_left .card').css('border', '1px solid rgba(0,0,0,.125)');
+                    $('#field_right .card').css('border', '2px solid blue');
+                } else {
+                    $('#field_right .card').css('border', '1px solid rgba(0,0,0,.125)');
+                    $('#field_left .card').css('border', '2px solid blue');
+                }
                 if (msgObject['content']['hit'] == 1) {
                     if (msgObject['content']['field'] == 'right') {
                         $('#field_right td[data-col="' + msgObject['content']['x'] + '"][data-row="' + msgObject['content']['y'] + '"]').css('background-color', 'black');

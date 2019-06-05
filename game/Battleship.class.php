@@ -68,9 +68,11 @@ class Battleship implements iHandler
                     'y' => $y,
                     'field' => 'right',
                     'hit' => $result,
+                    'myturn' => $user == $this->playerTurn
                 );
                 $pTwo = $pOne;
                 $pTwo['field'] = 'left';
+                $pTwo['myturn'] = $user != $this->playerTurn;
 
                 return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
 
@@ -120,7 +122,6 @@ class Battleship implements iHandler
                     if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
                         continue;
                     }
-                    print($field[$x . $y]);
                     if ($field[$x . $y] == 1) {
                         return $this->build_packet('send_message', 'place', 'Cant place here');
                     }
