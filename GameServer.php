@@ -23,7 +23,7 @@ class GameServer extends Server
     {
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->action()\n", $clientIP);
-
+        print_r($messageObj);
         $action = null;
         switch ($messageObj->handler) {
             case 'rooms_handler':

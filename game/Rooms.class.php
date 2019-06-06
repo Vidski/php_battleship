@@ -22,10 +22,11 @@ class Rooms implements iHandler
     public function get_room($pin)
     {
         foreach ($this->rooms as $room) {
-            if ($room->is_empty()) {
+            if ($room->is_empty() || $room->get_game()->destroy_time() < time()) {
                 unset($this->rooms->$room);
                 continue;
             }
+            
             if ($room->get_pin() == $pin) {
                 return $room;
             }
