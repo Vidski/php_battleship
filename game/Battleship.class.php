@@ -1,5 +1,12 @@
 <?php
 
+require 'Ship.class.php';
+
+/**
+ * Battleship.class.php beinhaltet die Spiellogik für das Spiel.
+ *
+ * @author  David Rydwanski, Stefan Hackstein
+ */
 class Battleship implements iHandler
 {
     private $shipLimit = array(2 => 4, 3 => 3, 4 => 2, 5 => 1);
@@ -15,121 +22,137 @@ class Battleship implements iHandler
     );
 
     private $playerTurn;
-    private $lastMove;
+    private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
+    private $destroyTime = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
     private $playerOne;
     private $playerOneField;
-    private $playerOneShips = array("ship2" => 0, "ship3" => 0, "ship4" => 0, "ship5" => 0);
+    private $playerOneShips;
 
     private $playerTwo;
     private $playerTwoField;
-    private $playerTwoShips = array("ship2" => 0, "ship3" => 0, "ship4" => 0, "ship5" => 0);
+    private $playerTwoShips;
 
+    /**
+     * __construct für Battleship.class
+     * @param  User $playerOne Spieler1
+     * @param  User $playerTwo Spieler2
+     */
     public function __construct($playerOne, $playerTwo)
     {
         $this->playerOne = $playerOne;
         $this->playerTwo = $playerTwo;
         $this->playerOneField = array();
         $this->playerTwoField = array();
+        $this->playerOneShips = array();
+        $this->playerTwoShips = array();
         $this->playerTurn = $playerOne;
         $this->fill_field();
+        $this->lastMove = time();
     }
 
+    /**
+     * action von iHandler
+     * Hier werden die Packete von dem Client für das Spiel verwaltet
+     *
+     * @param  Array $messageObj Das Packet von dem Client
+     * @param  User $user Der User (Client)
+     */
     public function action($messageObj, $user = null)
     {
+        $this->lastMove = time();
+
         switch ($messageObj->content->action) {
 
             case 'shoot':
                 if ($this->playerTurn != $user) {
                     return null;
                 }
+                return $this->handle_shoot($messageObj->content->position->x, $messageObj->content->position->y, $user);
 
-                $x = $messageObj->content->position->x;
-                $y = $messageObj->content->position->y;
-
-                $temp = $this->playerTurn;
-                if ($this->playerTurn == $this->playerOne) {
-                    $other_player = $this->playerTwo;
-                } else {
-                    $other_player = $this->playerOne;
-                }
-
-                $targetField;
-                switch ($this->playerTurn) {
+            case 'place':
+                switch ($user) {
 
                     case $this->playerOne:
-                        $targetField = $this->playerTwoField;
-                        break;
+                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerOneField, $this->playerOneShips);
 
                     case $this->playerTwo:
-                        $targetField = $this->playerOneField;
-                        break;
+                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerTwoField, $this->playerTwoShips);
 
                     default:
                         return null;
                 }
-
-                $result = $this->check_hit($x, $y, $targetField);
-
-                if (is_null($result))
-                    return null;
-
-                if (!$result) {
-                    $this->playerTurn = $other_player;
-                }
-
-                $pOne = array(
-                    'x' => $x,
-                    'y' => $y,
-                    'field' => 'right',
-                    'hit' => $result,
-                    'myturn' => $user == $this->playerTurn
-                );
-                $pTwo = $pOne;
-                $pTwo['field'] = 'left';
-                $pTwo['myturn'] = $user != $this->playerTurn;
-
-                return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
-
-            case 'place':
-                $x = $messageObj->content->position->x;
-                $y = $messageObj->content->position->y;
-                $ship = $messageObj->content->ship;
-                $data = null;
-                switch ($user) {
-
-                    case $this->playerOne:
-                        $data = $this->check_ship_placement($x, $y, $ship, $this->playerOneField);
-                        break;
-
-
-                    case $this->playerTwo:
-                        $data = $this->check_ship_placement($x, $y, $ship, $this->playerTwoField);
-                        break;
-                }
-                return $data;
 
             default:
                 return null;
         }
     }
 
-    public function build_packet($function, $action, $content)
+    public function handle_shoot($x, $y, $user)
     {
-        return array(
-            'handler' => 'battleship_handler',
-            'function' => $function,
-            'action' => $action,
-            'content' => $content,
+        $temp = $this->playerTurn;
+        if ($this->playerTurn == $this->playerOne) {
+            $other_player = $this->playerTwo;
+        } else {
+            $other_player = $this->playerOne;
+        }
+
+        $targetField;
+        $targetShips;
+        switch ($this->playerTurn) {
+
+            case $this->playerOne:
+                $targetField = $this->playerTwoField;
+                $targetShips = $this->playerTwoShips;
+                break;
+
+            case $this->playerTwo:
+                $targetField = $this->playerOneField;
+                $targetShips = $this->playerOneShips;
+                break;
+
+            default:
+                return null;
+        }
+
+        $result = $this->check_hit($x, $y, $targetField, $targetShips);
+
+        if (is_null($result)) {
+            return null;
+        }
+
+        $deadShip = null;
+        if (!$result) {
+            $this->playerTurn = $other_player;
+        } else {
+            foreach ($targetShips as $ship) {
+                if ($ship->is_dead($x, $y)) {
+                    $deadShip = $ship;
+                    break;
+                }
+            }
+        }
+
+        $pOne = array(
+            'x' => $x,
+            'y' => $y,
+            'field' => 'right',
+            'hit' => $result,
+            'myturn' => $user == $this->playerTurn,
+            'ship' => is_null($deadShip) ? null : array(
+                'id' => $deadShip->get_id(),
+                'position' => $deadShip->get_position(),
+            ),
         );
+
+        $pTwo = $pOne;
+        $pTwo['field'] = 'left';
+        $pTwo['myturn'] = $user != $this->playerTurn;
+
+        return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
     }
 
-    public function set_player_two($player)
-    {
-        $this->playerTwo = $player;
-    }
-
-    public function check_ship_placement($posX, $posY, $ship, &$field)
+    public function handle_place($posX, $posY, $ship, &$field, &$ships)
     {
         if ($field[$posX . $posY] == 0) {
             for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
@@ -166,18 +189,8 @@ class Battleship implements iHandler
                 array_push($placed, $x . $y);
             }
         }
+        array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
 
-        
-        //$this->playerOneShips[substr($ship, 0, -1)]++;
-        //DEBUGGING
-        // $st = "";
-        // for ($y = 0; $y < 10; $y++) {
-        //     for ($x = 0; $x < 10; $x++) {
-        //         $st .= $field[$x . $y] . " ";
-        //     }
-        //     $st .= "\n";
-        // }
-        // print($st);
         return $this->build_packet('send_message', 'place', array('placed' => $placed, 'blocked' => $blocked));
     }
 
@@ -193,6 +206,21 @@ class Battleship implements iHandler
         return null;
     }
 
+    public function build_packet($function, $action, $content)
+    {
+        return array(
+            'handler' => 'battleship_handler',
+            'function' => $function,
+            'action' => $action,
+            'content' => $content,
+        );
+    }
+
+    public function set_player_two($player)
+    {
+        $this->playerTwo = $player;
+    }
+
     public function fill_field()
     {
         for ($y = 0; $y < 10; $y++) {
@@ -201,6 +229,11 @@ class Battleship implements iHandler
                 $this->playerTwoField[$x . $y] = 0;
             }
         }
+    }
+
+    public function destroy_time()
+    {
+        return $this->lastMove + $this->destroyTime;
     }
 
 }

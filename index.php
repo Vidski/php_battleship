@@ -17,7 +17,7 @@
     <div id="battleship_game_box" class="container" style="padding-top: 50px;">
         <!-- Battlefield -->
         <div class="row justify-content-center align-items-center">
-            <div class="col-md-6" id="ships">
+            <div class="col-lg-6" id="ships">
                 <div class="card">
                     <div class="card-body">
                         <div id="ship2V" class="ship ship2V"></div>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6" id="field_left">
+            <div class="col-lg-6" id="field_left">
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-sm" id="left">
@@ -42,7 +42,7 @@
             <div>
                 <button class="btn btn-primary" type="button" id="btn_ready">Ready</button>
             </div>
-            <div class="col-md-6" id="field_right">
+            <div class="col-lg-6" id="field_right">
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-sm">
