@@ -6,6 +6,7 @@ class User
     private $id;
     private $socket;
     private $handshake;
+    private $disconnected;
 
     private $username;
     private $room;
@@ -15,6 +16,7 @@ class User
         $this->id = $id;
         $this->socket = $socket;
         $this->handshake = false;
+        $this->disconnected = false;
 
         $this->username = "Player";
         $this->room = null;
@@ -38,6 +40,14 @@ class User
     public function did_handshake()
     {
         return $this->handshake;
+    }
+
+    public function disconnect() {
+        $this->disconnected = true;
+    } 
+
+    public function disconnected() {
+        return $this->disconnected;
     }
 
     public function set_username($username)
@@ -64,3 +74,4 @@ class User
     }
 
 }
+

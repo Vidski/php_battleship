@@ -54,12 +54,13 @@ class RoomHandler {
         if (data['content']['error']) {
             return;
         }
-        generateTable();
         $('#menu_box').fadeOut();
         $('#battleship_game_box').fadeIn();
         $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
-        if (!this.owner)
+        if (!this.owner) {
+            generateTable();
             $('#field_right .card').addClass('notmyturn');
+        }
     }
 
     send_message_room(message) {

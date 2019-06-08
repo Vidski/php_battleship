@@ -25,6 +25,7 @@ class GameServer extends Server
         printf("%s - GameServer->action()\n", $clientIP);
         print_r($messageObj);
         $action = null;
+        
         switch ($messageObj->handler) {
             case 'rooms_handler':
                 $action = $this->roomsHandler->action($messageObj, $user);

@@ -39,9 +39,6 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <button class="btn btn-primary" type="button" id="btn_ready">Ready</button>
-            </div>
             <div class="col-lg-6" id="field_right">
                 <div class="card">
                     <div class="card-body">

@@ -3,12 +3,6 @@ $("#field_right table").on("click", "td", function () {
     battleshipHandler.send_shoot($(this).attr('data-col'), $(this).attr('data-row'));
 });
 
-$("#btn_ready").click(function (e) {
-    e.preventDefault();
-    ready();
-});
-
-
 //FUNCTIONS
 function generateTable() {
     var table = "";
@@ -65,19 +59,6 @@ function Over(event, ui) {
         $(ui['helper']).height($(event['target']).height());
     }
     $(ui['helper']).css('background-size', $(event['target']).width() + "px " + $(event['target']).height() + "px");
-}
-
-function ready() {
-    var table = document.getElementById("left");
-    for (var i = 0, row; row = table.rows[i]; i++) {
-        for (var j = 0, col; col = row.cells[j]; j++) {
-            if ($(col).hasClass('blocked'))
-                $(col).removeClass('blocked')
-        }
-    }
-    $('#btn_ready').hide();
-    $('#ships').hide();
-    $('#field_right').show();
 }
 
 //RESPONSIVE SHIPS
