@@ -8,19 +8,9 @@ class Users implements iHandler
         switch ($messageObj->action) {
             case 'set_username':
                 $user->set_username(ucfirst($messageObj->username));
-                return $this->build_packet('send_message', 'set_username', array('username' => $user->get_username()));
+                EventManager::add_event(new Event($user, 'users_handler', 'send_message', 'set_username', array('username' => $user->get_username())));
                 break;
         }
-    }
-
-    public function build_packet($function, $action, $content)
-    {
-        return array(
-            'handler' => 'users_handler',
-            'function' => $function,
-            'action' => $action,
-            'content' => $content,
-        );
     }
 
 }

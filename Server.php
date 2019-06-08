@@ -34,11 +34,12 @@ abstract class Server
     }
 
     abstract protected function started();
-    abstract protected function action($user, $messageObj);
+    abstract protected function handle_in($user, $messageObj);
+    abstract protected function handle_out();
     abstract protected function connected($user);
     abstract protected function disconnected($user);
 
-    //HAUPT LOOP FÜR DIE ÜBERWACHUNG VON CLIENTS
+    //MAIN LOOP
     protected function server_loop()
     {
         while (true) {
@@ -84,7 +85,7 @@ abstract class Server
                         } else {
                             if (isset($messageObj->handler)) {
                                 try {
-                                    $this->action($user, $messageObj);
+                                    $this->handle_in($user, $messageObj);
                                 } catch (\Throwable $th) {
                                     print("Something went wrong processing this package:\n");
                                     print_r($messageObj);
@@ -95,6 +96,7 @@ abstract class Server
                     }
                 }
             }
+            $this->handle_out();
         }
     }
 
