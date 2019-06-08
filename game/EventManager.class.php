@@ -1,6 +1,7 @@
 <?php
 
 require 'Stack.class.php';
+require 'Event.class.php';
 
 class EventManager
 {
@@ -21,11 +22,13 @@ class EventManager
         return self::$instance;
     }
 
-    public function add_event($event) {
+    public function add_event($event)
+    {
         self::$events->push($event);
     }
 
-    public function events() {
+    public function events()
+    {
         return self::$events;
     }
 }

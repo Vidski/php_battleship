@@ -79,24 +79,29 @@ class Battleship implements iHandler
 
             case 'shoot':
                 if ($this->playerTurn != $user) {
-                    return null;
+                    break;
                 }
-                return $this->handle_shoot($messageObj->content->position->x, $messageObj->content->position->y, $user);
+                $this->handle_shoot($messageObj->content->position->x, $messageObj->content->position->y, $user);
+                break;
 
             case 'place':
                 if ($this->gameStarted) {
-                    return null;
-                }
-                if ($user == $this->playerOne) {
-                    if (!$this->playerOneReady)
-                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerOneField, $this->playerOneShips, $this->playerOne);
-                } else {
-                    if (!$this->playerTwoReady)
-                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerTwoField, $this->playerTwoShips, $this->playerTwo);
+                    break;
                 }
 
+                if ($user == $this->playerOne) {
+                    if (!$this->playerOneReady) {
+                        $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerOneField, $this->playerOneShips, $this->playerOne);
+                        break;
+                    }
+                } else if (!$this->playerTwoReady) {
+                    $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerTwoField, $this->playerTwoShips, $this->playerTwo);
+                    break;
+                }
+                break;
+
             default:
-                return null;
+                break;
         }
     }
 
@@ -161,11 +166,12 @@ class Battleship implements iHandler
         $pTwo['field'] = 'left';
         $pTwo['myturn'] = $user != $this->playerTurn;
 
-        return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
+        EventManager::add_event(new Event($user, 'battleship_handler', 'send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo))));
     }
 
     public function handle_place($posX, $posY, $ship, &$field, &$ships, &$player)
     {
+        $user = $player;
         if ($field[$posX . $posY] == 0) {
             for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
                 for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
@@ -173,12 +179,14 @@ class Battleship implements iHandler
                         continue;
                     }
                     if ($field[$x . $y] == 1) {
-                        return $this->build_packet('send_message', 'place', 'Cant place here');
+                        EventManager::add_event(new Event($user, 'battleship_handler', 'send_message', 'place', 'Cant place here'));
+                        break;
                     }
                 }
             }
         } else {
-            return $this->build_packet('send_message', 'place', 'Cant place here');
+            EventManager::add_event(new Event($user, 'battleship_handler', 'send_message', 'place', 'Cant place here'));
+            return;
         }
 
         //BLOCKIEREN
@@ -202,6 +210,8 @@ class Battleship implements iHandler
             }
         }
         array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
+        
+        EventManager::add_event(new Event($user, 'battleship_handler', 'send_message', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
         //WORK IN PROGRESS
         //CHECK IF EVERYONE IS READY
@@ -213,12 +223,11 @@ class Battleship implements iHandler
 
             if ($this->playerOneReady && $this->playerTwoReady) {
                 $this->gameStarted = true;
-                return $this->build_packet('send_message_room', 'start', array('ready' => true, 'users' => array($this->playerOne, $this->playerTwo)));
+                EventManager::add_event(new Event($user, 'battleship_handler', 'send_message_room', 'start', array('ready' => true, 'users' => array($this->playerOne, $this->playerTwo))));
+                return;
             }
-            return $this->build_packet('send_message', 'ready', 'Waiting for your Enemy to finish');
+            EventManager::add_event(new Event($user, 'rooms_handler', 'send_message', 'send_message_room', 'Waiting for your Enemy to finish'));
         }
-
-        return $this->build_packet('send_message', 'place', array('placed' => $placed, 'blocked' => $blocked));
     }
 
     public function check_hit($x, $y, &$field)
@@ -231,16 +240,6 @@ class Battleship implements iHandler
             return true;
         }
         return null;
-    }
-
-    public function build_packet($function, $action, $content)
-    {
-        return array(
-            'handler' => 'battleship_handler',
-            'function' => $function,
-            'action' => $action,
-            'content' => $content,
-        );
     }
 
     //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen

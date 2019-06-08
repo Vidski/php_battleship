@@ -31,6 +31,6 @@ class Stack
     }
 
     public function length() {
-        return sizeof($this->arr);
+        return count($this->arr);
     }
 }

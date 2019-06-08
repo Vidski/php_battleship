@@ -22,8 +22,6 @@ abstract class Server
         $this->sockets = array();
         $this->users = array();
 
-        $this->outPackets = array();
-
         $this->server = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) or die("Could not create socket\n");
         socket_set_option($this->server, SOL_SOCKET, SO_REUSEADDR, 1);
         socket_bind($this->server, $this->host, $this->port) or die("Could not bind socket\n");
