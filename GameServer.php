@@ -52,7 +52,7 @@ class GameServer extends Server
             $reversed->push($events->pop());
         }
 
-        for ($i = 0; $i < $length; $i++) {
+        while ($reversed->length() != 0) {
             $this->execute($reversed->pop());
         }
     }
