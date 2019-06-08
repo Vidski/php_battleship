@@ -51,18 +51,23 @@ class Rooms implements iHandler
                 }
                 $newRoom = $this->new_room($user);
                 $user->set_room($newRoom);
+                //TODO: Im Moment kann man nur Battleship spielen
                 $user->get_room()->new_game(new Battleship($user, null));
                 return $this->build_packet('send_message', 'create_room', array('pin' => $newRoom->get_pin()));
 
             case 'join_room':
                 $room = $this->get_room($messageObj->pin);
                 if (!is_null($room)) {
-                    if ($room->add_player($user)) {
+                    //TODO: replace_missing_player ist nur für Battleship.class da, man sollte für neue Spiele ein iInterface bauen
+                    if ($room->get_game()->replace_missing_player($user)) {
+                        if (!$room->add_player($user))
+                            return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'You are already in this room.'));
+                            
                         $user->set_room($room);
-                        $room->get_game()->set_player_two($user);
                         return $this->build_packet('send_message_room', 'join_room', array('message' => $user->get_username() . ' joined the room.', 'users' => $room->get_players()));
                     }
-                    return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'You are already in this room.'));
+                    return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'Room is full.'));
+                
                 }
                 return $this->build_packet('send_message', 'join_room', array('error' => 1, 'message' => 'Room not found.'));
 

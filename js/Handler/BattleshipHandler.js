@@ -32,6 +32,12 @@ class BattleshipHandler {
                 this.handle_place(data);
                 break;
 
+            case 'start':
+                this.handle_start(data);
+
+            case 'playerready':
+                this.handle_ready(data);
+
             default:
                 break;
         }
@@ -153,6 +159,24 @@ class BattleshipHandler {
                 $('#field_left td[data-col="' + data['content']['placed'][index][0] + '"][data-row="' + data['content']['placed'][index][1] + '"]').css('background-color', 'red');
             }
         }
+    }
+
+    handle_start(data) {
+        if (data['content']['ready']) {
+            var table = document.getElementById("left");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    if ($(col).hasClass('blocked'))
+                        $(col).removeClass('blocked')
+                }
+            }
+            $('#ships').hide();
+            $('#field_right').show();
+        } 
+    }
+
+    handle_ready(data) {
+
     }
 
 }

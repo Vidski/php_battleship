@@ -21,15 +21,18 @@ class Battleship implements iHandler
         "ship5H" => array('x' => 5, 'y' => 1),
     );
 
+    private $gameStarted;
     private $playerTurn;
     private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
-    private $destroyTime = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
+    private const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
     private $playerOne;
+    private $playerOneReady;
     private $playerOneField;
     private $playerOneShips;
 
     private $playerTwo;
+    private $playerTwoReady;
     private $playerTwoField;
     private $playerTwoShips;
 
@@ -40,8 +43,11 @@ class Battleship implements iHandler
      */
     public function __construct($playerOne, $playerTwo)
     {
+        $this->gameStarted = false;
         $this->playerOne = $playerOne;
         $this->playerTwo = $playerTwo;
+        $this->playerOneReady = false;
+        $this->playerTwoReady = false;
         $this->playerOneField = array();
         $this->playerTwoField = array();
         $this->playerOneShips = array();
@@ -62,6 +68,13 @@ class Battleship implements iHandler
     {
         $this->lastMove = time();
 
+        //Falls ein Spieler disconnected Spiel pausieren
+        if ($this->gameStarted) {
+            if (is_null($this->playerOne->get_socket()) || is_null($this->playerTwo->get_socket())) {
+                return null;
+            }
+        }
+
         switch ($messageObj->content->action) {
 
             case 'shoot':
@@ -71,16 +84,15 @@ class Battleship implements iHandler
                 return $this->handle_shoot($messageObj->content->position->x, $messageObj->content->position->y, $user);
 
             case 'place':
-                switch ($user) {
-
-                    case $this->playerOne:
-                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerOneField, $this->playerOneShips);
-
-                    case $this->playerTwo:
-                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerTwoField, $this->playerTwoShips);
-
-                    default:
-                        return null;
+                if ($this->gameStarted) {
+                    return null;
+                }
+                if ($user == $this->playerOne) {
+                    if (!$this->playerOneReady)
+                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerOneField, $this->playerOneShips, $this->playerOne);
+                } else {
+                    if (!$this->playerTwoReady)
+                        return $this->handle_place($messageObj->content->position->x, $messageObj->content->position->y, $messageObj->content->ship, $this->playerTwoField, $this->playerTwoShips, $this->playerTwo);
                 }
 
             default:
@@ -152,7 +164,7 @@ class Battleship implements iHandler
         return $this->build_packet('send_messages', 'shoot', array('users' => array($temp, $other_player), 'message' => array($pOne, $pTwo)));
     }
 
-    public function handle_place($posX, $posY, $ship, &$field, &$ships)
+    public function handle_place($posX, $posY, $ship, &$field, &$ships, &$player)
     {
         if ($field[$posX . $posY] == 0) {
             for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
@@ -191,6 +203,21 @@ class Battleship implements iHandler
         }
         array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
 
+        //WORK IN PROGRESS
+        //CHECK IF EVERYONE IS READY
+        if (count($ships) >= 10) {
+            if ($player == $this->playerOne)
+                $this->playerOneReady = true;
+            else
+                $this->playerTwoReady = true;
+
+            if ($this->playerOneReady && $this->playerTwoReady) {
+                $this->gameStarted = true;
+                return $this->build_packet('send_message_room', 'start', array('ready' => true, 'users' => array($this->playerOne, $this->playerTwo)));
+            }
+            return $this->build_packet('send_message', 'ready', 'Waiting for your Enemy to finish');
+        }
+
         return $this->build_packet('send_message', 'place', array('placed' => $placed, 'blocked' => $blocked));
     }
 
@@ -216,9 +243,23 @@ class Battleship implements iHandler
         );
     }
 
-    public function set_player_two($player)
+    //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
+    public function replace_missing_player($player)
     {
-        $this->playerTwo = $player;
+        if (is_null($this->playerOne)) {
+            $this->playerOne = $player;
+            return true;
+        } else if (is_null($this->playerTwo)) {
+            $this->playerTwo = $player;
+            return true;
+        } else if ($this->playerOne->disconnected()) {
+            $this->playerOne = $player;
+            return true;
+        } else if ($this->playerTwo->disconnected()) {
+            $this->playerTwo = $player;
+            return true;
+        }
+        return false;
     }
 
     public function fill_field()
@@ -233,7 +274,7 @@ class Battleship implements iHandler
 
     public function destroy_time()
     {
-        return $this->lastMove + $this->destroyTime;
+        return $this->lastMove + Battleship::DESTROY_TIME;
     }
 
 }

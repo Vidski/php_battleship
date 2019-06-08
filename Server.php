@@ -140,6 +140,7 @@ abstract class Server
 
             $this->disconnected($dUser);
             socket_close($dUser->get_socket());
+            $dUser->disconnect();
         }
     }
 
@@ -147,7 +148,8 @@ abstract class Server
     protected function send_message($user, $message)
     {
         $message = $this->encode_and_mask($message);
-        socket_write($user->get_socket(), $message, strlen($message));
+        if (!$user->disconnected())
+            socket_write($user->get_socket(), $message, strlen($message));
     }
 
     //GETTER
