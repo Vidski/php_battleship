@@ -25,7 +25,9 @@ class GameServer extends Server
     {
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->action()\n", $clientIP);
-        print_r($messageObj);
+        
+        //DEBUG
+        //print_r($messageObj);
 
         switch ($messageObj->handler) {
             case 'rooms_handler':
@@ -73,46 +75,12 @@ class GameServer extends Server
     {
         $user = $event->get_user();
         $packet = $event->get_packet();
-        
-        switch ($packet['function']) {
-            // packet('send_message', 'test', array('message' => 'Hello World'));
-            case 'send_message':
-                unset($packet['function']);
-                $this->send_message($user, $packet);
-                return true;
+        $this->send_message($user, $packet);
 
-            // packet('send_message_room', 'test', array('message' => $message, 'users' => array($user, $user2, $user3)));
-            case 'send_message_room':
-                unset($packet['function']);
-                $users = $packet['content']['users'];
-                unset($packet['content']['users']);
-                foreach ($users as $user) {
-                    $this->send_message($user, $packet);
-                }
-                return true;
-                
-            // packet('send_messages', 'test', array('users' => array($user1, $user2), 'message' => array($user1Msg, $user2Msg)));
-            case 'send_messages':
-                unset($packet['function']);
-                $users = $packet['content']['users'];
-                unset($packet['content']['users']);
-                $messages = $packet['content']['message'];
-                unset($packet['content']['message']);
-                
-                $i = 0;
-                foreach ($users as $user) {
-                    $packet['content'] = $messages[$i];
-                    $this->send_message($user, $packet);
-                    $i++;
-                }
-                return true;
-
-
-            default:
-                return false;
-        }
-
-        return false;
+        //DEBUG
+        socket_getpeername($user->get_socket(), $clientIP);
+        printf("%s - GameServer->execute()\n", $clientIP);
+        //print_r($event);
     }
 
 }

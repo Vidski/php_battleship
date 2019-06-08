@@ -12,9 +12,8 @@ class RoomHandler {
                 this.handle_join_room(data);
                 break;
 
-            //DAS IS KAKE
-            case 'send_message_room':
-                this.handle_send_message_room(data);
+            case 'receive_message':
+                this.handle_receive_message(data);
                 break;
 
             default:
@@ -63,15 +62,15 @@ class RoomHandler {
         }
     }
 
-    send_message_room(message) {
+    send_message(message) {
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
-            "action": "send_message_room",
+            "action": "send_message",
             "message": message
         }));
     }
 
-    handle_send_message_room(data) {
+    handle_receive_message(data) {
         $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
     }
 

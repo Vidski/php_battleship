@@ -24,7 +24,7 @@ $("#btn_joinRoom").click(function (event) {
 $("#btn_sendMessage").click(function (event) {
     event.preventDefault();
     var message = $('#input_sendMessage').val();
-    roomHandler.send_message_room(message);
+    roomHandler.send_message(message);
 });
 
 //UI EVENTS

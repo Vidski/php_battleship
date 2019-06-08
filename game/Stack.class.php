@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Stack implementierung
+ * Stack
  *
  * @author  David Rydwanski
  */
@@ -30,7 +30,8 @@ class Stack
         return empty($this->arr);
     }
 
-    public function length() {
+    public function length() 
+    {
         return count($this->arr);
     }
 }

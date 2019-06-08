@@ -26,7 +26,7 @@ class Rooms implements iHandler
                 unset($this->rooms->$room);
                 continue;
             }
-            
+
             if ($room->get_pin() == $pin) {
                 return $room;
             }
@@ -43,66 +43,112 @@ class Rooms implements iHandler
                 if ($game) {
                     return $game->action($messageObj, $user);
                 }
-                return null;
+                break;
 
             case 'create_room':
-                if ($user->get_room()) {
-                    return null;
-                }
-                $newRoom = $this->new_room($user);
-                $user->set_room($newRoom);
-                //TODO: Im Moment kann man nur Battleship spielen
-                $user->get_room()->new_game(new Battleship($user, null));
-                EventManager::add_event(new Event($user, 'rooms_handler', 'send_message', 'create_room', array('pin' => $newRoom->get_pin())));
+                $this->handle_create_room($messageObj, $user);
                 break;
 
             case 'join_room':
-                $room = $this->get_room($messageObj->pin);
-                if (!is_null($room)) {
-                    //TODO: replace_missing_player ist nur für Battleship.class da, man sollte für neue Spiele ein iInterface bauen
-                    if ($room->get_game()->replace_missing_player($user)) {
-                        if (!$room->add_player($user)) {
-                            EventManager::add_event(new Event($user, 'rooms_handler', 'send_message', 'join_room', array('error' => 1, 'message' => 'You are already in this room.')));
-                            break;
-                        }
-                        $user->set_room($room);
-                        EventManager::add_event(new Event($user, 'rooms_handler', 'send_message_room', 'join_room', array('message' => $user->get_username() . ' joined the room.', 'users' => $room->get_players())));
-                        break;
-                    }
-                    EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'Room is full.')));
-                    break;
-                }
-                EventManager::add_event(new Event($user, 'rooms_handler', 'send_message', 'join_room', array('error' => 1, 'message' => 'Room not found.')));
+                $this->handle_join_room($messageObj, $user);
                 break;
 
+
             case 'leave_room':
-                $room = $user->get_room();
-                if ($room) {
-                    if ($room->leave_room($user)) {
-                        EventMananger::add_event(new Event($user, 'rooms_handler', 'send_message_room', 'leave_room', array('message' => $user->get_username() . ' left the room.', 'users' => $room->get_players())));
-                        break;
-                    }
-                }
+                $this->handle_leave_room($messageObj, $user);
                 break;
 
             case 'my_room':
-                $room = $user->get_room();
-                if ($room) {
-                    EventMananger::add_event(new Event($user, 'rooms_handler', 'my_room', $user->get_room()->get_info()));
-                }
+                $this->handle_my_room($messageObj, $user);
                 break;
 
             case 'send_message_room':
-                $room = $user->get_room();
-                $message = htmlspecialchars($messageObj->message);
-                if ($room) {
-                    EventMananger::add_event(new Event($user, 'rooms_handler', 'send_message_room', 'send_message_room', array('message' => $user->get_username() . ': ' . $message, 'users' => $room->get_players())));
-                    break;
-                }
+                $this->handle_send_message_room($messageObj, $user);
                 break;
 
             default:
                 break;
+        }
+    }
+
+    public function handle_create_room($messageObj, $user) 
+    {
+        if ($user->get_room()) {
+            return null;
+        }
+        $newRoom = $this->new_room($user);
+        $user->set_room($newRoom);
+        //TODO: Im Moment kann man nur Battleship spielen
+        $user->get_room()->new_game(new Battleship($user, null));
+        EventManager::add_event(new Event($user, 'rooms_handler', 'create_room', array('pin' => $newRoom->get_pin())));
+    }
+
+    public function handle_join_room($messageObj, $user) 
+    {
+        $room = $this->get_room($messageObj->pin);
+        if (is_null($room)) {
+            EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'Room not found.')));
+            return;
+        }
+
+        //TODO: replace_missing_player ist nur für Battleship.class da, man sollte für neue Spiele ein iInterface bauen
+        if (!$room->get_game()->replace_missing_player($user)) {
+            EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'Room is full.')));
+            return;
+        }
+
+        if (!$room->add_player($user)) {
+            EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'You are already in this room.')));
+            return;
+        }
+            
+        $user->set_room($room);
+        $username = $user->get_username();
+        $rUsers = $room->get_players();
+        foreach ($rUsers as $rUser) {
+            EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => $username . ' joined the room.')));
+        }
+    }
+
+    public function handle_leave_room($messageObj, $user) 
+    {
+        $room = $user->get_room();
+        if (is_null($room)) {
+            return;
+        }
+
+        if (!$room->leave_room($user)) {
+            return;
+        }
+
+        $username = $user->get_username();
+        $rUsers = $room->get_players();
+        foreach ($rUsers as $rUser) {
+            EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => $username . ' left the room.')));
+        }
+    }
+
+    public function handle_my_room($messageObj, $user) 
+    {
+        $room = $user->get_room();
+        if (is_null($room)) {
+            return;
+        }
+        EventMananger::add_event(new Event($user, 'rooms_handler', 'my_room', $user->get_room()->get_info()));
+    }
+
+    public function handle_send_message_room($messageObj, $user) 
+    {
+        $room = $user->get_room();
+        if (is_null($room)) {
+            return;
+        }
+
+        $message = htmlspecialchars($messageObj->message);
+        $username = $user->get_username();
+        $rUsers = $room->get_players();
+        foreach ($rUsers as $rUser) {
+            EventMananger::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $username . ': ' . $message)));
         }
     }
 
