@@ -5,6 +5,7 @@ require dirname(__FILE__) . '/game/iHandler.interface.php';
 require dirname(__FILE__) . '/game/Rooms.class.php';
 require dirname(__FILE__) . '/game/Users.class.php';
 require dirname(__FILE__) . '/game/Battleship.class.php';
+require dirname(__FILE__) . '/game/EventManager.class.php';
 
 class GameServer extends Server
 {
@@ -17,15 +18,20 @@ class GameServer extends Server
     {
         $this->roomsHandler = new Rooms();
         $this->usersHandler = new Users();
+
+        $this->packetsIn = array();
+        $this->packetsOut = array();
+        EventManager::init();
     }
 
-    protected function action($user, $messageObj)
+    protected function handle_in($user, $messageObj)
     {
+        array_push($this->packetsIn, $messageObj);
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->action()\n", $clientIP);
         print_r($messageObj);
-        $action = null;
         
+        $action = null;
         switch ($messageObj->handler) {
             case 'rooms_handler':
                 $action = $this->roomsHandler->action($messageObj, $user);
@@ -83,6 +89,14 @@ class GameServer extends Server
 
         //LOGGING
         print_r($action);
+    }
+
+    protected function handle_out() {
+        $events = EventManager::events();
+        $length =EventManager::events()->length();
+        for ($i=0; $i < $length; $i++) { 
+            //echo(EventManager::events()->pop());
+        }
     }
 
     protected function connected($user)

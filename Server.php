@@ -22,6 +22,8 @@ abstract class Server
         $this->sockets = array();
         $this->users = array();
 
+        $this->outPackets = array();
+
         $this->server = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) or die("Could not create socket\n");
         socket_set_option($this->server, SOL_SOCKET, SO_REUSEADDR, 1);
         socket_bind($this->server, $this->host, $this->port) or die("Could not bind socket\n");
@@ -34,11 +36,12 @@ abstract class Server
     }
 
     abstract protected function started();
-    abstract protected function action($user, $messageObj);
+    abstract protected function handle_in($user, $messageObj);
+    abstract protected function handle_out();
     abstract protected function connected($user);
     abstract protected function disconnected($user);
 
-    //HAUPT LOOP FÜR DIE ÜBERWACHUNG VON CLIENTS
+    //MAIN LOOP
     protected function server_loop()
     {
         while (true) {
@@ -84,7 +87,7 @@ abstract class Server
                         } else {
                             if (isset($messageObj->handler)) {
                                 try {
-                                    $this->action($user, $messageObj);
+                                    $this->handle_in($user, $messageObj);
                                 } catch (\Throwable $th) {
                                     print("Something went wrong processing this package:\n");
                                     print_r($messageObj);
@@ -95,6 +98,7 @@ abstract class Server
                     }
                 }
             }
+            $this->handle_out();
         }
     }
 
