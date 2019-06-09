@@ -99,4 +99,5 @@ class Room
     {
         return rand(1000, 9999);
     }
+
 }
