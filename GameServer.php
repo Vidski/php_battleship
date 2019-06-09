@@ -73,14 +73,15 @@ class GameServer extends Server
 
     private function execute($event)
     {
+        socket_getpeername($user->get_socket(), $clientIP);
+        printf("%s - GameServer->execute()\n", $clientIP);
+
+        //DEBUG
+        //print_r($event);
+
         $user = $event->get_user();
         $packet = $event->get_packet();
         $this->send_message($user, $packet);
-
-        //DEBUG
-        socket_getpeername($user->get_socket(), $clientIP);
-        printf("%s - GameServer->execute()\n", $clientIP);
-        //print_r($event);
     }
 
 }
