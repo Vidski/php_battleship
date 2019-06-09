@@ -135,7 +135,7 @@ class BattleshipHandler {
             console.log("[WIDTH] Can't place here!");
             return;
         }
-        
+
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
             "action": "game_action",
@@ -172,7 +172,7 @@ class BattleshipHandler {
             }
             $('#ships').hide();
             $('#field_right').show();
-        } 
+        }
     }
 
     handle_ready(data) {

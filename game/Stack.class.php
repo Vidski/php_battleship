@@ -30,8 +30,9 @@ class Stack
         return empty($this->arr);
     }
 
-    public function length() 
+    public function length()
     {
         return count($this->arr);
     }
+
 }

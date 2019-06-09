@@ -10,11 +10,11 @@ $(document).ready(function () {
 
     websocket = new WebSocket(wsUri);
 
-    websocket.onopen = function(ev) {
+    websocket.onopen = function (ev) {
         loginBoxSuccess();
     }
 
-    websocket.onmessage = function(ev) {
+    websocket.onmessage = function (ev) {
         data = JSON.parse(ev.data);
         console.log(data);
 
@@ -28,7 +28,7 @@ $(document).ready(function () {
                 break;
 
             case 'battleship_handler':
-                battleshipHandler.handle(data);    
+                battleshipHandler.handle(data);
                 break;
 
             default:
@@ -36,13 +36,13 @@ $(document).ready(function () {
         }
     }
 
-    websocket.onerror = function(ev) {
+    websocket.onerror = function (ev) {
         loginBoxError();
         console.error("WebSocket error observed:", ev);
     }
 
-    websocket.onclose = function(ev) {
-        
+    websocket.onclose = function (ev) {
+
     }
 
 });

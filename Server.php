@@ -150,8 +150,10 @@ abstract class Server
     protected function send_message($user, $message)
     {
         $message = $this->encode_and_mask($message);
-        if (!$user->disconnected())
+        if (!$user->disconnected()) {
             socket_write($user->get_socket(), $message, strlen($message));
+        }
+
     }
 
     //GETTER

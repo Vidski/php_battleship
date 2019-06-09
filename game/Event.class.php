@@ -1,11 +1,12 @@
 <?php
 
-class Event 
+class Event
 {
+
     private $packet;
     private $user;
 
-    public function __construct($user, $handler, $action, $content) 
+    public function __construct($user, $handler, $action, $content)
     {
         $this->user = $user;
         $this->packet = $this->build_packet($handler, $action, $content);
@@ -16,17 +17,17 @@ class Event
         return array(
             'handler' => $handler,
             'action' => $action,
-            'content' => $content
+            'content' => $content,
         );
     }
 
-    public function get_user() 
+    public function get_user()
     {
         return $this->user;
     }
 
-    public function get_packet() 
-    { 
+    public function get_packet()
+    {
         return $this->packet;
     }
 

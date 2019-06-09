@@ -42,11 +42,13 @@ class User
         return $this->handshake;
     }
 
-    public function disconnect() {
+    public function disconnect()
+    {
         $this->disconnected = true;
-    } 
+    }
 
-    public function disconnected() {
+    public function disconnected()
+    {
         return $this->disconnected;
     }
 
@@ -74,4 +76,3 @@ class User
     }
 
 }
-

@@ -6,6 +6,7 @@
  */
 class Ship
 {
+
     private $shipHealth;
     private $shipPosition;
     private $shipSize;
@@ -25,17 +26,19 @@ class Ship
             $this->shipHealth--;
             if ($this->shipHealth <= 0) {
                 //VERSUNKEN
-                return true; 
+                return true;
             }
         }
         return false;
     }
 
-    public function get_position() {
+    public function get_position()
+    {
         return $this->shipPosition;
     }
 
-    public function get_id() {
+    public function get_id()
+    {
         return $this->shipId;
     }
 

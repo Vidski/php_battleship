@@ -9,6 +9,7 @@ require 'Ship.class.php';
  */
 class Battleship implements iHandler
 {
+
     private $shipLimit = array(2 => 4, 3 => 3, 4 => 2, 5 => 1);
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
@@ -178,8 +179,7 @@ class Battleship implements iHandler
         } else if ($user == $this->playerTwo && !$this->playerTwoReady) {
             $field = &$this->playerTwoField;
             $ships = &$this->playerTwoShips;
-        }
-        else {
+        } else {
             return;
         }
 
@@ -225,16 +225,17 @@ class Battleship implements iHandler
             }
         }
         array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
-        
+
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
         //WORK IN PROGRESS
         //CHECK IF EVERYONE IS READY
         if (count($ships) >= 10) {
-            if ($user == $this->playerOne)
+            if ($user == $this->playerOne) {
                 $this->playerOneReady = true;
-            else
+            } else {
                 $this->playerTwoReady = true;
+            }
 
             if ($this->playerOneReady && $this->playerTwoReady) {
                 $this->gameStarted = true;

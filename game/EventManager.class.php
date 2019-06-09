@@ -31,4 +31,5 @@ class EventManager
     {
         return self::$events;
     }
+
 }

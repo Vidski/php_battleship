@@ -53,7 +53,6 @@ class Rooms implements iHandler
                 $this->handle_join_room($messageObj, $user);
                 break;
 
-
             case 'leave_room':
                 $this->handle_leave_room($messageObj, $user);
                 break;
@@ -71,7 +70,7 @@ class Rooms implements iHandler
         }
     }
 
-    public function handle_create_room($messageObj, $user) 
+    public function handle_create_room($messageObj, $user)
     {
         if ($user->get_room()) {
             return null;
@@ -83,7 +82,7 @@ class Rooms implements iHandler
         EventManager::add_event(new Event($user, 'rooms_handler', 'create_room', array('pin' => $newRoom->get_pin())));
     }
 
-    public function handle_join_room($messageObj, $user) 
+    public function handle_join_room($messageObj, $user)
     {
         $room = $this->get_room($messageObj->pin);
         if (is_null($room)) {
@@ -101,7 +100,7 @@ class Rooms implements iHandler
             EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'You are already in this room.')));
             return;
         }
-            
+
         $user->set_room($room);
         $username = $user->get_username();
         $rUsers = $room->get_players();
@@ -110,7 +109,7 @@ class Rooms implements iHandler
         }
     }
 
-    public function handle_leave_room($messageObj, $user) 
+    public function handle_leave_room($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {
@@ -128,7 +127,7 @@ class Rooms implements iHandler
         }
     }
 
-    public function handle_my_room($messageObj, $user) 
+    public function handle_my_room($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {
@@ -137,7 +136,7 @@ class Rooms implements iHandler
         EventMananger::add_event(new Event($user, 'rooms_handler', 'my_room', $user->get_room()->get_info()));
     }
 
-    public function handle_send_message_room($messageObj, $user) 
+    public function handle_send_message_room($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {

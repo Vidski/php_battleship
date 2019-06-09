@@ -25,7 +25,7 @@ class GameServer extends Server
     {
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->action()\n", $clientIP);
-        
+
         //DEBUG
         //print_r($messageObj);
 
@@ -47,7 +47,7 @@ class GameServer extends Server
     {
         $events = EventManager::events();
         $length = $events->length();
-        
+
         $reversed = new Stack();
 
         while ($events->length() != 0) {
@@ -71,7 +71,7 @@ class GameServer extends Server
         printf("%s - GameServer->disconnected()\n", $clientIP);
     }
 
-    private function execute($event) 
+    private function execute($event)
     {
         $user = $event->get_user();
         $packet = $event->get_packet();
