@@ -70,7 +70,7 @@ class Rooms implements iHandler
         }
     }
 
-    public function handle_create_room($messageObj, $user)
+    private function handle_create_room($messageObj, $user)
     {
         if ($user->get_room()) {
             return null;
@@ -82,7 +82,7 @@ class Rooms implements iHandler
         EventManager::add_event(new Event($user, 'rooms_handler', 'create_room', array('pin' => $newRoom->get_pin())));
     }
 
-    public function handle_join_room($messageObj, $user)
+    private function handle_join_room($messageObj, $user)
     {
         $room = $this->get_room($messageObj->pin);
         if (is_null($room)) {
@@ -109,7 +109,7 @@ class Rooms implements iHandler
         }
     }
 
-    public function handle_leave_room($messageObj, $user)
+    private function handle_leave_room($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {
@@ -127,7 +127,7 @@ class Rooms implements iHandler
         }
     }
 
-    public function handle_my_room($messageObj, $user)
+    private function handle_my_room($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {
@@ -136,7 +136,7 @@ class Rooms implements iHandler
         EventManager::add_event(new Event($user, 'rooms_handler', 'my_room', $user->get_room()->get_info()));
     }
 
-    public function handle_send_message($messageObj, $user)
+    private function handle_send_message($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {

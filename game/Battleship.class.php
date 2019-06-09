@@ -97,7 +97,7 @@ class Battleship implements iHandler
         }
     }
 
-    public function handle_shoot($messageObj, $user)
+    private function handle_shoot($messageObj, $user)
     {
         if ($this->playerTurn != $user) {
             return;
@@ -169,7 +169,7 @@ class Battleship implements iHandler
         EventManager::add_event(new Event($other_player, 'battleship_handler', 'shoot', $pTwo));
     }
 
-    public function handle_place($messageObj, $user)
+    private function handle_place($messageObj, $user)
     {
         $field = null;
         $ships = null;
@@ -249,7 +249,7 @@ class Battleship implements iHandler
         }
     }
 
-    public function check_hit($x, $y, &$field)
+    private function check_hit($x, $y, &$field)
     {
         if ($field[$x . $y] == 0 || $field[$x . $y] == 4) {
             $field[$x . $y] = 3;
@@ -280,7 +280,7 @@ class Battleship implements iHandler
         return false;
     }
 
-    public function fill_field()
+    private function fill_field()
     {
         for ($y = 0; $y < 10; $y++) {
             for ($x = 0; $x < 10; $x++) {

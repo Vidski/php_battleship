@@ -7,10 +7,15 @@ class Users implements iHandler
     {
         switch ($messageObj->action) {
             case 'set_username':
-                $user->set_username(ucfirst($messageObj->username));
-                EventManager::add_event(new Event($user, 'users_handler', 'set_username', array('username' => $user->get_username())));
+                $this->handle_set_username($messageObj, $user);
                 break;
         }
+    }
+
+    private function handle_set_username($messageObj, $user)
+    {
+        $user->set_username(ucfirst($messageObj->username));
+        EventManager::add_event(new Event($user, 'users_handler', 'set_username', array('username' => $user->get_username())));
     }
 
 }
