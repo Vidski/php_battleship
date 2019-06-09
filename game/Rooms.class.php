@@ -61,8 +61,8 @@ class Rooms implements iHandler
                 $this->handle_my_room($messageObj, $user);
                 break;
 
-            case 'send_message_room':
-                $this->handle_send_message_room($messageObj, $user);
+            case 'send_message':
+                $this->handle_send_message($messageObj, $user);
                 break;
 
             default:
@@ -133,10 +133,10 @@ class Rooms implements iHandler
         if (is_null($room)) {
             return;
         }
-        EventMananger::add_event(new Event($user, 'rooms_handler', 'my_room', $user->get_room()->get_info()));
+        EventManager::add_event(new Event($user, 'rooms_handler', 'my_room', $user->get_room()->get_info()));
     }
 
-    public function handle_send_message_room($messageObj, $user)
+    public function handle_send_message($messageObj, $user)
     {
         $room = $user->get_room();
         if (is_null($room)) {
@@ -147,7 +147,7 @@ class Rooms implements iHandler
         $username = $user->get_username();
         $rUsers = $room->get_players();
         foreach ($rUsers as $rUser) {
-            EventMananger::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $username . ': ' . $message)));
+            EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $username . ': ' . $message)));
         }
     }
 
@@ -155,7 +155,10 @@ class Rooms implements iHandler
     {
         if ($room = $user->get_room()) {
             if ($room->leave_room($user)) {
-                EventMananger::add_event(new Event($user, 'rooms_handler', 'leave_room', array('message' => $user->get_username() . ' left the room.', 'users' => $room->get_players())));
+                $rUsers = $room->get_players();
+                foreach ($rUsers as $rUser) {
+                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'leave_room', array('message' => $user->get_username() . ' left the room.')));
+                }
             }
         }
     }

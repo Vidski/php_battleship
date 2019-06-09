@@ -102,7 +102,6 @@ class Battleship implements iHandler
         if ($this->playerTurn != $user) {
             return;
         }
-
         $temp = $this->playerTurn;
         if ($this->playerTurn == $this->playerOne) {
             $other_player = $this->playerTwo;
@@ -110,8 +109,9 @@ class Battleship implements iHandler
             $other_player = $this->playerOne;
         }
 
-        $targetField;
-        $targetShips;
+        $targetField = null;
+        $targetShips = null;
+
         switch ($this->playerTurn) {
 
             case $this->playerOne:
@@ -157,7 +157,7 @@ class Battleship implements iHandler
             'myturn' => $user == $this->playerTurn,
             'ship' => is_null($deadShip) ? null : array(
                 'id' => $deadShip->get_id(),
-                'position' => $deadShip->get_position(),
+                'position' => $deadShip->get_position_formatted(),
             ),
         );
 
@@ -171,8 +171,8 @@ class Battleship implements iHandler
 
     public function handle_place($messageObj, $user)
     {
-        $field;
-        $ships;
+        $field = null;
+        $ships = null;
         if ($user == $this->playerOne && !$this->playerOneReady) {
             $field = &$this->playerOneField;
             $ships = &$this->playerOneShips;
@@ -228,7 +228,6 @@ class Battleship implements iHandler
 
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
-        //WORK IN PROGRESS
         //CHECK IF EVERYONE IS READY
         if (count($ships) >= 10) {
             if ($user == $this->playerOne) {

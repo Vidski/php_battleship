@@ -35,15 +35,15 @@
 
 td,
 th {
-    padding: 0!important;
+    padding: 0 !important;
     width: 48px;
     height: 48px;
     text-align: center;
-    vertical-align: middle!important;
+    vertical-align: middle !important;
 }
 
 .table {
-    width: unset!important;
+    width: unset !important;
     margin-bottom: 0;
 }
 
@@ -62,19 +62,33 @@ th {
     background-repeat: no-repeat;
 }
 
+.shipplaced {
+    background-color: red;
+    background-image: unset;
+    pointer-events: none;
+}
+
 .missed {
-    background-color: rgba(255, 255, 0, 0.5)!important;
-    background-image: url("../assets/dot.png");
+    background-color: rgba(255, 255, 0, 0.5) !important;
+    background-image: url("../assets/dot.png") !important;
     background-position: center;
     background-repeat: no-repeat;
     pointer-events: none;
 }
 
 .hit {
-    background-color: rgba(255, 0, 0, 0.5)!important;
-    background-image: url("../assets/cross.png");
+    background-color: rgba(255, 0, 0, 0.5) !important;
+    background-image: url("../assets/cross.png") !important;
     background-position: center;
     background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.dead {
+    background-color: rgba(255, 0, 0, 0.5) !important;
+    background-image: url("../assets/carbon_dark.png") !important;
+    background-repeat: repeat;
+    pointer-events: none;
 }
 
 .notmyturn {
@@ -91,6 +105,9 @@ th {
 
 .blocked {
     background-color: #b3b3b3;
+    background-image: url("../assets/cross_2.png");
+    background-position: center;
+    background-repeat: no-repeat;
     pointer-events: none;
 }
 

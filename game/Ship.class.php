@@ -37,6 +37,17 @@ class Ship
         return $this->shipPosition;
     }
 
+    public function get_position_formatted()
+    {
+        $arr = array();
+
+        foreach ($this->shipPosition as $val) {
+            array_push($arr, array('x' => $val[0], 'y' => $val[1]));
+        }
+
+        return $arr;
+    }
+
     public function get_id()
     {
         return $this->shipId;

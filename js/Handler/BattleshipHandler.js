@@ -35,9 +35,6 @@ class BattleshipHandler {
             case 'start':
                 this.handle_start(data);
 
-            case 'playerready':
-                this.handle_ready(data);
-
             default:
                 break;
         }
@@ -68,17 +65,38 @@ class BattleshipHandler {
             $('#field_left .card').removeClass('notmyturn');
         }
         if (data['content']['hit'] == 1) {
-
             $('#field_' + data['content']['field'] + ' td[data-col="' + data['content']['x'] + '"][data-row="' + data['content']['y'] + '"]').addClass('hit');
             $('#field_' + data['content']['field'] + ' td[data-col="' + data['content']['x'] + '"][data-row="' + data['content']['y'] + '"]').removeClass('ui-droppable');
 
             var x = parseInt(data['content']['x']);
             var y = parseInt(data['content']['y'])
 
-            $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + (y - 1) + '"]').addClass('missed');
-            $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + (y + 1) + '"]').addClass('missed');
-            $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + (y - 1) + '"]').addClass('missed');
-            $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + (y + 1) + '"]').addClass('missed');
+            if (data['content']['field'] != 'left') {
+                $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + (y - 1) + '"]').addClass('blocked');
+                $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + (y + 1) + '"]').addClass('blocked');
+                $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + (y - 1) + '"]').addClass('blocked');
+                $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + (y + 1) + '"]').addClass('blocked');
+            }
+
+            if (data['content']['ship']) {
+
+                if (data['content']['field'] != 'left') {
+                    for (let index = 0; index < data['content']['ship']['position'].length; index++) {
+                        var element = data['content']['ship']['position'][index];
+                        x = parseInt(element['x']);
+                        y = parseInt(element['y']);
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + (y - 1) + '"]').addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + y + '"]').addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + (y + 1) + '"]').addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + y + '"]').addClass('blocked');
+                    }
+                }
+                data['content']['ship']['position'].forEach(element => {
+                    $('#field_' + data['content']['field'] + ' td[data-col="' + (element['x']) + '"][data-row="' + (element['y']) + '"]').removeClass('blocked');
+                    $('#field_' + data['content']['field'] + ' td[data-col="' + (element['x']) + '"][data-row="' + (element['y']) + '"]').addClass('dead');
+                });
+
+            }
 
         } else {
             $('#field_' + data['content']['field'] + ' td[data-col="' + data['content']['x'] + '"][data-row="' + data['content']['y'] + '"]').addClass('missed');
@@ -156,7 +174,8 @@ class BattleshipHandler {
                 $('#field_left td[data-col="' + data['content']['blocked'][index][0] + '"][data-row="' + data['content']['blocked'][index][1] + '"]').addClass('blocked');
             }
             for (let index = 0; index < data['content']['placed'].length; index++) {
-                $('#field_left td[data-col="' + data['content']['placed'][index][0] + '"][data-row="' + data['content']['placed'][index][1] + '"]').css('background-color', 'red');
+                $('#field_left td[data-col="' + data['content']['placed'][index][0] + '"][data-row="' + data['content']['placed'][index][1] + '"]').removeClass('blocked');
+                $('#field_left td[data-col="' + data['content']['placed'][index][0] + '"][data-row="' + data['content']['placed'][index][1] + '"]').addClass('shipplaced');
             }
         }
     }
@@ -173,10 +192,6 @@ class BattleshipHandler {
             $('#ships').hide();
             $('#field_right').show();
         }
-    }
-
-    handle_ready(data) {
-
     }
 
 }

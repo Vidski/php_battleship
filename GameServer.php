@@ -2,10 +2,10 @@
 
 require 'Server.php';
 require dirname(__FILE__) . '/game/iHandler.interface.php';
+require dirname(__FILE__) . '/game/EventManager.class.php';
 require dirname(__FILE__) . '/game/Rooms.class.php';
 require dirname(__FILE__) . '/game/Users.class.php';
 require dirname(__FILE__) . '/game/Battleship.class.php';
-require dirname(__FILE__) . '/game/EventManager.class.php';
 
 class GameServer extends Server
 {
@@ -16,9 +16,9 @@ class GameServer extends Server
 
     protected function started()
     {
+        EventManager::init();
         $this->roomsHandler = new Rooms();
         $this->usersHandler = new Users();
-        EventManager::init();
     }
 
     protected function handle_in($user, $messageObj)
@@ -73,13 +73,14 @@ class GameServer extends Server
 
     private function execute($event)
     {
+        $user = $event->get_user();
+
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->execute()\n", $clientIP);
 
         //DEBUG
         //print_r($event);
 
-        $user = $event->get_user();
         $packet = $event->get_packet();
         $this->send_message($user, $packet);
     }
