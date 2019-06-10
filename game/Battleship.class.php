@@ -224,6 +224,7 @@ class Battleship implements iHandler
                 array_push($placed, $x . $y);
             }
         }
+        //TODO: LIMIT ÜBERPRÜFEN
         array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
 
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
