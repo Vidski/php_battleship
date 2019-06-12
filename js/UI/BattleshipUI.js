@@ -4,6 +4,10 @@ $("#field_right table").on("click", "td", function () {
 });
 
 //FUNCTIONS
+/**
+ * Funktion um die Spielfelder zu generieren.
+ * Hier wird die Data info erstellt und das Drag and Drop für das Plazieren der Schiffe eingerichtet.
+ */
 function generateTable() {
     var table = "";
     var fieldSize = 10;

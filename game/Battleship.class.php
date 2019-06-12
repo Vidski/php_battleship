@@ -61,7 +61,7 @@ class Battleship implements iHandler
     /**
      * action von iHandler
      * Hier werden die Packete von dem Client für das Spiel verwaltet
-     *
+     *  
      * @param  Array $messageObj Das Packet von dem Client
      * @param  User $user Der User (Client)
      */
@@ -97,11 +97,24 @@ class Battleship implements iHandler
         }
     }
 
+    /**
+     * function handle_shoot
+     * 
+     * In dieser funktion wird das Schießen auf dem Server verwaltet.
+     * Dazu wird die Funktion check_hit aufgerufen
+     * 
+     * @param  Array $messageObj Das Packet von dem Client
+     * @param  User $user Der User (Client)
+     */
     private function handle_shoot($messageObj, $user)
     {
         if ($this->playerTurn != $user) {
             return;
         }
+
+        /**
+         * Setzen der Spieler
+         */
         $temp = $this->playerTurn;
         if ($this->playerTurn == $this->playerOne) {
             $other_player = $this->playerTwo;
@@ -109,9 +122,11 @@ class Battleship implements iHandler
             $other_player = $this->playerOne;
         }
 
+        /**
+         * Setzen des Feldes und der Schiffe
+         */
         $targetField = null;
         $targetShips = null;
-
         switch ($this->playerTurn) {
 
             case $this->playerOne:
@@ -128,15 +143,24 @@ class Battleship implements iHandler
                 return null;
         }
 
+        /**
+         * Die Überprüfung des Schusses.
+         */
         $x = $messageObj->content->position->x;
         $y = $messageObj->content->position->y;
-
         $result = $this->check_hit($x, $y, $targetField, $targetShips);
 
+        /**
+         * @param $result ist null, wenn auf das angefragte Feld schonmal geschossen wurde.
+         */
         if (is_null($result)) {
             return null;
         }
 
+        /**
+         * Falls nicht getroffen wurde ist der andere Spieler am Zug. 
+         * Wenn getroffen wurde, wird geschaut ob das Schiff versenkt wurde oder nicht.
+         */
         $deadShip = null;
         if (!$result) {
             $this->playerTurn = $other_player;
@@ -149,6 +173,7 @@ class Battleship implements iHandler
             }
         }
 
+        //Nachrichten an die Spieler
         $pOne = array(
             'x' => $x,
             'y' => $y,
@@ -250,6 +275,21 @@ class Battleship implements iHandler
         }
     }
 
+    /**
+     * check_hit
+     * 
+     * Diese Funktion schaut nach, ob der Schuss ein Schiff getroffen hat. 
+     * 
+     * 0 = Kein Schiff
+     * 1 = Schiff
+     * 2 = Getroffen
+     * 3 = verfehlt
+     * 4 = blockiert für Schiffe bei dem Platzieren
+     * 
+     * @param Integer $x x-Position
+     * @param Integer $y y-Position
+     * @param Array $field Spielfeld
+     */
     private function check_hit($x, $y, &$field)
     {
         if ($field[$x . $y] == 0 || $field[$x . $y] == 4) {
@@ -281,6 +321,13 @@ class Battleship implements iHandler
         return false;
     }
 
+    /**
+     * fill_field
+     * 
+     * Hier werden die beiden Arrays, die die Felder verwalten, gefüllt. 
+     * 
+     * Die "0" steht für kein Schiff.
+     */
     private function fill_field()
     {
         for ($y = 0; $y < 10; $y++) {

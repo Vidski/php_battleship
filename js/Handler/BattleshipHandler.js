@@ -40,6 +40,14 @@ class BattleshipHandler {
         }
     }
 
+    /**
+     * send_shoot(x,y)
+     * 
+     * Sendet eine Json an den Server mit der Position des Schusses.
+     * 
+     * @param {int} x position
+     * @param {int} y position
+     */
     send_shoot(x, y) {
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
@@ -54,7 +62,19 @@ class BattleshipHandler {
         }));
     }
 
+    /**
+     * handle_shoot
+     * 
+     * Diese Funktion verwaltet, was nach dem Schuss passiert. 
+     * Dazu werden CSS Klassen hinzugefügt, um das Ergebnis grafisch anzuzeigen.
+     * 
+     * @param {Array} data 
+     */
     handle_shoot(data) {
+
+        /**
+         * Hier wird das Feld ausgegraut, falls man gerade nicht am Zug ist.
+         */
         if (data['content']['myturn'] == true) {
             $('#field_right .card').removeClass('notmyturn');
             $('#field_right .card').addClass('myturn');
@@ -64,12 +84,15 @@ class BattleshipHandler {
             $('#field_right .card').addClass('notmyturn');
             $('#field_left .card').removeClass('notmyturn');
         }
+        
+        //FALLS GETROFFEN WURDE
         if (data['content']['hit'] == 1) {
-            $('#field_' + data['content']['field'] + ' td[data-col="' + data['content']['x'] + '"][data-row="' + data['content']['y'] + '"]').addClass('hit');
-            $('#field_' + data['content']['field'] + ' td[data-col="' + data['content']['x'] + '"][data-row="' + data['content']['y'] + '"]').removeClass('ui-droppable');
 
             var x = parseInt(data['content']['x']);
-            var y = parseInt(data['content']['y'])
+            var y = parseInt(data['content']['y']);
+
+            $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + y + '"]').addClass('hit');
+            $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + y + '"]').removeClass('ui-droppable');
 
             if (data['content']['field'] != 'left') {
                 $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + (y - 1) + '"]').addClass('blocked');
