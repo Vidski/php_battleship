@@ -1,11 +1,11 @@
 <?php
 
 require 'Server.php';
-require dirname(__FILE__) . '/game/iHandler.interface.php';
-require dirname(__FILE__) . '/game/EventManager.class.php';
-require dirname(__FILE__) . '/game/Rooms.class.php';
-require dirname(__FILE__) . '/game/Users.class.php';
-require dirname(__FILE__) . '/game/Battleship.class.php';
+require dirname(__FILE__) . '/core/iHandler.interface.php';
+require dirname(__FILE__) . '/core/EventManager.class.php';
+require dirname(__FILE__) . '/core/Rooms.class.php';
+require dirname(__FILE__) . '/core/Users.class.php';
+require dirname(__FILE__) . '/core/games/battleship/Battleship.class.php';
 
 class GameServer extends Server
 {
