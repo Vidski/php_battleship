@@ -10,7 +10,7 @@ require 'Ship.class.php';
 class Battleship implements iHandler
 {
 
-    private $shipLimit = array(2 => 4, 3 => 3, 4 => 2, 5 => 1);
+    private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1);
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
         "ship3V" => array('x' => 1, 'y' => 3),
@@ -39,6 +39,7 @@ class Battleship implements iHandler
 
     /**
      * __construct für Battleship.class
+     *
      * @param  User $playerOne Spieler1
      * @param  User $playerTwo Spieler2
      */
@@ -60,8 +61,8 @@ class Battleship implements iHandler
 
     /**
      * action von iHandler
-     * Hier werden die Packete von dem Client für das Spiel verwaltet
-     *  
+     * Hier werden die Pakete von dem Client verarbeitet
+     *
      * @param  Array $messageObj Das Packet von dem Client
      * @param  User $user Der User (Client)
      */
@@ -98,11 +99,11 @@ class Battleship implements iHandler
     }
 
     /**
-     * function handle_shoot
-     * 
+     * handle_shoot
+     *
      * In dieser funktion wird das Schießen auf dem Server verwaltet.
      * Dazu wird die Funktion check_hit aufgerufen
-     * 
+     *
      * @param  Array $messageObj Das Packet von dem Client
      * @param  User $user Der User (Client)
      */
@@ -158,7 +159,7 @@ class Battleship implements iHandler
         }
 
         /**
-         * Falls nicht getroffen wurde ist der andere Spieler am Zug. 
+         * Falls nicht getroffen wurde ist der andere Spieler am Zug.
          * Wenn getroffen wurde, wird geschaut ob das Schiff versenkt wurde oder nicht.
          */
         $deadShip = null;
@@ -212,6 +213,20 @@ class Battleship implements iHandler
         $posY = $messageObj->content->position->y;
         $ship = $messageObj->content->ship;
 
+        //Überprüfen ob der Spieler dieses Schiff Platizeren darf (das Limit noch nicht erreicht hat)
+        $counter = 0;
+        $subShip = substr($ship, 0, 5);
+        foreach ($ships as $sid) {
+            if (substr($sid->get_id(), 0, 5) == $subShip) {
+                $counter++;
+            }
+        }
+        if ($counter >= $this->shipLimit[$subShip]) {
+            EventManager::add_event(new Event($user, 'battleship_handler', 'limit', array('ship' => $subShip)));
+            return;
+        }
+
+        //Validierung der Platzierung
         if ($field[$posX . $posY] == 0) {
             for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
                 for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
@@ -249,9 +264,8 @@ class Battleship implements iHandler
                 array_push($placed, $x . $y);
             }
         }
-        //TODO: LIMIT ÜBERPRÜFEN
-        array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
 
+        array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
         //CHECK IF EVERYONE IS READY
@@ -273,19 +287,24 @@ class Battleship implements iHandler
             }
             EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'Waiting for your Enemy to finish')));
         }
+
+        //Falls das Limit erreicht wurde, UI Element verstecken
+        if ($counter + 1 >= $this->shipLimit[$subShip]) {
+            EventManager::add_event(new Event($user, 'battleship_handler', 'limit', array('ship' => $subShip)));
+        }
     }
 
     /**
      * check_hit
-     * 
-     * Diese Funktion schaut nach, ob der Schuss ein Schiff getroffen hat. 
-     * 
+     *
+     * Diese Funktion schaut nach, ob der Schuss ein Schiff getroffen hat.
+     *
      * 0 = Kein Schiff
      * 1 = Schiff
      * 2 = Getroffen
      * 3 = verfehlt
      * 4 = blockiert für Schiffe bei dem Platzieren
-     * 
+     *
      * @param Integer $x x-Position
      * @param Integer $y y-Position
      * @param Array $field Spielfeld
@@ -323,10 +342,10 @@ class Battleship implements iHandler
 
     /**
      * fill_field
-     * 
-     * Hier werden die beiden Arrays, die die Felder verwalten, gefüllt. 
-     * 
-     * Die "0" steht für kein Schiff.
+     *
+     * Hier werden die beiden Arrays, die die Felder verwalten, gefüllt.
+     *
+     * Die "0" steht für leeres Feld.
      */
     private function fill_field()
     {

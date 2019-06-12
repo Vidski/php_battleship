@@ -35,6 +35,9 @@ class BattleshipHandler {
             case 'start':
                 this.handle_start(data);
 
+            case 'limit':
+                this.handle_limit(data);
+
             default:
                 break;
         }
@@ -84,7 +87,7 @@ class BattleshipHandler {
             $('#field_right .card').addClass('notmyturn');
             $('#field_left .card').removeClass('notmyturn');
         }
-        
+
         //FALLS GETROFFEN WURDE
         if (data['content']['hit'] == 1) {
 
@@ -215,6 +218,11 @@ class BattleshipHandler {
             $('#ships').hide();
             $('#field_right').show();
         }
+    }
+
+    handle_limit(data) {
+        var ship = data['content']['ship'];
+        $('#' + ship + 'H, #' + ship + 'V').hide();
     }
 
 }
