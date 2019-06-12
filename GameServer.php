@@ -46,7 +46,6 @@ class GameServer extends Server
     protected function handle_out()
     {
         $events = EventManager::events();
-        $length = $events->length();
 
         $reversed = new Stack();
 
