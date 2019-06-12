@@ -24,12 +24,14 @@ class Ship
     {
         if (in_array($x . $y, $this->shipPosition)) {
             $this->shipHealth--;
-            if ($this->shipHealth <= 0) {
-                //VERSUNKEN
-                return true;
-            }
+            return $this->shipHealth <= 0;
         }
         return false;
+    }
+
+    public function is_alive()
+    {
+        return $this->shipHealth > 0;
     }
 
     public function get_position()

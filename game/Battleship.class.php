@@ -114,30 +114,23 @@ class Battleship implements iHandler
         }
 
         /**
-         * Setzen der Spieler
-         */
-        $temp = $this->playerTurn;
-        if ($this->playerTurn == $this->playerOne) {
-            $other_player = $this->playerTwo;
-        } else {
-            $other_player = $this->playerOne;
-        }
-
-        /**
          * Setzen des Feldes und der Schiffe
          */
         $targetField = null;
         $targetShips = null;
+        $targetUser = null;
         switch ($this->playerTurn) {
 
             case $this->playerOne:
                 $targetField = &$this->playerTwoField;
                 $targetShips = &$this->playerTwoShips;
+                $targetUser = &$this->playerTwo;
                 break;
 
             case $this->playerTwo:
                 $targetField = &$this->playerOneField;
                 $targetShips = &$this->playerOneShips;
+                $targetUser = &$this->playerOne;
                 break;
 
             default:
@@ -163,8 +156,9 @@ class Battleship implements iHandler
          * Wenn getroffen wurde, wird geschaut ob das Schiff versenkt wurde oder nicht.
          */
         $deadShip = null;
+        $won = false;
         if (!$result) {
-            $this->playerTurn = $other_player;
+            $this->playerTurn = $targetUser;
         } else {
             foreach ($targetShips as $ship) {
                 if ($ship->is_dead($x, $y)) {
@@ -191,8 +185,17 @@ class Battleship implements iHandler
         $pTwo['field'] = 'left';
         $pTwo['myturn'] = $user != $this->playerTurn;
 
-        EventManager::add_event(new Event($temp, 'battleship_handler', 'shoot', $pOne));
-        EventManager::add_event(new Event($other_player, 'battleship_handler', 'shoot', $pTwo));
+        EventManager::add_event(new Event($user, 'battleship_handler', 'shoot', $pOne));
+        EventManager::add_event(new Event($targetUser, 'battleship_handler', 'shoot', $pTwo));
+
+        foreach ($targetShips as $ship) {
+            if ($ship->is_alive()) {
+                return;
+            }
+        }
+        //SPIEL IST VORBEI, EIN GEWINNER WURDE GEFUNDEN!
+        EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . " won!")));
+        EventManager::add_event(new Event($targetUser, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . " won!")));
     }
 
     private function handle_place($messageObj, $user)
@@ -213,7 +216,7 @@ class Battleship implements iHandler
         $posY = $messageObj->content->position->y;
         $ship = $messageObj->content->ship;
 
-        //Überprüfen ob der Spieler dieses Schiff Platizeren darf (das Limit noch nicht erreicht hat)
+        //Überprüfen ob der Spieler Schiff Platizeren darf (das Limit noch nicht erreicht hat)
         $counter = 0;
         $subShip = substr($ship, 0, 5);
         foreach ($ships as $sid) {
@@ -240,7 +243,7 @@ class Battleship implements iHandler
                 }
             }
         } else {
-            EventManager::add_event(new Event($user, 'battleship_handler', 'place', 'Can\'t place here.'));
+            EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'Can\'t place here.')));
             return;
         }
 
