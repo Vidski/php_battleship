@@ -1,9 +1,14 @@
+#login_box {
+    margin-top: 150px;
+}
+
 #login_box_form {
     display: none;
 }
 
 #menu_box {
     display: none;
+    margin-top: 150px;
 }
 
 #battleship_game_box {

@@ -56,13 +56,14 @@ function Over(event, ui) {
     console.log(classes_arr[1].slice(-2, -1));
     if (classes_arr[1].slice(-1) == 'V') {
         $(ui['helper']).height(($(event['target']).height() * parseInt(classes_arr[1].slice(-2, -1))) + parseInt(classes_arr[1].slice(-2, -1)) + 5);
-        $(ui['helper']).width($(event['target']).width());
+        $(ui['helper']).width($(event['target']).width() + 2);
     }
     else {
-        $(ui['helper']).width(($(event['target']).width() * parseInt(classes_arr[1].slice(-2, -1))) + parseInt(classes_arr[1].slice(-2, -1)));
-        $(ui['helper']).height($(event['target']).height());
+        $(ui['helper']).width(($(event['target']).width() * parseInt(classes_arr[1].slice(-2, -1))) + parseInt(classes_arr[1].slice(-2, -1)) + 6);
+        $(ui['helper']).height($(event['target']).height() + 2);
     }
-    $(ui['helper']).css('background-size', $(event['target']).width() + "px " + $(event['target']).height() + "px");
+    $(ui['helper']).css('background', 'unset');
+    $(ui['helper']).css('background-color', 'rgba(255, 0, 0, .5)');
 }
 
 //RESPONSIVE SHIPS
