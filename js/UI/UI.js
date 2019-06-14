@@ -2,11 +2,11 @@
 //SCALE SHIP SIZE WITH $(td).width()
 
 //CLICK EVENTS
-$("#btn_inputUsername").click(function (event) {
+$("#form_inputUsername").submit(function (event) {
     event.preventDefault();
     var name = $("#inputUsername").val();
     userHandler.send_set_username(name);
-    $('#btn_inputUsername').prop("disabled", true);
+    $('#form_inputUsername').prop("disabled", true);
 });
 
 $("#btn_createRoom").click(function (event) {
@@ -15,10 +15,11 @@ $("#btn_createRoom").click(function (event) {
     $('#btn_inputUsername').prop("disabled", true);
 });
 
-$("#btn_joinRoom").click(function (event) {
+$("#form_joinRoom").submit(function (event) {
     event.preventDefault();
     var pin = $('#joinRoomPin').val()
     roomHandler.send_join_room(pin);
+    $('#btn_joinRoom').prop("disabled", true);
 });
 
 $("#btn_sendMessage").click(function (event) {

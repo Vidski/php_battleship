@@ -51,6 +51,7 @@ class RoomHandler {
 
     handle_join_room(data) {
         if (data['content']['error']) {
+            $('#btn_joinRoom').prop("disabled", false);
             return;
         }
         $('#menu_box').fadeOut();
