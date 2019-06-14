@@ -7,15 +7,12 @@ class RoomHandler {
             case 'create_room':
                 this.handle_create_room(data);
                 break;
-
             case 'join_room':
                 this.handle_join_room(data);
                 break;
-
             case 'receive_message':
                 this.handle_receive_message(data);
                 break;
-
             default:
                 break;
         }
@@ -71,7 +68,10 @@ class RoomHandler {
     }
 
     handle_receive_message(data) {
-        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
+        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>");
+        $('#field_right .card').addClass('notmyturn');
+        $('#field_right .card').removeClass('myturn');
+        $('#field_left .card').addClass('notmyturn');
     }
 
 }
