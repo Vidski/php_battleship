@@ -69,9 +69,6 @@ class RoomHandler {
 
     handle_receive_message(data) {
         $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>");
-        $('#field_right .card').addClass('notmyturn');
-        $('#field_right .card').removeClass('myturn');
-        $('#field_left .card').addClass('notmyturn');
     }
 
 }

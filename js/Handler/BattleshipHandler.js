@@ -225,4 +225,11 @@ class BattleshipHandler {
         $('#' + ship + 'H, #' + ship + 'V').hide();
     }
 
+
+    //TODO handle_finish()
+    handle_finish(){
+        $('#field_right .card').addClass('notmyturn');
+        $('#field_right .card').removeClass('myturn');
+        $('#field_left .card').addClass('notmyturn');
+    }
 }
