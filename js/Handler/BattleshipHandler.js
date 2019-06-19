@@ -34,12 +34,19 @@ class BattleshipHandler {
 
             case 'start':
                 this.handle_start(data);
+                break;
 
             case 'limit':
                 this.handle_limit(data);
+                break;
 
             case 'ready':
                 this.handle_ready(data);
+                break;
+
+            case 'winner':
+                this.handle_winner(data);
+                break;
 
             default:
                 break;
@@ -239,6 +246,14 @@ class BattleshipHandler {
             }
             $('#ships').hide();
         }
+    }
+
+    handle_winner(data) {
+        $('#exampleModal .modal-title').text(data['content']['title']);
+        $('#exampleModal .modal-body').text(data['content']['body']);
+        $('#exampleModal').modal('show');
+        $('#field_left .card').addClass('notmyturn');
+        $('#field_right .card').addClass('notmyturn');
     }
 
 }
