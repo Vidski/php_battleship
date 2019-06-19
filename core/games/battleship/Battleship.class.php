@@ -349,7 +349,9 @@ class Battleship implements iHandler
                     }
                 }
             }
-            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_Field' => $this->playerOneField, "enemy_Field" => $temp, "game_started" => $this->gameStarted)));
+            print_r($this->playerOneField);
+            print_r($temp);
+            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_field' => $this->playerOneField, "enemy_field" => $temp, "game_started" => $this->gameStarted)));
 
             return true;
         } else if ($this->playerTwo->disconnected()) {
@@ -365,7 +367,9 @@ class Battleship implements iHandler
                     }
                 }
             }
-            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_Field' => $this->playerTwoField, "enemy_Field" => $temp, "game_started" => $this->gameStarted)));
+            print_r($this->playerTwoField);
+            print_r($temp);
+            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_field' => $this->playerTwoField, "enemy_field" => $temp, "game_started" => $this->gameStarted)));
 
             return true;
         }

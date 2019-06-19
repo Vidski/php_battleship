@@ -243,8 +243,9 @@ class BattleshipHandler {
             var table = document.getElementById("left");
             for (var i = 0, row; row = table.rows[i]; i++) {
                 for (var j = 0, col; col = row.cells[j]; j++) {
+                    console.log("blocked entfernen");
                     if ($(col).hasClass('blocked'))
-                        $(col).removeClass('blocked')
+                        $(col).removeClass('blocked');
                 }
             }
             $('#ships').hide();
@@ -265,9 +266,24 @@ class BattleshipHandler {
             console.log("Reconnect Game läuft");
             $('#ships').hide();
             $('#field_right').show();
+
+            console.log(data['content']['own_field']);
+            console.log(data['content']['enemy_field']);   
+
+            var table = document.getElementById("left");
+            console.log("here " + table);
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                console.log("test1")
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    console.log("test2");
+                    console.log(data['content']['own_field'][i.j]);
+                    if (data['content']['ownField'][i . j] == 1){
+                        $(col).addClass('shipplaced');
+                    }
+                }
+            }
         } else{
-            console.log("Reconnect");
+            console.log("Reconnect Place your Ship");
         }
     }
-
 }
