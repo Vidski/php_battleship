@@ -2,29 +2,31 @@
 //SCALE SHIP SIZE WITH $(td).width()
 
 //CLICK EVENTS
-$("#form_inputUsername").submit(function (event) {
+$("#form_inputUsername").submit(function(event) {
     event.preventDefault();
     var name = $("#inputUsername").val();
     userHandler.send_set_username(name);
     $('#form_inputUsername').prop("disabled", true);
+    $('#username').text(name);
 });
 
-$("#btn_createRoom").click(function (event) {
+$("#battleshipcover").click(function(event) {
     event.preventDefault();
     roomHandler.send_create_room();
     $('#btn_inputUsername').prop("disabled", true);
 });
 
-$("#form_joinRoom").submit(function (event) {
+$("#form_joinRoom").submit(function(event) {
     event.preventDefault();
     var pin = $('#joinRoomPin').val()
     roomHandler.send_join_room(pin);
     $('#btn_joinRoom').prop("disabled", true);
 });
 
-$("#btn_sendMessage").click(function (event) {
+$("#form_chat").submit(function(event) {
     event.preventDefault();
     var message = $('#input_sendMessage').val();
+    $('#input_sendMessage').val("");
     roomHandler.send_message(message);
 });
 
@@ -39,7 +41,7 @@ function loginBoxError() {
 function loginBoxSuccess() {
     $('#login_box_connecting .spinner-grow').removeClass('text-warning');
     $('#login_box_connecting .spinner-grow').addClass('text-success');
-    $('#login_box_connecting').fadeOut(2000, function () { $('#login_box_form').fadeIn(); });
+    $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
 }
 
 //HELPERS

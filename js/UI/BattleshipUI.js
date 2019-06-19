@@ -1,5 +1,5 @@
 //CLICK EVENTS
-$("#field_right table").on("click", "td", function () {
+$("#field_right table").on("click", "td", function() {
     battleshipHandler.send_shoot($(this).attr('data-col'), $(this).attr('data-row'));
 });
 
@@ -28,14 +28,14 @@ function generateTable() {
     table += '</tbody>';
     $('table').html(table);
     var cAt = $('td').width() / 3;
-    $('#ship2V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship3V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship4V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship5V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship2H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship3H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship4H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
-    $('#ship5H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt } });
+    $('#ship2V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship3V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship4V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship5V').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship2H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship3H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship4H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
+    $('#ship5H').draggable({ helper: "clone", snap: '.table td', snapMode: "outter", cursorAt: { top: cAt, left: cAt }, containment: "window" });
 
     $('td').droppable({
         tolerance: "pointer",
@@ -52,13 +52,12 @@ function Over(event, ui) {
     var classes = $(ui['helper']).attr("class");
     var classes_arr = classes.split(" ");
 
-    //TODO ! NOCH NICHT GUT ANGEPASST
+    //TODO: ! NOCH NICHT GUT ANGEPASST
     console.log(classes_arr[1].slice(-2, -1));
     if (classes_arr[1].slice(-1) == 'V') {
         $(ui['helper']).height(($(event['target']).height() * parseInt(classes_arr[1].slice(-2, -1))) + parseInt(classes_arr[1].slice(-2, -1)) + 5);
         $(ui['helper']).width($(event['target']).width() + 2);
-    }
-    else {
+    } else {
         $(ui['helper']).width(($(event['target']).width() * parseInt(classes_arr[1].slice(-2, -1))) + parseInt(classes_arr[1].slice(-2, -1)) + 6);
         $(ui['helper']).height($(event['target']).height() + 2);
     }
@@ -67,7 +66,7 @@ function Over(event, ui) {
 }
 
 //RESPONSIVE SHIPS
-$(window).resize(function () {
+$(window).resize(function() {
     $('#ship2V').width($('td').width());
     $('#ship3V').width($('td').width());
     $('#ship4V').width($('td').width());
@@ -93,5 +92,4 @@ $(window).resize(function () {
     $('#ship3H').css('background-size', $('td').width() + "px " + $('td').height() + "px");
     $('#ship4H').css('background-size', $('td').width() + "px " + $('td').height() + "px");
     $('#ship5H').css('background-size', $('td').width() + "px " + $('td').height() + "px");
-
 });

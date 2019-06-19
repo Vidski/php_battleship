@@ -31,7 +31,7 @@ class RoomHandler {
     handle_create_room(data) {
         $('#createRoomPin').val(data['content']['pin']);
         if (data['content']['pin']) {
-            $('#menu_box').fadeOut(function () {
+            $('#menu_box').fadeOut(function() {
                 $('#battleship_game_box').fadeIn();
             });
             $('#chat_box').append("<p style='color: red'>Room PIN: " + data['content']['pin'] + "</p>")
@@ -72,7 +72,10 @@ class RoomHandler {
     }
 
     handle_receive_message(data) {
-        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
+        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>");
+        $('#chat_box').animate({
+            scrollTop: $('#chat_box')[0].scrollHeight
+        }, 500);
     }
 
 }

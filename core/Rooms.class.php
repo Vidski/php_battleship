@@ -106,6 +106,7 @@ class Rooms implements iHandler
         $rUsers = $room->get_players();
         foreach ($rUsers as $rUser) {
             EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => $username . ' joined the room.')));
+            EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => ' ⚔ ' . $room->get_players()[0]->get_username() . ' versus ' . $room->get_players()[1]->get_username() . ' ⚔')));
         }
     }
 

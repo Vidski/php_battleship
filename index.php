@@ -56,18 +56,19 @@
                         <div class="row">
                             <div class="col">
                                 <div id="chat_box">
-
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Message" id="input_sendMessage">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" id="btn_sendMessage">Send</button>
+                                <form id="form_chat" autocomplete="off">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Message" id="input_sendMessage" autocomplete="off">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">Send</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>

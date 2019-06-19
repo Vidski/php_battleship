@@ -38,6 +38,9 @@ class BattleshipHandler {
             case 'limit':
                 this.handle_limit(data);
 
+            case 'ready':
+                this.handle_ready(data);
+
             default:
                 break;
         }
@@ -223,6 +226,19 @@ class BattleshipHandler {
     handle_limit(data) {
         var ship = data['content']['ship'];
         $('#' + ship + 'H, #' + ship + 'V').hide();
+    }
+
+    handle_ready(data) {
+        if (data['content']['ready']) {
+            var table = document.getElementById("left");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    if ($(col).hasClass('blocked'))
+                        $(col).removeClass('blocked')
+                }
+            }
+            $('#ships').hide();
+        }
     }
 
 }

@@ -17,7 +17,7 @@
 
 #chat_box {
     overflow: auto;
-    height: 200px;
+    height: 150px;
 }
 
 #chat_box p {
@@ -36,6 +36,16 @@
     display: none;
 }
 
+#battleshipcover {
+    transition: 0.25s linear;
+}
+
+#battleshipcover:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px 0px #007bff;
+}
+
+
 /* BATTLEFIELD */
 
 td,
@@ -45,6 +55,14 @@ th {
     height: 48px;
     text-align: center;
     vertical-align: middle !important;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
 }
 
 .table {
@@ -115,7 +133,6 @@ th {
     background-repeat: no-repeat;
     pointer-events: none;
 }
-
 
 
 /* SHIPS */

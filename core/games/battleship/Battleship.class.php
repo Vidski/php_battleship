@@ -288,7 +288,8 @@ class Battleship implements iHandler
                 }
                 return;
             }
-            EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'Waiting for your Enemy to finish')));
+            EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'Waiting for your enemy')));
+            EventManager::add_event(new Event($user, 'battleship_handler', 'ready', array('ready' => true)));
         }
 
         //Falls das Limit erreicht wurde, UI Element verstecken
