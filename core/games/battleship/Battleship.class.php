@@ -325,7 +325,7 @@ class Battleship implements iHandler
             return true;
         }
         return null;
-    }
+    } 
 
     //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
     public function replace_missing_player($player)
@@ -338,9 +338,35 @@ class Battleship implements iHandler
             return true;
         } else if ($this->playerOne->disconnected()) {
             $this->playerOne = $player;
+
+            $temp = array();
+            for ($y = 0; $y < 10; $y++) {
+                for ($x = 0; $x < 10; $x++) {
+                    if($this->playerTwoField[$x . $y] == 1 || $this->playerTwoField[$x . $y] == 4){
+                        $temp[$x.$y] = 0;
+                    } else {
+                        $temp[$x.$y] = $this->playerTwoField[$x . $y];
+                    }
+                }
+            }
+            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_Field' => $this->playerOneField, "enemy_Field" => $temp, "game_started" => $this->gameStarted)));
+
             return true;
         } else if ($this->playerTwo->disconnected()) {
             $this->playerTwo = $player;
+            
+            $temp = array();
+            for ($y = 0; $y < 10; $y++) {
+                for ($x = 0; $x < 10; $x++) {
+                    if($this->playerOneField[$x . $y] == 1 || $this->playerOneField[$x . $y] == 4){
+                        $temp[$x.$y] = 0;
+                    } else {
+                        $temp[$x.$y] = $this->playerOneField[$x . $y];
+                    }
+                }
+            }
+            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_Field' => $this->playerTwoField, "enemy_Field" => $temp, "game_started" => $this->gameStarted)));
+
             return true;
         }
         return false;

@@ -32,6 +32,9 @@ class BattleshipHandler {
                 this.handle_place(data);
                 break;
 
+            case 'reconnect':
+                this.handle_reconnect(data);
+                break;
             case 'start':
                 this.handle_start(data);
                 break;
@@ -254,6 +257,17 @@ class BattleshipHandler {
         $('#exampleModal').modal('show');
         $('#field_left .card').addClass('notmyturn');
         $('#field_right .card').addClass('notmyturn');
+    }
+
+    //TODO 
+    handle_reconnect(data){
+        if(data['content']["game_started"]){
+            console.log("Reconnect Game läuft");
+            $('#ships').hide();
+            $('#field_right').show();
+        } else{
+            console.log("Reconnect");
+        }
     }
 
 }

@@ -7,15 +7,12 @@ class RoomHandler {
             case 'create_room':
                 this.handle_create_room(data);
                 break;
-
             case 'join_room':
                 this.handle_join_room(data);
                 break;
-
             case 'receive_message':
                 this.handle_receive_message(data);
                 break;
-
             default:
                 break;
         }

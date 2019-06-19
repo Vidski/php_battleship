@@ -44,10 +44,22 @@ function generateTable() {
     });
 }
 
+/**
+ * Funktion die beim Platzieren eines Schiffes aufgerufen wird.
+ * Die Funktion leitet die Aufgabe an den BattleshipHandler weitergeleitet.
+ * 
+ * @param {*} event 
+ * @param {*} ui 
+ */
 function Drop(event, ui) {
     battleshipHandler.send_place($(this).attr('data-col'), $(this).attr('data-row'), ui['draggable'][0]['id']);
 }
 
+/**
+ * Funktion die bei dem Halten eines SChiffes über dem Spielfeld aufgerufen wird. 
+ * @param {*} event 
+ * @param {*} ui 
+ */
 function Over(event, ui) {
     var classes = $(ui['helper']).attr("class");
     var classes_arr = classes.split(" ");
