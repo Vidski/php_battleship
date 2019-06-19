@@ -196,6 +196,8 @@ class Battleship implements iHandler
         //SPIEL IST VORBEI, EIN GEWINNER WURDE GEFUNDEN!
         EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . " won!")));
         EventManager::add_event(new Event($targetUser, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . " won!")));
+        EventManager::add_event(new Event($user, 'battleship_handler', 'winner', array('title' => "🏆 Winner Winner, Chicken Dinner!", 'body' => 'You won, good job!')));
+        EventManager::add_event(new Event($targetUser, 'battleship_handler', 'winner', array('title' => $user->get_username() . " won!", 'body' => 'Maybe next time, loser 🤣')));
     }
 
     private function handle_place($messageObj, $user)
@@ -288,7 +290,8 @@ class Battleship implements iHandler
                 }
                 return;
             }
-            EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'Waiting for your Enemy to finish')));
+            EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'Waiting for your enemy')));
+            EventManager::add_event(new Event($user, 'battleship_handler', 'ready', array('ready' => true)));
         }
 
         //Falls das Limit erreicht wurde, UI Element verstecken

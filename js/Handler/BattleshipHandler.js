@@ -37,9 +37,19 @@ class BattleshipHandler {
                 break;
             case 'start':
                 this.handle_start(data);
+                break;
 
             case 'limit':
                 this.handle_limit(data);
+                break;
+
+            case 'ready':
+                this.handle_ready(data);
+                break;
+
+            case 'winner':
+                this.handle_winner(data);
+                break;
 
             default:
                 break;
@@ -228,12 +238,25 @@ class BattleshipHandler {
         $('#' + ship + 'H, #' + ship + 'V').hide();
     }
 
+    handle_ready(data) {
+        if (data['content']['ready']) {
+            var table = document.getElementById("left");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    if ($(col).hasClass('blocked'))
+                        $(col).removeClass('blocked')
+                }
+            }
+            $('#ships').hide();
+        }
+    }
 
-    //TODO
-    handle_finish(){
-        $('#field_right .card').addClass('notmyturn');
-        $('#field_right .card').removeClass('myturn');
+    handle_winner(data) {
+        $('#exampleModal .modal-title').text(data['content']['title']);
+        $('#exampleModal .modal-body').text(data['content']['body']);
+        $('#exampleModal').modal('show');
         $('#field_left .card').addClass('notmyturn');
+        $('#field_right .card').addClass('notmyturn');
     }
 
     //TODO 
@@ -246,4 +269,5 @@ class BattleshipHandler {
             console.log("Reconnect");
         }
     }
+
 }

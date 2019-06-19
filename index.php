@@ -48,6 +48,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Chat -->
         <div class="row justify-content-center align-items-center">
             <div class="col-12">
@@ -56,18 +57,19 @@
                         <div class="row">
                             <div class="col">
                                 <div id="chat_box">
-
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Message" id="input_sendMessage">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" id="btn_sendMessage">Send</button>
+                                <form id="form_chat" autocomplete="off">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Message" id="input_sendMessage" autocomplete="off">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">Send</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -76,6 +78,24 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- scripts -->
     <?php require dirname(__FILE__) . '/html/scripts.html'; ?>
     <?php require dirname(__FILE__) . '/html/navbar.html'; ?>
 
