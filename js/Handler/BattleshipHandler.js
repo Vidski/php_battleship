@@ -219,6 +219,24 @@ class BattleshipHandler {
         }
     }
 
+    send_remove(x, y) {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "game_action",
+            "content": {
+                "position": {
+                    "x": x,
+                    "y": y
+                },
+                "action": "remove"
+            }
+        }));
+    }
+
+    handle_remove(data) {
+
+    }
+
     handle_start(data) {
         if (data['content']['ready']) {
             var table = document.getElementById("left");
@@ -260,12 +278,12 @@ class BattleshipHandler {
     }
 
     //TODO 
-    handle_reconnect(data){
-        if(data['content']["game_started"]){
+    handle_reconnect(data) {
+        if (data['content']["game_started"]) {
             console.log("Reconnect Game läuft");
             $('#ships').hide();
             $('#field_right').show();
-        } else{
+        } else {
             console.log("Reconnect");
         }
     }

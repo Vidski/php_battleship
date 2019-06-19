@@ -93,6 +93,13 @@ class Battleship implements iHandler
                 $this->handle_place($messageObj, $user);
                 break;
 
+            case 'remove':
+                if ($this->gameStarted) {
+                    return;
+                }
+                $this->handle_remove($messageObj, $user);
+                break;
+
             default:
                 break;
         }
@@ -300,6 +307,11 @@ class Battleship implements iHandler
         }
     }
 
+    private function handle_remove($messageObj, $user)
+    {
+        EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'REMOVING')));
+    }
+
     /**
      * check_hit
      *
@@ -325,7 +337,7 @@ class Battleship implements iHandler
             return true;
         }
         return null;
-    } 
+    }
 
     //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
     public function replace_missing_player($player)
@@ -342,10 +354,10 @@ class Battleship implements iHandler
             $temp = array();
             for ($y = 0; $y < 10; $y++) {
                 for ($x = 0; $x < 10; $x++) {
-                    if($this->playerTwoField[$x . $y] == 1 || $this->playerTwoField[$x . $y] == 4){
-                        $temp[$x.$y] = 0;
+                    if ($this->playerTwoField[$x . $y] == 1 || $this->playerTwoField[$x . $y] == 4) {
+                        $temp[$x . $y] = 0;
                     } else {
-                        $temp[$x.$y] = $this->playerTwoField[$x . $y];
+                        $temp[$x . $y] = $this->playerTwoField[$x . $y];
                     }
                 }
             }
@@ -354,14 +366,14 @@ class Battleship implements iHandler
             return true;
         } else if ($this->playerTwo->disconnected()) {
             $this->playerTwo = $player;
-            
+
             $temp = array();
             for ($y = 0; $y < 10; $y++) {
                 for ($x = 0; $x < 10; $x++) {
-                    if($this->playerOneField[$x . $y] == 1 || $this->playerOneField[$x . $y] == 4){
-                        $temp[$x.$y] = 0;
+                    if ($this->playerOneField[$x . $y] == 1 || $this->playerOneField[$x . $y] == 4) {
+                        $temp[$x . $y] = 0;
                     } else {
-                        $temp[$x.$y] = $this->playerOneField[$x . $y];
+                        $temp[$x . $y] = $this->playerOneField[$x . $y];
                     }
                 }
             }

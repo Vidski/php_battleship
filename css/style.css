@@ -88,7 +88,7 @@ th {
 .shipplaced {
     background-color: red;
     background-image: unset;
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 .missed {
