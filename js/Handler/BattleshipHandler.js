@@ -283,10 +283,6 @@ class BattleshipHandler {
                     }
                     else if (currfield == 6) {
                         $(col).addClass('blocked');
-                        $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + (y - 1) + '"]').addClass('blocked');
-                        $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + y + '"]').addClass('blocked');
-                        $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + (y + 1) + '"]').addClass('blocked');
-                        $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + y + '"]').addClass('blocked');
                     }
                     else if (currfield == 5) {
                         $(col).addClass('dead');

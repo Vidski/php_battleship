@@ -11,6 +11,8 @@ class Battleship implements iHandler
 {
 
     private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1);
+    private const SHIP_LIMIT = 2; //IST IMMER 10
+
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
         "ship3V" => array('x' => 1, 'y' => 3),
@@ -170,8 +172,13 @@ class Battleship implements iHandler
             foreach ($targetShips as $ship) {
                 if ($ship->is_dead($x, $y)) {
                     $deadShip = $ship;
-                    foreach ($ship->get_position() as $value) {
+                    //TODO:
+                    $deadShipPositions = $ship->get_position();
+                    $targetField[$deadShipPositions[0] - 1] = 6;
+                    $targetField[$deadShipPositions[0] + 1] = 6;
+                    foreach ($deadShipPositions as $value) {
                         $targetField[$value] = 5;
+                        print_r($targetField);
                     }
                     break;
                 }
@@ -284,7 +291,7 @@ class Battleship implements iHandler
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
         //CHECK IF EVERYONE IS READY
-        if (count($ships) >= 10) {
+        if (count($ships) >= Battleship::SHIP_LIMIT) {
             if ($user == $this->playerOne) {
                 $this->playerOneReady = true;
             } else {
@@ -334,10 +341,10 @@ class Battleship implements iHandler
             return false;
         } else if ($field[$x . $y] == 1) {
             $field[$x . $y] = 2;
-            $field[$x . $y - 1] = 6;
-            $field[$x . $y + 1] = 6;
-            $field[$x + 1 . $y] = 6;
-            $field[$x - 1 . $y] = 6;
+            $field[$x + 1 . $y - 1] = 6;
+            $field[$x + 1 . $y + 1] = 6;
+            $field[$x - 1 . $y - 1] = 6;
+            $field[$x - 1 . $y + 1] = 6;
             return true;
         }
         return null;
