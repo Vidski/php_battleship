@@ -243,7 +243,7 @@ class Battleship implements iHandler
 
         //Validierung der Platzierung
         if ($field[$posX . $posY] == 0) {
-            for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
+            for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y'] + 1; $y++) {
                 for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
                     if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
                         continue;
@@ -358,6 +358,9 @@ class Battleship implements iHandler
         }
 
         if ($this->missingSomeone) {
+            if ($this->playerTurn->disconnected()) {
+                $this->playerTurn = $player;
+            }
             $this->reconnect_player($player, $playerShips, $playerField, $targetField);
         }
     }
