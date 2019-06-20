@@ -76,7 +76,8 @@ class Battleship implements iHandler
         //Falls ein Spieler disconnected Spiel pausieren
         if ($this->gameStarted) {
             if ($this->playerOne->disconnected() || $this->playerTwo->disconnected()) {
-                return null;
+                EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => "Waiting for someone to reconnect!")));
+                return;
             }
         }
 
@@ -119,18 +120,21 @@ class Battleship implements iHandler
         /**
          * Setzen des Feldes und der Schiffe
          */
+        $playerField = null;
         $targetField = null;
         $targetShips = null;
         $targetUser = null;
         switch ($this->playerTurn) {
 
             case $this->playerOne:
+                $playerField = &$this->playerOneField;
                 $targetField = &$this->playerTwoField;
                 $targetShips = &$this->playerTwoShips;
                 $targetUser = &$this->playerTwo;
                 break;
 
             case $this->playerTwo:
+                $playerField = &$this->playerTwoField;
                 $targetField = &$this->playerOneField;
                 $targetShips = &$this->playerOneShips;
                 $targetUser = &$this->playerOne;
@@ -166,6 +170,9 @@ class Battleship implements iHandler
             foreach ($targetShips as $ship) {
                 if ($ship->is_dead($x, $y)) {
                     $deadShip = $ship;
+                    foreach ($ship->get_position() as $value) {
+                        $playerField[$value] = 5;
+                    }
                     break;
                 }
             }
@@ -313,6 +320,7 @@ class Battleship implements iHandler
      * 2 = Getroffen
      * 3 = verfehlt
      * 4 = blockiert für Schiffe bei dem Platzieren
+     * 5 = zerstört //TODO
      *
      * @param Integer $x x-Position
      * @param Integer $y y-Position
@@ -330,52 +338,62 @@ class Battleship implements iHandler
         return null;
     }
 
+    public function add_player($player)
+    {
+        $playerShips = null;
+        $playerField = null;
+        $targetField = null;
+        if (is_null($this->playerOne) || $this->playerOne->disconnected()) {
+            $this->playerOne = $player;
+            $playerShips = &$this->playerOneShips;
+            $playerField = &$this->playerOneField;
+            $targetField = &$this->playerTwoField;
+        } else if (is_null($this->playerTwo) || $this->playerTwo->disconnected()) {
+            $this->playerTwo = $player;
+            $playerField = &$this->playerTwoField;
+            $playerShips = &$this->playerTwoShips;
+            $targetField = &$this->playerOneField;
+        } else {
+            return;
+        }
+
+        if ($this->missingSomeone) {
+            $this->reconnect_player($player, $playerShips, $playerField, $targetField);
+        }
+    }
+
     public function missing_player()
     {
         return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
     }
 
     //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
-    public function replace_missing_player($player)
+    public function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
     {
-        $playerShips = null;
-        $targetShips = null;
-        if (is_null($this->playerOne) || $this->playerOne->disconnected()) {
-            $this->playerOne = $player;
-            $playerShips = &$this->playerOneShips;
-            $targetShips = &$this->playerTwoShips;
-        } else if (is_null($this->playerTwo) || $this->playerTwo->disconnected()) {
-            $this->playerTwo = $player;
-            $playerShips = &$this->playerTwoShips;
-            $targetShips = &$this->playerOneShips;
-        } else {
-            $this->missingSomeone = false;
-            return;
-        }
         $this->missingSomeone = false;
 
         if (!$this->gameStarted) {
-            //Falls das Spiel noch nicht begonnen hat, und der Spieler nichts platziert hatte, müssen wir ihn nichts schicken
             if (count($playerShips) <= 0) {
                 return;
             }
             $this->send_limit($player, $playerShips);
             EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
-                'own_field' => $this->playerOneField,
+                'own_field' => $playerField,
                 'game_started' => false,
             )));
-
+            return;
         }
 
         $temp = array();
-        foreach ($targetShips as $value) {
-            $value > 1 ? array_push($temp, $value) : array_push($temp, 0);
+        foreach ($targetField as $value) {
+            $value > 1 && $value < 4 ? array_push($temp, $value) : array_push($temp, 0);
         }
 
         EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
-            'own_field' => $this->playerOneField,
+            'own_field' => $playerField,
             'enemy_field' => $temp,
-            'game_started' => true,
+            'game_started' => $this->gameStarted,
+            'my_turn' => $this->playerTurn == $player,
         )));
     }
 
@@ -423,11 +441,6 @@ class Battleship implements iHandler
     public function someone_left()
     {
         $this->missingSomeone = true;
-    }
-
-    public function are_we_missing_a_player_questionmark()
-    {
-        return $this->missingSomeone;
     }
 
     public function destroy_time()

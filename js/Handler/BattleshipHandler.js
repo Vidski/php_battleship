@@ -244,7 +244,6 @@ class BattleshipHandler {
             var table = document.getElementById("left");
             for (var i = 0, row; row = table.rows[i]; i++) {
                 for (var j = 0, col; col = row.cells[j]; j++) {
-                    console.log("blocked entfernen");
                     if ($(col).hasClass('blocked'))
                         $(col).removeClass('blocked');
                 }
@@ -263,37 +262,47 @@ class BattleshipHandler {
 
     //TODO 
     handle_reconnect(data) {
-        if (data['content']["game_started"]) {
+        if (data['content']['game_started']) {
             $('#ships').hide();
             $('#field_right').show();
 
-            console.log(data['content']['own_field']);
-            console.log(data['content']['enemy_field']);
-
-            var table = document.getElementById("left");
-            console.log("here " + table);
-            for (var i = 0, row; row = table.rows[i]; i++) {
-                console.log("test1")
-                for (var j = 0, col; col = row.cells[j]; j++) {
-                    console.log("test2");
-                    console.log(data['content']['own_field'][i + j]);
-                    if (data['content']['ownField'][i + j] == 1) {
-                        $(col).addClass('shipplaced');
-                    }
-                }
+            if (data['content']['my_turn']) {
+                $('#field_right .card').removeClass('notmyturn');
+                $('#field_right .card').addClass('myturn');
+                $('#field_left .card').addClass('notmyturn');
             }
-        } else {
-            var table = document.getElementById("left");
-            var currfield;
+
+            var table = document.getElementById("right");
             for (var i = 1, row; row = table.rows[i]; i++) {
                 for (var j = 1, col; col = row.cells[j]; j++) {
-                    currfield = data['content']['own_field'][(i - 1) + "" + (j - 1)];
-                    if (currfield == 1) {
-                        $(col).addClass('shipplaced');
+                    currfield = data['content']['enemy_field'][(j - 1) + "" + (i - 1)];
+                    if (currfield == 2) {
+                        $(col).addClass('hit');
+                    }
+                    else if (currfield == 3) {
+                        $(col).addClass('missed');
                     }
                     else if (currfield == 4) {
                         $(col).addClass('blocked');
                     }
+                    else if (currfield == 5) {
+                        $(col).addClass('dead');
+                    }
+                }
+            }
+        }
+
+        var table = document.getElementById("left");
+        var currfield;
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            for (var j = 1, col; col = row.cells[j]; j++) {
+                currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)];
+                if (currfield == 1) {
+                    $(col).addClass('shipplaced');
+                }
+                else if (currfield == 4) {
+                    if (!data['content']['game_started'])
+                        $(col).addClass('blocked');
                 }
             }
         }

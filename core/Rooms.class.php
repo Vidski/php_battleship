@@ -104,14 +104,13 @@ class Rooms implements iHandler
         $user->set_room($room);
         $username = $user->get_username();
         $rUsers = $room->get_players();
+        EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('joined' => true)));
         foreach ($rUsers as $rUser) {
-            EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => $username . ' joined the room.')));
+            EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $username . ' joined the room.')));
             //EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => ' ⚔ ' . $room->get_players()[0]->get_username() . ' versus ' . $room->get_players()[1]->get_username() . ' ⚔')));
         }
 
-        if ($room->get_game()->are_we_missing_a_player_questionmark()) {
-            $room->get_game()->replace_missing_player($user);
-        }
+        $room->get_game()->add_player($user);
     }
 
     private function handle_leave_room($messageObj, $user)
