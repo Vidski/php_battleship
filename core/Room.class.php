@@ -43,8 +43,8 @@ class Room
         }
         unset($this->roomPlayers[$index]);
         $user->set_room(null);
-        if (count($this->roomPlayers) == 0) {
-            $this->isEmpty = true;
+        if (array_search(!null, $this->roomPlayers) > 0) {
+            $this->isEmpty = false;
         }
         return true;
     }
