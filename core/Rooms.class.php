@@ -91,7 +91,7 @@ class Rooms implements iHandler
         }
 
         //TODO: replace_missing_player ist nur für Battleship.class da, man sollte für neue Spiele ein iInterface bauen
-        if (!$room->get_game()->replace_missing_player($user)) {
+        if (!$room->get_game()->missing_player()) {
             EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'Room is full.')));
             return;
         }
@@ -106,7 +106,11 @@ class Rooms implements iHandler
         $rUsers = $room->get_players();
         foreach ($rUsers as $rUser) {
             EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => $username . ' joined the room.')));
-            EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('message' => ' ⚔ ' . $room->get_players()[0]->get_username() . ' versus ' . $room->get_players()[1]->get_username() . ' ⚔')));
+            //EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => ' ⚔ ' . $room->get_players()[0]->get_username() . ' versus ' . $room->get_players()[1]->get_username() . ' ⚔')));
+        }
+
+        if ($room->get_game()->are_we_missing_a_player_questionmark()) {
+            $room->get_game()->replace_missing_player($user);
         }
     }
 
@@ -152,13 +156,15 @@ class Rooms implements iHandler
         }
     }
 
-    public function on_user_disconnect($user)
+    public function on_user_disconnected($user)
     {
-        if ($room = $user->get_room()) {
+        $room = $user->get_room();
+        if (!is_null($user->get_room())) {
             if ($room->leave_room($user)) {
                 $rUsers = $room->get_players();
+                $room->get_game()->someone_left();
                 foreach ($rUsers as $rUser) {
-                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'leave_room', array('message' => $user->get_username() . ' left the room.')));
+                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . ' left the room.')));
                 }
             }
         }

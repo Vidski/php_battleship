@@ -27,6 +27,8 @@ class Battleship implements iHandler
     private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
     private const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
+    private $missingSomeone;
+
     private $playerOne;
     private $playerOneReady;
     private $playerOneField;
@@ -57,6 +59,7 @@ class Battleship implements iHandler
         $this->playerTurn = $playerOne;
         $this->fill_field();
         $this->lastMove = time();
+        $this->missingSomeone = false;
     }
 
     /**
@@ -325,55 +328,55 @@ class Battleship implements iHandler
             return true;
         }
         return null;
-    } 
+    }
+
+    public function missing_player()
+    {
+        return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
+    }
 
     //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
     public function replace_missing_player($player)
     {
-        if (is_null($this->playerOne)) {
+        $playerShips = null;
+        $targetShips = null;
+        if (is_null($this->playerOne) || $this->playerOne->disconnected()) {
             $this->playerOne = $player;
-            return true;
-        } else if (is_null($this->playerTwo)) {
+            $playerShips = &$this->playerOneShips;
+            $targetShips = &$this->playerTwoShips;
+        } else if (is_null($this->playerTwo) || $this->playerTwo->disconnected()) {
             $this->playerTwo = $player;
-            return true;
-        } else if ($this->playerOne->disconnected()) {
-            $this->playerOne = $player;
-
-            $temp = array();
-            for ($y = 0; $y < 10; $y++) {
-                for ($x = 0; $x < 10; $x++) {
-                    if($this->playerTwoField[$x . $y] == 1 || $this->playerTwoField[$x . $y] == 4){
-                        $temp[$x.$y] = 0;
-                    } else {
-                        $temp[$x.$y] = $this->playerTwoField[$x . $y];
-                    }
-                }
-            }
-            print_r($this->playerOneField);
-            print_r($temp);
-            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_field' => $this->playerOneField, "enemy_field" => $temp, "game_started" => $this->gameStarted)));
-
-            return true;
-        } else if ($this->playerTwo->disconnected()) {
-            $this->playerTwo = $player;
-            
-            $temp = array();
-            for ($y = 0; $y < 10; $y++) {
-                for ($x = 0; $x < 10; $x++) {
-                    if($this->playerOneField[$x . $y] == 1 || $this->playerOneField[$x . $y] == 4){
-                        $temp[$x.$y] = 0;
-                    } else {
-                        $temp[$x.$y] = $this->playerOneField[$x . $y];
-                    }
-                }
-            }
-            print_r($this->playerTwoField);
-            print_r($temp);
-            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_field' => $this->playerTwoField, "enemy_field" => $temp, "game_started" => $this->gameStarted)));
-
-            return true;
+            $playerShips = &$this->playerTwoShips;
+            $targetShips = &$this->playerOneShips;
+        } else {
+            $this->missingSomeone = false;
+            return;
         }
-        return false;
+        $this->missingSomeone = false;
+
+        if (!$this->gameStarted) {
+            //Falls das Spiel noch nicht begonnen hat, und der Spieler nichts platziert hatte, müssen wir ihn nichts schicken
+            if (count($playerShips) <= 0) {
+                return;
+            }
+            $this->send_limit($player, $playerShips);
+            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
+                'own_field' => $this->playerOneField,
+                'game_started' => false,
+            )));
+
+        }
+
+        $temp = array();
+        foreach ($targetShips as $value) {
+            $value > 1 ? array_push($temp, $value) : array_push($temp, 0);
+        }
+
+        EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
+            'own_field' => $this->playerOneField,
+            'enemy_field' => $temp,
+            'game_started' => true,
+        )));
     }
 
     /**
@@ -391,6 +394,40 @@ class Battleship implements iHandler
                 $this->playerTwoField[$x . $y] = 0;
             }
         }
+    }
+
+    /**
+     * send_limit
+     *
+     * Diese Funktion sagt dem Client welche Schiffe er noch platzieren kann.
+     *
+     * @param Player $player Der Spieler/Client
+     * @param Array $ships Die schiffe von dem Spieler/Client
+     */
+    private function send_limit($player, $ships)
+    {
+        $counter = 0;
+        foreach ($this->shipLimit as $key => $value) {
+            foreach ($ships as $sid) {
+                if (substr($sid->get_id(), 0, 5) == $key) {
+                    $counter++;
+                }
+            }
+            if ($counter >= $value) {
+                EventManager::add_event(new Event($player, 'battleship_handler', 'limit', array('ship' => $key)));
+                $counter = 0;
+            }
+        }
+    }
+
+    public function someone_left()
+    {
+        $this->missingSomeone = true;
+    }
+
+    public function are_we_missing_a_player_questionmark()
+    {
+        return $this->missingSomeone;
     }
 
     public function destroy_time()

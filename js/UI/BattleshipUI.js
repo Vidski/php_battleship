@@ -1,5 +1,5 @@
 //CLICK EVENTS
-$("#field_right table").on("click", "td", function() {
+$("#field_right table").on("click", "td", function () {
     battleshipHandler.send_shoot($(this).attr('data-col'), $(this).attr('data-row'));
 });
 
@@ -78,7 +78,7 @@ function Over(event, ui) {
 }
 
 //RESPONSIVE SHIPS
-$(window).resize(function() {
+$(window).resize(function () {
     $('#ship2V').width($('td').width());
     $('#ship3V').width($('td').width());
     $('#ship4V').width($('td').width());
