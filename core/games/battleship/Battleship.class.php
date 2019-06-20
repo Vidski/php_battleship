@@ -171,7 +171,7 @@ class Battleship implements iHandler
                 if ($ship->is_dead($x, $y)) {
                     $deadShip = $ship;
                     foreach ($ship->get_position() as $value) {
-                        $playerField[$value] = 5;
+                        $targetField[$value] = 5;
                     }
                     break;
                 }
@@ -321,6 +321,7 @@ class Battleship implements iHandler
      * 3 = verfehlt
      * 4 = blockiert für Schiffe bei dem Platzieren
      * 5 = zerstört //TODO
+     * 6 = BLOCKIERT BEIM SHOOTEN
      *
      * @param Integer $x x-Position
      * @param Integer $y y-Position
@@ -333,6 +334,10 @@ class Battleship implements iHandler
             return false;
         } else if ($field[$x . $y] == 1) {
             $field[$x . $y] = 2;
+            $field[$x . $y - 1] = 6;
+            $field[$x . $y + 1] = 6;
+            $field[$x + 1 . $y] = 6;
+            $field[$x - 1 . $y] = 6;
             return true;
         }
         return null;
@@ -389,7 +394,7 @@ class Battleship implements iHandler
 
         $temp = array();
         foreach ($targetField as $value) {
-            $value > 1 && $value < 4 ? array_push($temp, $value) : array_push($temp, 0);
+            $value > 1 && $value != 4 ? array_push($temp, $value) : array_push($temp, 0);
         }
 
         EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(

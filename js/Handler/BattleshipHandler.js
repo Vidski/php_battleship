@@ -119,7 +119,6 @@ class BattleshipHandler {
             }
 
             if (data['content']['ship']) {
-
                 if (data['content']['field'] != 'left') {
                     for (let index = 0; index < data['content']['ship']['position'].length; index++) {
                         var element = data['content']['ship']['position'][index];
@@ -275,15 +274,19 @@ class BattleshipHandler {
             var table = document.getElementById("right");
             for (var i = 1, row; row = table.rows[i]; i++) {
                 for (var j = 1, col; col = row.cells[j]; j++) {
-                    currfield = data['content']['enemy_field'][(j - 1) + "" + (i - 1)];
+                    currfield = data['content']['enemy_field'][(i - 1) + "" + (j - 1)]; //NICHT ÄNDERN
                     if (currfield == 2) {
                         $(col).addClass('hit');
                     }
                     else if (currfield == 3) {
                         $(col).addClass('missed');
                     }
-                    else if (currfield == 4) {
+                    else if (currfield == 6) {
                         $(col).addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + (y - 1) + '"]').addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + (x - 1) + '"][data-row="' + y + '"]').addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + x + '"][data-row="' + (y + 1) + '"]').addClass('blocked');
+                        $('#field_' + data['content']['field'] + ' td[data-col="' + (x + 1) + '"][data-row="' + y + '"]').addClass('blocked');
                     }
                     else if (currfield == 5) {
                         $(col).addClass('dead');
@@ -296,13 +299,19 @@ class BattleshipHandler {
         var currfield;
         for (var i = 1, row; row = table.rows[i]; i++) {
             for (var j = 1, col; col = row.cells[j]; j++) {
-                currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)];
+                currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)]; //NICHT ÄNDERN
                 if (currfield == 1) {
                     $(col).addClass('shipplaced');
                 }
-                else if (currfield == 4) {
+                else if (currfield == 2) {
+                    $(col).addClass('hit');
+                }
+                else if (currfield == 4 || currfield == 6) {
                     if (!data['content']['game_started'])
                         $(col).addClass('blocked');
+                }
+                else if (currfield == 5) {
+                    $(col).addClass('dead');
                 }
             }
         }
