@@ -11,7 +11,7 @@ class Battleship implements iHandler
 {
 
     private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1);
-    private const SHIP_LIMIT = 2; //IST IMMER 10
+    private const SHIP_LIMIT = 2; //Anzahl an Schiffen die man platizern darf
 
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
@@ -390,7 +390,7 @@ class Battleship implements iHandler
         return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
     }
 
-    public function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
+    private function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
     {
         $this->missingSomeone = false;
 
