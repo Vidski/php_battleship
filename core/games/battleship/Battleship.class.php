@@ -165,7 +165,6 @@ class Battleship implements iHandler
          * Wenn getroffen wurde, wird geschaut ob das Schiff versenkt wurde oder nicht.
          */
         $deadShip = null;
-        $won = false;
         if (!$result) {
             $this->playerTurn = $targetUser;
         } else {
@@ -379,7 +378,6 @@ class Battleship implements iHandler
         return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
     }
 
-    //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
     public function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
     {
         $this->missingSomeone = false;
