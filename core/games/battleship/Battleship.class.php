@@ -171,14 +171,11 @@ class Battleship implements iHandler
         } else {
             foreach ($targetShips as $ship) {
                 if ($ship->is_dead($x, $y)) {
-                    $deadShip = $ship;
                     //TODO:
+                    $deadShip = $ship;
                     $deadShipPositions = $ship->get_position();
-                    $targetField[$deadShipPositions[0] - 1] = 6;
-                    $targetField[$deadShipPositions[0] + 1] = 6;
                     foreach ($deadShipPositions as $value) {
                         $targetField[$value] = 5;
-                        print_r($targetField);
                     }
                     break;
                 }

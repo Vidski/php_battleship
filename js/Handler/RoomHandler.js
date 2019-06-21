@@ -56,7 +56,7 @@ class RoomHandler {
         }
         $('#menu_box').fadeOut();
         $('#battleship_game_box').fadeIn();
-        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
+        // $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
         if (!this.owner) {
             generateTable();
             $('#field_right .card').addClass('notmyturn');

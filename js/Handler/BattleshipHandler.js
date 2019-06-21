@@ -255,11 +255,12 @@ class BattleshipHandler {
         $('#exampleModal .modal-title').text(data['content']['title']);
         $('#exampleModal .modal-body').text(data['content']['body']);
         $('#exampleModal').modal('show');
+        $('#field_left .card').removeClass('myturn');
         $('#field_left .card').addClass('notmyturn');
+        $('#field_right .card').removeClass('myturn');
         $('#field_right .card').addClass('notmyturn');
     }
 
-    //TODO 
     handle_reconnect(data) {
         if (data['content']['game_started']) {
             $('#ships').hide();
@@ -275,6 +276,7 @@ class BattleshipHandler {
             for (var i = 1, row; row = table.rows[i]; i++) {
                 for (var j = 1, col; col = row.cells[j]; j++) {
                     currfield = data['content']['enemy_field'][(i - 1) + "" + (j - 1)]; //NICHT ÄNDERN
+                    console.log("NEXT " + currfield);
                     if (currfield == 2) {
                         $(col).addClass('hit');
                     }
@@ -285,6 +287,14 @@ class BattleshipHandler {
                         $(col).addClass('blocked');
                     }
                     else if (currfield == 5) {
+                        if (data['content']['enemy_field'][(i - 1) + "" + (j - 2)] == 0)//Links
+                            $(table.rows[i].cells[j - 1]).addClass('blocked');
+                        if (data['content']['enemy_field'][(i - 1) + "" + (j)] == 0)//Rechts
+                            $(table.rows[i].cells[j + 1]).addClass('blocked');
+                        if (data['content']['enemy_field'][(i - 2) + "" + (j - 1)] == 0)//Unten
+                            $(table.rows[i - 1].cells[j]).addClass('blocked');
+                        if (data['content']['enemy_field'][(i) + "" + (j - 1)] == 0)//Oben
+                            $(table.rows[i + 1].cells[j]).addClass('blocked');
                         $(col).addClass('dead');
                     }
                 }
