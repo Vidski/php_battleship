@@ -5,6 +5,7 @@ require dirname(__FILE__) . '/core/iHandler.interface.php';
 require dirname(__FILE__) . '/core/EventManager.class.php';
 require dirname(__FILE__) . '/core/Rooms.class.php';
 require dirname(__FILE__) . '/core/Users.class.php';
+require dirname(__FILE__) . '/core/games/iGame.interface.php';
 require dirname(__FILE__) . '/core/games/battleship/Battleship.class.php';
 
 class GameServer extends Server

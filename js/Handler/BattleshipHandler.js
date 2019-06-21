@@ -293,8 +293,7 @@ class BattleshipHandler {
             var table = document.getElementById("right");
             for (var i = 1, row; row = table.rows[i]; i++) {
                 for (var j = 1, col; col = row.cells[j]; j++) {
-                    currfield = data['content']['enemy_field'][(i - 1) + "" + (j - 1)]; //NICHT ÄNDERN
-                    console.log("NEXT " + currfield);
+                    currfield = data['content']['enemy_field'][(j - 1) + "" + (i - 1)];
                     if (currfield == 2) {
                         $(col).addClass('hit');
                     }
@@ -305,13 +304,13 @@ class BattleshipHandler {
                         $(col).addClass('blocked');
                     }
                     else if (currfield == 5) {
-                        if (data['content']['enemy_field'][(i - 1) + "" + (j - 2)] == 0)//Links
+                        if (data['content']['enemy_field'][(j - 2) + "" + (i - 1)] == 0)//Links
                             $(table.rows[i].cells[j - 1]).addClass('blocked');
-                        if (data['content']['enemy_field'][(i - 1) + "" + (j)] == 0)//Rechts
+                        if (data['content']['enemy_field'][(j) + "" + (i - 1)] == 0)//Rechts
                             $(table.rows[i].cells[j + 1]).addClass('blocked');
-                        if (data['content']['enemy_field'][(i - 2) + "" + (j - 1)] == 0)//Unten
+                        if (data['content']['enemy_field'][(j - 1) + "" + (i - 2)] == 0)//Unten
                             $(table.rows[i - 1].cells[j]).addClass('blocked');
-                        if (data['content']['enemy_field'][(i) + "" + (j - 1)] == 0)//Oben
+                        if (data['content']['enemy_field'][(j - 1) + "" + (i)] == 0)//Oben
                             $(table.rows[i + 1].cells[j]).addClass('blocked');
                         $(col).addClass('dead');
                     }
@@ -323,7 +322,7 @@ class BattleshipHandler {
         var currfield;
         for (var i = 1, row; row = table.rows[i]; i++) {
             for (var j = 1, col; col = row.cells[j]; j++) {
-                currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)]; //NICHT ÄNDERN
+                currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)];
                 if (currfield == 1) {
                     $(col).addClass('shipplaced');
                 }

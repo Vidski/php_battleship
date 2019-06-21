@@ -3,8 +3,10 @@
 
 <head>
     <meta charset='UTF-8' />
+    <title>Projekt</title>
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
@@ -64,7 +66,8 @@
                             <div class="col">
                                 <form id="form_chat" autocomplete="off">
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Message" id="input_sendMessage" autocomplete="off">
+                                        <input type="text" class="form-control" placeholder="Message"
+                                            id="input_sendMessage" autocomplete="off">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary" type="submit">Send</button>
                                         </div>
@@ -79,7 +82,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
