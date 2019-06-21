@@ -21,12 +21,14 @@ class RoomHandler {
     send_create_room() {
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
-            "action": "create_room"
+            "action": "create_room",
+            "game": "Battleship"
         }));
     }
 
     handle_create_room(data) {
         $('#createRoomPin').val(data['content']['pin']);
+        window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         if (data['content']['pin']) {
             $('#menu_box').fadeOut(function () {
                 $('#battleship_game_box').fadeIn();
@@ -54,6 +56,7 @@ class RoomHandler {
         if (!data['content']['joined']) {
             return;
         }
+        window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         $('#menu_box').fadeOut();
         $('#battleship_game_box').fadeIn();
         // $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")

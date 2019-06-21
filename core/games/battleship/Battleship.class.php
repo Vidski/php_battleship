@@ -7,7 +7,7 @@ require 'Ship.class.php';
  *
  * @author  David Rydwanski, Stefan Hackstein
  */
-class Battleship implements iHandler
+class Battleship implements iGame, iHandler
 {
 
     private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1);
@@ -28,8 +28,6 @@ class Battleship implements iHandler
     private $playerTurn;
     private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
     private const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
-
-    private $missingSomeone;
 
     private $playerOne;
     private $playerOneReady;
@@ -61,7 +59,6 @@ class Battleship implements iHandler
         $this->playerTurn = $playerOne;
         $this->fill_field();
         $this->lastMove = time();
-        $this->missingSomeone = false;
     }
 
     /**
@@ -320,6 +317,7 @@ class Battleship implements iHandler
         }
     }
 
+    //TODO
     private function handle_remove($messageObj, $user)
     {
         EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'REMOVING')));
@@ -349,10 +347,18 @@ class Battleship implements iHandler
             return false;
         } else if ($field[$x . $y] == 1) {
             $field[$x . $y] = 2;
-            $field[$x + 1 . $y - 1] = 6;
-            $field[$x + 1 . $y + 1] = 6;
-            $field[$x - 1 . $y - 1] = 6;
-            $field[$x - 1 . $y + 1] = 6;
+            if ($x + 1 >= 0 && $x + 1 < 10 && $y - 1 >= 0 && $y - 1 < 10) {
+                $field[$x + 1 . $y - 1] = 6;
+            }
+            if ($x + 1 >= 0 && $x + 1 < 10 && $y + 1 >= 0 && $y + 1 < 10) {
+                $field[$x + 1 . $y + 1] = 6;
+            }
+            if ($x - 1 >= 0 && $x - 1 < 10 && $y - 1 >= 0 && $y - 1 < 10) {
+                $field[$x - 1 . $y - 1] = 6;
+            }
+            if ($x - 1 >= 0 && $x - 1 < 10 && $y + 1 >= 0 && $y + 1 < 10) {
+                $field[$x - 1 . $y + 1] = 6;
+            }
             return true;
         }
         return null;
@@ -377,23 +383,14 @@ class Battleship implements iHandler
             return;
         }
 
-        if ($this->missingSomeone) {
-            if ($this->playerTurn->disconnected()) {
-                $this->playerTurn = $player;
-            }
-            $this->reconnect_player($player, $playerShips, $playerField, $targetField);
+        if ($this->playerTurn->disconnected()) {
+            $this->playerTurn = $player;
         }
-    }
-
-    public function missing_player()
-    {
-        return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
+        $this->reconnect_player($player, $playerShips, $playerField, $targetField);
     }
 
     private function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
     {
-        $this->missingSomeone = false;
-
         if (!$this->gameStarted) {
             if (count($playerShips) <= 0) {
                 return;
@@ -406,9 +403,9 @@ class Battleship implements iHandler
             return;
         }
 
-        $temp = array();
-        foreach ($targetField as $value) {
-            $value > 1 && $value != 4 ? array_push($temp, $value) : array_push($temp, 0);
+        $temp = $targetField;
+        foreach ($targetField as $key => $value) {
+            $value != 4 ? $temp[$key] = $value : $temp[$key] = 0;
         }
 
         EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
@@ -460,9 +457,18 @@ class Battleship implements iHandler
         }
     }
 
-    public function someone_left()
+    public function remove_player($player)
     {
-        $this->missingSomeone = true;
+        if ($this->playerOne == $player) {
+            $this->playerOne = null;
+        } else {
+            $this->playerTwo = null;
+        }
+    }
+
+    public function missing_player()
+    {
+        return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
     }
 
     public function destroy_time()
