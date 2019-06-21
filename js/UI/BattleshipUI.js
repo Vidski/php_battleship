@@ -71,7 +71,7 @@ function Over(event, ui) {
     var classes_arr = classes.split(" ");
 
     //TODO: ! NOCH NICHT GUT ANGEPASST
-    console.log(classes_arr[1].slice(-2, -1));
+    //console.log(classes_arr[1].slice(-2, -1));
     if (classes_arr[1].slice(-1) == 'V') {
         $(ui['helper']).height(($(event['target']).height() * parseInt(classes_arr[1].slice(-2, -1))) + parseInt(classes_arr[1].slice(-2, -1)) + 5);
         $(ui['helper']).width($(event['target']).width() + 2);

@@ -35,6 +35,7 @@ class BattleshipHandler {
             case 'reconnect':
                 this.handle_reconnect(data);
                 break;
+
             case 'start':
                 this.handle_start(data);
                 break;
@@ -118,7 +119,6 @@ class BattleshipHandler {
             }
 
             if (data['content']['ship']) {
-
                 if (data['content']['field'] != 'left') {
                     for (let index = 0; index < data['content']['ship']['position'].length; index++) {
                         var element = data['content']['ship']['position'][index];
@@ -262,7 +262,7 @@ class BattleshipHandler {
             for (var i = 0, row; row = table.rows[i]; i++) {
                 for (var j = 0, col; col = row.cells[j]; j++) {
                     if ($(col).hasClass('blocked'))
-                        $(col).removeClass('blocked')
+                        $(col).removeClass('blocked');
                 }
             }
             $('#ships').hide();
@@ -273,19 +273,71 @@ class BattleshipHandler {
         $('#exampleModal .modal-title').text(data['content']['title']);
         $('#exampleModal .modal-body').text(data['content']['body']);
         $('#exampleModal').modal('show');
+        $('#field_left .card').removeClass('myturn');
         $('#field_left .card').addClass('notmyturn');
+        $('#field_right .card').removeClass('myturn');
         $('#field_right .card').addClass('notmyturn');
     }
 
-    //TODO 
     handle_reconnect(data) {
-        if (data['content']["game_started"]) {
-            console.log("Reconnect Game läuft");
+        if (data['content']['game_started']) {
             $('#ships').hide();
             $('#field_right').show();
-        } else {
-            console.log("Reconnect");
+
+            if (data['content']['my_turn']) {
+                $('#field_right .card').removeClass('notmyturn');
+                $('#field_right .card').addClass('myturn');
+                $('#field_left .card').addClass('notmyturn');
+            }
+
+            var table = document.getElementById("right");
+            for (var i = 1, row; row = table.rows[i]; i++) {
+                for (var j = 1, col; col = row.cells[j]; j++) {
+                    currfield = data['content']['enemy_field'][(i - 1) + "" + (j - 1)]; //NICHT ÄNDERN
+                    console.log("NEXT " + currfield);
+                    if (currfield == 2) {
+                        $(col).addClass('hit');
+                    }
+                    else if (currfield == 3) {
+                        $(col).addClass('missed');
+                    }
+                    else if (currfield == 6) {
+                        $(col).addClass('blocked');
+                    }
+                    else if (currfield == 5) {
+                        if (data['content']['enemy_field'][(i - 1) + "" + (j - 2)] == 0)//Links
+                            $(table.rows[i].cells[j - 1]).addClass('blocked');
+                        if (data['content']['enemy_field'][(i - 1) + "" + (j)] == 0)//Rechts
+                            $(table.rows[i].cells[j + 1]).addClass('blocked');
+                        if (data['content']['enemy_field'][(i - 2) + "" + (j - 1)] == 0)//Unten
+                            $(table.rows[i - 1].cells[j]).addClass('blocked');
+                        if (data['content']['enemy_field'][(i) + "" + (j - 1)] == 0)//Oben
+                            $(table.rows[i + 1].cells[j]).addClass('blocked');
+                        $(col).addClass('dead');
+                    }
+                }
+            }
+        }
+
+        var table = document.getElementById("left");
+        var currfield;
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            for (var j = 1, col; col = row.cells[j]; j++) {
+                currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)]; //NICHT ÄNDERN
+                if (currfield == 1) {
+                    $(col).addClass('shipplaced');
+                }
+                else if (currfield == 2) {
+                    $(col).addClass('hit');
+                }
+                else if (currfield == 4 || currfield == 6) {
+                    if (!data['content']['game_started'])
+                        $(col).addClass('blocked');
+                }
+                else if (currfield == 5) {
+                    $(col).addClass('dead');
+                }
+            }
         }
     }
-
 }

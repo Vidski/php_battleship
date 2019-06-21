@@ -28,7 +28,7 @@ class RoomHandler {
     handle_create_room(data) {
         $('#createRoomPin').val(data['content']['pin']);
         if (data['content']['pin']) {
-            $('#menu_box').fadeOut(function() {
+            $('#menu_box').fadeOut(function () {
                 $('#battleship_game_box').fadeIn();
             });
             $('#chat_box').append("<p style='color: red'>Room PIN: " + data['content']['pin'] + "</p>")
@@ -51,9 +51,12 @@ class RoomHandler {
             $('#btn_joinRoom').prop("disabled", false);
             return;
         }
+        if (!data['content']['joined']) {
+            return;
+        }
         $('#menu_box').fadeOut();
         $('#battleship_game_box').fadeIn();
-        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
+        // $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
         if (!this.owner) {
             generateTable();
             $('#field_right .card').addClass('notmyturn');

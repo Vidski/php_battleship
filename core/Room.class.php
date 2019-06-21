@@ -38,13 +38,13 @@ class Room
     public function leave_room($user)
     {
         $index = array_search($user, $this->roomPlayers);
-        if (!$index) {
+        if ($index < 0) {
             return false;
         }
         unset($this->roomPlayers[$index]);
         $user->set_room(null);
-        if (count($this->roomPlayers === 0 || $user === $this->roomOwner)) {
-            $this->isEmpty = true;
+        if (array_search(!null, $this->roomPlayers) > 0) {
+            $this->isEmpty = false;
         }
         return true;
     }

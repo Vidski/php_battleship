@@ -68,6 +68,8 @@ class GameServer extends Server
     {
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->disconnected()\n", $clientIP);
+
+        $this->roomsHandler->on_user_disconnected($user);
     }
 
     private function execute($event)

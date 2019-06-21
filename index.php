@@ -42,7 +42,7 @@
             <div class="col-lg-6" id="field_right">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-sm">
+                        <table class="table table-sm" id="right">
                         </table>
                     </div>
                 </div>

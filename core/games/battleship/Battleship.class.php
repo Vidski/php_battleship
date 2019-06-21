@@ -11,6 +11,8 @@ class Battleship implements iHandler
 {
 
     private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1);
+    private const SHIP_LIMIT = 2; //IST IMMER 10
+
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
         "ship3V" => array('x' => 1, 'y' => 3),
@@ -26,6 +28,8 @@ class Battleship implements iHandler
     private $playerTurn;
     private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
     private const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
+
+    private $missingSomeone;
 
     private $playerOne;
     private $playerOneReady;
@@ -57,6 +61,7 @@ class Battleship implements iHandler
         $this->playerTurn = $playerOne;
         $this->fill_field();
         $this->lastMove = time();
+        $this->missingSomeone = false;
     }
 
     /**
@@ -73,7 +78,8 @@ class Battleship implements iHandler
         //Falls ein Spieler disconnected Spiel pausieren
         if ($this->gameStarted) {
             if ($this->playerOne->disconnected() || $this->playerTwo->disconnected()) {
-                return null;
+                EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => "Waiting for someone to reconnect!")));
+                return;
             }
         }
 
@@ -123,18 +129,21 @@ class Battleship implements iHandler
         /**
          * Setzen des Feldes und der Schiffe
          */
+        $playerField = null;
         $targetField = null;
         $targetShips = null;
         $targetUser = null;
         switch ($this->playerTurn) {
 
             case $this->playerOne:
+                $playerField = &$this->playerOneField;
                 $targetField = &$this->playerTwoField;
                 $targetShips = &$this->playerTwoShips;
                 $targetUser = &$this->playerTwo;
                 break;
 
             case $this->playerTwo:
+                $playerField = &$this->playerTwoField;
                 $targetField = &$this->playerOneField;
                 $targetShips = &$this->playerOneShips;
                 $targetUser = &$this->playerOne;
@@ -163,13 +172,17 @@ class Battleship implements iHandler
          * Wenn getroffen wurde, wird geschaut ob das Schiff versenkt wurde oder nicht.
          */
         $deadShip = null;
-        $won = false;
         if (!$result) {
             $this->playerTurn = $targetUser;
         } else {
             foreach ($targetShips as $ship) {
                 if ($ship->is_dead($x, $y)) {
+                    //TODO:
                     $deadShip = $ship;
+                    $deadShipPositions = $ship->get_position();
+                    foreach ($deadShipPositions as $value) {
+                        $targetField[$value] = 5;
+                    }
                     break;
                 }
             }
@@ -240,7 +253,7 @@ class Battleship implements iHandler
 
         //Validierung der Platzierung
         if ($field[$posX . $posY] == 0) {
-            for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
+            for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y'] + 1; $y++) {
                 for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
                     if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
                         continue;
@@ -281,7 +294,7 @@ class Battleship implements iHandler
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
         //CHECK IF EVERYONE IS READY
-        if (count($ships) >= 10) {
+        if (count($ships) >= Battleship::SHIP_LIMIT) {
             if ($user == $this->playerOne) {
                 $this->playerOneReady = true;
             } else {
@@ -322,6 +335,8 @@ class Battleship implements iHandler
      * 2 = Getroffen
      * 3 = verfehlt
      * 4 = blockiert für Schiffe bei dem Platzieren
+     * 5 = zerstört //TODO
+     * 6 = BLOCKIERT BEIM SHOOTEN
      *
      * @param Integer $x x-Position
      * @param Integer $y y-Position
@@ -334,54 +349,74 @@ class Battleship implements iHandler
             return false;
         } else if ($field[$x . $y] == 1) {
             $field[$x . $y] = 2;
+            $field[$x + 1 . $y - 1] = 6;
+            $field[$x + 1 . $y + 1] = 6;
+            $field[$x - 1 . $y - 1] = 6;
+            $field[$x - 1 . $y + 1] = 6;
             return true;
         }
         return null;
     }
 
-    //TODO: Falls ein Spieler neu connected müssen wir ihn auf den aktuellsten Stand bringen
-    public function replace_missing_player($player)
+    public function add_player($player)
     {
-        if (is_null($this->playerOne)) {
+        $playerShips = null;
+        $playerField = null;
+        $targetField = null;
+        if (is_null($this->playerOne) || $this->playerOne->disconnected()) {
             $this->playerOne = $player;
-            return true;
-        } else if (is_null($this->playerTwo)) {
+            $playerShips = &$this->playerOneShips;
+            $playerField = &$this->playerOneField;
+            $targetField = &$this->playerTwoField;
+        } else if (is_null($this->playerTwo) || $this->playerTwo->disconnected()) {
             $this->playerTwo = $player;
-            return true;
-        } else if ($this->playerOne->disconnected()) {
-            $this->playerOne = $player;
-
-            $temp = array();
-            for ($y = 0; $y < 10; $y++) {
-                for ($x = 0; $x < 10; $x++) {
-                    if ($this->playerTwoField[$x . $y] == 1 || $this->playerTwoField[$x . $y] == 4) {
-                        $temp[$x . $y] = 0;
-                    } else {
-                        $temp[$x . $y] = $this->playerTwoField[$x . $y];
-                    }
-                }
-            }
-            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_Field' => $this->playerOneField, "enemy_Field" => $temp, "game_started" => $this->gameStarted)));
-
-            return true;
-        } else if ($this->playerTwo->disconnected()) {
-            $this->playerTwo = $player;
-
-            $temp = array();
-            for ($y = 0; $y < 10; $y++) {
-                for ($x = 0; $x < 10; $x++) {
-                    if ($this->playerOneField[$x . $y] == 1 || $this->playerOneField[$x . $y] == 4) {
-                        $temp[$x . $y] = 0;
-                    } else {
-                        $temp[$x . $y] = $this->playerOneField[$x . $y];
-                    }
-                }
-            }
-            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array('own_Field' => $this->playerTwoField, "enemy_Field" => $temp, "game_started" => $this->gameStarted)));
-
-            return true;
+            $playerField = &$this->playerTwoField;
+            $playerShips = &$this->playerTwoShips;
+            $targetField = &$this->playerOneField;
+        } else {
+            return;
         }
-        return false;
+
+        if ($this->missingSomeone) {
+            if ($this->playerTurn->disconnected()) {
+                $this->playerTurn = $player;
+            }
+            $this->reconnect_player($player, $playerShips, $playerField, $targetField);
+        }
+    }
+
+    public function missing_player()
+    {
+        return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
+    }
+
+    public function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
+    {
+        $this->missingSomeone = false;
+
+        if (!$this->gameStarted) {
+            if (count($playerShips) <= 0) {
+                return;
+            }
+            $this->send_limit($player, $playerShips);
+            EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
+                'own_field' => $playerField,
+                'game_started' => false,
+            )));
+            return;
+        }
+
+        $temp = array();
+        foreach ($targetField as $value) {
+            $value > 1 && $value != 4 ? array_push($temp, $value) : array_push($temp, 0);
+        }
+
+        EventManager::add_event(new Event($player, 'battleship_handler', 'reconnect', array(
+            'own_field' => $playerField,
+            'enemy_field' => $temp,
+            'game_started' => $this->gameStarted,
+            'my_turn' => $this->playerTurn == $player,
+        )));
     }
 
     /**
@@ -399,6 +434,35 @@ class Battleship implements iHandler
                 $this->playerTwoField[$x . $y] = 0;
             }
         }
+    }
+
+    /**
+     * send_limit
+     *
+     * Diese Funktion sagt dem Client welche Schiffe er noch platzieren kann.
+     *
+     * @param Player $player Der Spieler/Client
+     * @param Array $ships Die schiffe von dem Spieler/Client
+     */
+    private function send_limit($player, $ships)
+    {
+        $counter = 0;
+        foreach ($this->shipLimit as $key => $value) {
+            foreach ($ships as $sid) {
+                if (substr($sid->get_id(), 0, 5) == $key) {
+                    $counter++;
+                }
+            }
+            if ($counter >= $value) {
+                EventManager::add_event(new Event($player, 'battleship_handler', 'limit', array('ship' => $key)));
+                $counter = 0;
+            }
+        }
+    }
+
+    public function someone_left()
+    {
+        $this->missingSomeone = true;
     }
 
     public function destroy_time()
