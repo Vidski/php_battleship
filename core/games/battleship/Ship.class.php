@@ -29,6 +29,14 @@ class Ship
         return false;
     }
 
+    public function check_if_me($x, $y)
+    {
+        if (in_array($x . $y, $this->shipPosition)) {
+            return true;
+        }
+        return false;
+    }
+
     public function is_alive()
     {
         return $this->shipHealth > 0;

@@ -219,6 +219,24 @@ class BattleshipHandler {
         }
     }
 
+    send_remove(x, y) {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "game_action",
+            "content": {
+                "position": {
+                    "x": x,
+                    "y": y
+                },
+                "action": "remove"
+            }
+        }));
+    }
+
+    handle_remove(data) {
+
+    }
+
     handle_start(data) {
         if (data['content']['ready']) {
             var table = document.getElementById("left");

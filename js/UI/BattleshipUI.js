@@ -3,6 +3,7 @@ $("#field_right table").on("click", "td", function () {
     battleshipHandler.send_shoot($(this).attr('data-col'), $(this).attr('data-row'));
 });
 
+
 //FUNCTIONS
 /**
  * Funktion um die Spielfelder zu generieren.
@@ -42,6 +43,11 @@ function generateTable() {
         drop: Drop,
         over: Over
     });
+
+    $('#left td').dblclick(function () {
+        if ($('#ships').is(":visible"))
+            battleshipHandler.send_remove($(this).attr('data-col'), $(this).attr('data-row'));
+    });
 }
 
 /**
@@ -76,6 +82,7 @@ function Over(event, ui) {
     $(ui['helper']).css('background', 'unset');
     $(ui['helper']).css('background-color', 'rgba(255, 0, 0, .5)');
 }
+
 
 //RESPONSIVE SHIPS
 $(window).resize(function () {

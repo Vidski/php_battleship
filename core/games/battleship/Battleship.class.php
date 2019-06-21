@@ -99,6 +99,13 @@ class Battleship implements iHandler
                 $this->handle_place($messageObj, $user);
                 break;
 
+            case 'remove':
+                if ($this->gameStarted) {
+                    return;
+                }
+                $this->handle_remove($messageObj, $user);
+                break;
+
             default:
                 break;
         }
@@ -311,6 +318,11 @@ class Battleship implements iHandler
         if ($counter + 1 >= $this->shipLimit[$subShip]) {
             EventManager::add_event(new Event($user, 'battleship_handler', 'limit', array('ship' => $subShip)));
         }
+    }
+
+    private function handle_remove($messageObj, $user)
+    {
+        EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'REMOVING')));
     }
 
     /**
