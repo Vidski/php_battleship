@@ -6,6 +6,8 @@
 | --- | --- | --- | --- | --- | --- |
 | PascalCase | camelCase | camelCase | lower_case | camelCase | iPascalCase |
 
+**OUTDATED**
+
 **PROCESS(WIP):**
 
 **SERVER**->on_message_received->**GAME**->handler_action->**HANDLER**->action **RETURN** JSON
