@@ -318,10 +318,8 @@ class Battleship implements iGame, iHandler
         }
     }
 
-    //TODO
     private function handle_remove($messageObj, $user)
     {
-
         $ships = null;
         $field = null;
         if ($user == $this->playerOne) {
