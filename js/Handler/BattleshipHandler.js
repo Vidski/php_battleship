@@ -32,6 +32,10 @@ class BattleshipHandler {
                 this.handle_place(data);
                 break;
 
+            case 'remove':
+                this.handle_remove(data);
+                break;
+
             case 'reconnect':
                 this.handle_reconnect(data);
                 break;
@@ -234,7 +238,16 @@ class BattleshipHandler {
     }
 
     handle_remove(data) {
+        if ($('#' + data['content']['id']).is(":hidden")) {
+            var substring = data['content']['id'].substring(0, 5);
+            $('#' + substring + "V").show();
+            $('#' + substring + "H").show();
+        }
 
+        for (let index = 0; index < data['content']['position'].length; index++) {
+            $('#field_left td[data-col="' + data['content']['position'][index][0] + '"][data-row="' + data['content']['position'][index][1] + '"]').removeClass('blocked');
+            $('#field_left td[data-col="' + data['content']['position'][index][0] + '"][data-row="' + data['content']['position'][index][1] + '"]').removeClass('shipplaced');
+        }
     }
 
     handle_start(data) {

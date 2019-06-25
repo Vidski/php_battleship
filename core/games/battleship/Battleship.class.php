@@ -104,6 +104,8 @@ class Battleship implements iGame, iHandler
                 break;
 
             default:
+                print("\! Unknown Action !\n");
+                print_r($messageObj);
                 break;
         }
     }
@@ -185,7 +187,6 @@ class Battleship implements iGame, iHandler
             }
         }
 
-        //Nachrichten an die Spieler
         $pOne = array(
             'x' => $x,
             'y' => $y,
@@ -320,7 +321,48 @@ class Battleship implements iGame, iHandler
     //TODO
     private function handle_remove($messageObj, $user)
     {
-        EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => 'REMOVING')));
+
+        $ships = null;
+        $field = null;
+        if ($user == $this->playerOne) {
+            $ships = &$this->playerOneShips;
+            $field = &$this->playerOneField;
+        } else if ($user == $this->playerTwo) {
+            $ships = &$this->playerTwoShips;
+            $field = &$this->playerTwoField;
+        } else {
+            return;
+        }
+
+        $posX = $messageObj->content->position->x;
+        $posY = $messageObj->content->position->y;
+
+        $selectedShip = null;
+        foreach ($ships as $key => $ship) {
+            if ($ship->check_if_me($posX, $posY)) {
+                $selectedShip = $ship;
+                unset($ships[$key]);
+                break;
+            }
+        }
+
+        if (is_null($selectedShip)) {
+            return;
+        }
+
+        $shipId = $selectedShip->get_id();
+        $freeFields = array();
+        for ($y = $posY - 1; $y < $posY + $this->shipSizes[$shipId]['y'] + 1; $y++) {
+            for ($x = $posX - 1; $x < $posX + $this->shipSizes[$shipId]['x'] + 1; $x++) {
+                if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
+                    continue;
+                }
+                $field[$x . $y] = 0;
+                array_push($freeFields, $x . $y);
+            }
+        }
+
+        EventManager::add_event(new Event($user, 'battleship_handler', 'remove', array('id' => $shipId, 'position' => $freeFields)));
     }
 
     /**
