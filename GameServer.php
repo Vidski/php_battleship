@@ -40,6 +40,8 @@ class GameServer extends Server
                 break;
 
             default:
+                print("\! Unknown Handler !\n");
+                print_r($messageObj);
                 break;
         }
     }

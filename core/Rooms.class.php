@@ -66,6 +66,8 @@ class Rooms implements iHandler
                 break;
 
             default:
+                print("\! Unknown Action !\n");
+                print_r($messageObj);
                 break;
         }
     }

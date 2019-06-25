@@ -9,6 +9,11 @@ class Users implements iHandler
             case 'set_username':
                 $this->handle_set_username($messageObj, $user);
                 break;
+
+            default:
+                print("\! Unknown Action !\n");
+                print_r($messageObj);
+                break;
         }
     }
 
