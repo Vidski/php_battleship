@@ -53,7 +53,7 @@
 
         <!-- Chat -->
         <div class="row justify-content-center align-items-center">
-            <div class="col-12">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
