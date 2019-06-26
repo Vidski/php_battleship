@@ -19,7 +19,7 @@ class Room
     private $lastAction; //letzte Action im Raum
     private $isEmpty; //bool ob der Raum leer ist
 
-  
+
     public function __construct($roomOwner)
     {
         $this->roomSize = 2;
@@ -69,6 +69,10 @@ class Room
         $user->set_room(null);
         if (array_search(!null, $this->roomPlayers) > 0) {
             $this->isEmpty = false;
+        }
+
+        if (!is_null($this->game)) {
+            $this->game->remove_player($user);
         }
         return true;
     }
