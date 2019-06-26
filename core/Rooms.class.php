@@ -7,6 +7,7 @@ class Rooms implements iHandler
 
     private $rooms;
 
+
     public function __construct()
     {
         $this->rooms = array();

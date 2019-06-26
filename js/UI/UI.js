@@ -35,7 +35,6 @@ function loginBoxError() {
     $('#login_box_connecting p').text("Could not connect to Server");
     $('#login_box_connecting .spinner-grow').removeClass('text-warning');
     $('#login_box_connecting .spinner-grow').addClass('text-danger');
-    console.error("WebSocket error observed:", ev);
 }
 
 function loginBoxSuccess() {

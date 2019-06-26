@@ -10,10 +10,9 @@ class Room
 
     private $game;
 
-    //TODO:
-    //FALLS RAUM INAKTIV NACH 5MIN LÖSCHEN
     private $lastAction;
     private $isEmpty;
+
 
     public function __construct($roomOwner)
     {

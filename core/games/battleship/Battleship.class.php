@@ -10,8 +10,8 @@ require 'Ship.class.php';
 class Battleship implements iGame, iHandler
 {
 
-    private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1);
-    private const SHIP_LIMIT = 2; //Anzahl an Schiffen die man platizern darf
+    private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1); //Das Limit wie oft man ein Typ von Schiff platzieren darf
+    private const SHIP_LIMIT = 10; //Anzahl an Schiffen die man platizern darf
 
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
@@ -22,22 +22,22 @@ class Battleship implements iGame, iHandler
         "ship3H" => array('x' => 3, 'y' => 1),
         "ship4H" => array('x' => 4, 'y' => 1),
         "ship5H" => array('x' => 5, 'y' => 1),
-    );
+    ); //Die größen aller Schiffe
 
-    private $gameStarted;
-    private $playerTurn;
+    private $gameStarted; //Hat das Spiel bereits begonnen?
+    private $playerTurn; //Welcher Spieler grad am Zug ist
     private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
     private const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
-    private $playerOne;
-    private $playerOneReady;
-    private $playerOneField;
-    private $playerOneShips;
+    private $playerOne; //Spieler Eins
+    private $playerOneReady; //Spieler Eins ist bereit (?)
+    private $playerOneField; //Das Spielefeld von Spieler Eins
+    private $playerOneShips; //Die Schiffe von Spieler Eins
 
-    private $playerTwo;
-    private $playerTwoReady;
-    private $playerTwoField;
-    private $playerTwoShips;
+    private $playerTwo; //Spieler Zwei
+    private $playerTwoReady; //Spieler Zweis ist bereit (?)
+    private $playerTwoField; //Das Spielefeld von Spieler Zwei
+    private $playerTwoShips; //Die Schiffe von Spieler Zwei
 
     /**
      * __construct für Battleship.class
@@ -63,6 +63,7 @@ class Battleship implements iGame, iHandler
 
     /**
      * action von iHandler
+     * 
      * Hier werden die Pakete von dem Client verarbeitet
      *
      * @param  Array $messageObj Das Packet von dem Client
@@ -176,7 +177,6 @@ class Battleship implements iGame, iHandler
         } else {
             foreach ($targetShips as $ship) {
                 if ($ship->is_dead($x, $y)) {
-                    //TODO:
                     $deadShip = $ship;
                     $deadShipPositions = $ship->get_position();
                     foreach ($deadShipPositions as $value) {
@@ -211,13 +211,21 @@ class Battleship implements iGame, iHandler
                 return;
             }
         }
-        //SPIEL IST VORBEI, EIN GEWINNER WURDE GEFUNDEN!
+        //Spiel ist vorbei, ein Gewinner wurde gefunden!
         EventManager::add_event(new Event($user, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . " won!")));
         EventManager::add_event(new Event($targetUser, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . " won!")));
         EventManager::add_event(new Event($user, 'battleship_handler', 'winner', array('title' => "🏆 Winner Winner, Chicken Dinner!", 'body' => 'You won, good job!')));
         EventManager::add_event(new Event($targetUser, 'battleship_handler', 'winner', array('title' => $user->get_username() . " won!", 'body' => 'Maybe next time, loser 🤣')));
     }
 
+    /**
+     * handle_place
+     *
+     * In dieser funktion wird das platzieren von Schiffen verwaltet.
+     *
+     * @param  Array $messageObj Das Packet von dem Client
+     * @param  User $user Der User (Client)
+     */
     private function handle_place($messageObj, $user)
     {
         $field = null;
@@ -267,7 +275,7 @@ class Battleship implements iGame, iHandler
             return;
         }
 
-        //BLOCKIEREN
+        //Blockieren
         $blocked = array();
         for ($y = $posY - 1; $y < $posY + $this->shipSizes[$ship]['y'] + 1; $y++) {
             for ($x = $posX - 1; $x < $posX + $this->shipSizes[$ship]['x'] + 1; $x++) {
@@ -279,7 +287,7 @@ class Battleship implements iGame, iHandler
             }
         }
 
-        //SCHIFF PLATZIEREN
+        //Schiff platzieren
         $placed = array();
         for ($y = $posY; $y < $posY + $this->shipSizes[$ship]['y']; $y++) {
             for ($x = $posX; $x < $posX + $this->shipSizes[$ship]['x']; $x++) {
@@ -291,7 +299,7 @@ class Battleship implements iGame, iHandler
         array_push($ships, new Ship($placed, $ship, $this->shipSizes[$ship]));
         EventManager::add_event(new Event($user, 'battleship_handler', 'place', array('placed' => $placed, 'blocked' => $blocked)));
 
-        //CHECK IF EVERYONE IS READY
+        //Überprüfe ob alle Spieler bereit sind
         if (count($ships) >= Battleship::SHIP_LIMIT) {
             if ($user == $this->playerOne) {
                 $this->playerOneReady = true;
@@ -318,6 +326,15 @@ class Battleship implements iGame, iHandler
         }
     }
 
+    /**
+     * handle_remove
+     *
+     * Diese Funktion wird aufgerufen wenn ein Spieler ein Schiff welches er platziert hat,
+     * entfernen bzw. erneut platzieren möchte.
+     *
+     * @param Array $messageObj
+     * @param User $user
+     */
     private function handle_remove($messageObj, $user)
     {
         $ships = null;
@@ -349,9 +366,10 @@ class Battleship implements iGame, iHandler
         }
 
         $shipId = $selectedShip->get_id();
+        $shipPosi = $selectedShip->get_position();
         $freeFields = array();
-        for ($y = $posY - 1; $y < $posY + $this->shipSizes[$shipId]['y'] + 1; $y++) {
-            for ($x = $posX - 1; $x < $posX + $this->shipSizes[$shipId]['x'] + 1; $x++) {
+        for ($y = $shipPosi[0][1] - 1; $y < $shipPosi[0][1] + $this->shipSizes[$shipId]['y'] + 1; $y++) {
+            for ($x = $shipPosi[0][0] - 1; $x < $shipPosi[0][0] + $this->shipSizes[$shipId]['x'] + 1; $x++) {
                 if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
                     continue;
                 }
@@ -359,7 +377,6 @@ class Battleship implements iGame, iHandler
                 array_push($freeFields, $x . $y);
             }
         }
-
         EventManager::add_event(new Event($user, 'battleship_handler', 'remove', array('id' => $shipId, 'position' => $freeFields)));
     }
 
@@ -373,7 +390,7 @@ class Battleship implements iGame, iHandler
      * 2 = Getroffen
      * 3 = verfehlt
      * 4 = blockiert für Schiffe bei dem Platzieren
-     * 5 = zerstört //TODO
+     * 5 = zerstört
      * 6 = BLOCKIERT BEIM SHOOTEN
      *
      * @param Integer $x x-Position
@@ -404,6 +421,13 @@ class Battleship implements iGame, iHandler
         return null;
     }
 
+    /**
+     * add_player
+     *
+     * Fügt einen Spieler dem Spiel hinzu..
+     *
+     * @param User $player Spieler
+     */
     public function add_player($player)
     {
         $playerShips = null;
@@ -429,6 +453,17 @@ class Battleship implements iGame, iHandler
         $this->reconnect_player($player, $playerShips, $playerField, $targetField);
     }
 
+    /**
+     * reconnect_player
+     *
+     * Diese Funktion wird beim erneuten verbinden von einem Spieler aufgerufen.
+     * Diese Funktion bringt den neu verbundenen Spieler auf den aktuellsten Stand.
+     *
+     * @param User $player Der Spieler
+     * @param Array &$playerShips Die Schiffe von dem Spieler
+     * @param Array &$playerField Das Spielfeld von dem Spieler
+     * @param Array &$targetField Das Spielfeld von dem Gegner
+     */
     private function reconnect_player($player, &$playerShips, &$playerField, &$targetField)
     {
         if (!$this->gameStarted) {
@@ -476,9 +511,9 @@ class Battleship implements iGame, iHandler
     /**
      * send_limit
      *
-     * Diese Funktion sagt dem Client welche Schiffe er noch platzieren kann.
+     * Diese Funktion sagt dem Client welche Schiffe er noch platzieren kann/darf.
      *
-     * @param Player $player Der Spieler/Client
+     * @param User $player Der Spieler/Client
      * @param Array $ships Die schiffe von dem Spieler/Client
      */
     private function send_limit($player, $ships)
@@ -497,6 +532,14 @@ class Battleship implements iGame, iHandler
         }
     }
 
+    /**
+     * remove_player
+     *
+     * Wird aufgerufen wenn ein Spieler die verbindung getrennt hat.
+     * Überprüft welche Spieler das Spiel verlassen hat, und setzten diesen dann auf NULL.
+     *
+     * @param User $player Der Spieler(Socket) zum entfernen
+     */
     public function remove_player($player)
     {
         if ($this->playerOne == $player) {
@@ -506,11 +549,25 @@ class Battleship implements iGame, iHandler
         }
     }
 
+    /**
+     * missing_player
+     *
+     * Gibt zurück ob ein Spieler fehlt.
+     *
+     * @return bool
+     */
     public function missing_player()
     {
         return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
     }
 
+    /**
+     * destroy_time
+     *
+     * Gibt zurück wann das Spiel wegen inactivity gelöscht werden soll.
+     *
+     * @return int
+     */
     public function destroy_time()
     {
         return $this->lastMove + Battleship::DESTROY_TIME;

@@ -3,7 +3,7 @@
 /**
  * Stack
  *
- * @author  David Rydwanski
+ * @author  David Rydwanski, Stefan Hackstein
  */
 class Stack
 {
