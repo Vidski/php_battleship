@@ -62,7 +62,7 @@ function Drop(event, ui) {
 }
 
 /**
- * Funktion die bei dem Halten eines SChiffes über dem Spielfeld aufgerufen wird. 
+ * Funktion die bei dem Halten eines Schiffes über dem Spielfeld aufgerufen wird. 
  * @param {*} event 
  * @param {*} ui 
  */

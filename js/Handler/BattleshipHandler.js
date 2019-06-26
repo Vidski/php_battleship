@@ -286,6 +286,7 @@ class BattleshipHandler {
         // $('#exampleModal .modal-title').text(data['content']['title']);
         // $('#exampleModal .modal-body').text(data['content']['body']);
         // $('#exampleModal').modal('show');
+        $('.modal-footer').show();
         show_modal(data['content']['title'], data['content']['body']);
         $('#field_left .card').removeClass('myturn');
         $('#field_left .card').addClass('notmyturn');

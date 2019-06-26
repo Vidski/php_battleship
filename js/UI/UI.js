@@ -1,8 +1,5 @@
-//TODOS
-//SCALE SHIP SIZE WITH $(td).width()
-
 //CLICK EVENTS
-$("#form_inputUsername").submit(function(event) {
+$("#form_inputUsername").submit(function (event) {
     event.preventDefault();
     var name = $("#inputUsername").val();
     userHandler.send_set_username(name);
@@ -10,24 +7,32 @@ $("#form_inputUsername").submit(function(event) {
     $('#username').text(name);
 });
 
-$("#battleshipcover").click(function(event) {
+$("#battleshipcover").click(function (event) {
     event.preventDefault();
     roomHandler.send_create_room();
     $('#btn_inputUsername').prop("disabled", true);
 });
 
-$("#form_joinRoom").submit(function(event) {
+$("#form_joinRoom").submit(function (event) {
     event.preventDefault();
     var pin = $('#joinRoomPin').val()
     roomHandler.send_join_room(pin);
     $('#btn_joinRoom').prop("disabled", true);
 });
 
-$("#form_chat").submit(function(event) {
+$("#form_chat").submit(function (event) {
     event.preventDefault();
     var message = $('#input_sendMessage').val();
     $('#input_sendMessage').val("");
     roomHandler.send_message(message);
+});
+
+$('.modal-footer').click(function (event) {
+    event.preventDefault();
+    window.document.title = "Projekt";
+    $('#menu_box').fadeIn();
+    $('#battleship_game_box').fadeOut();
+    roomHandler.send_leave_room();
 });
 
 //UI EVENTS
@@ -40,7 +45,7 @@ function loginBoxError() {
 function loginBoxSuccess() {
     $('#login_box_connecting .spinner-grow').removeClass('text-warning');
     $('#login_box_connecting .spinner-grow').addClass('text-success');
-    $('#login_box_connecting').fadeOut(2000, function() { $('#login_box_form').fadeIn(); });
+    $('#login_box_connecting').fadeOut(2000, function () { $('#login_box_form').fadeIn(); });
 }
 
 //HELPERS

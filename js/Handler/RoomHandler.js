@@ -26,11 +26,25 @@ class RoomHandler {
         }));
     }
 
+    send_leave_room() {
+        this.owner = false;
+        $('#chat_box').html("");
+        $('#ships').show();
+        $('#field_right').hide();
+        $('#field_left .card').removeClass('notmyturn');
+        $('#joinRoomPin').val("");
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "leave_room",
+            "game": "Battleship"
+        }));
+    }
+
     handle_create_room(data) {
         $('#createRoomPin').val(data['content']['pin']);
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         if (data['content']['pin']) {
-            $('#menu_box').fadeOut(function() {
+            $('#menu_box').fadeOut(function () {
                 $('#battleship_game_box').fadeIn();
             });
             $('#chat_box').append("<p style='color: red'>Room PIN: " + data['content']['pin'] + "</p>")
