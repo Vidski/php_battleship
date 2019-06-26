@@ -30,7 +30,7 @@ class RoomHandler {
         $('#createRoomPin').val(data['content']['pin']);
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         if (data['content']['pin']) {
-            $('#menu_box').fadeOut(function () {
+            $('#menu_box').fadeOut(function() {
                 $('#battleship_game_box').fadeIn();
             });
             $('#chat_box').append("<p style='color: red'>Room PIN: " + data['content']['pin'] + "</p>")
@@ -50,10 +50,12 @@ class RoomHandler {
 
     handle_join_room(data) {
         if (data['content']['error']) {
+            show_modal("⚠ Error", data['content']['message']);
             $('#btn_joinRoom').prop("disabled", false);
             return;
         }
         if (!data['content']['joined']) {
+            show_modal("⚠ Error", data['content']['message']);
             return;
         }
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];

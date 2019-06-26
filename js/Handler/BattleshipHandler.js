@@ -283,9 +283,10 @@ class BattleshipHandler {
     }
 
     handle_winner(data) {
-        $('#exampleModal .modal-title').text(data['content']['title']);
-        $('#exampleModal .modal-body').text(data['content']['body']);
-        $('#exampleModal').modal('show');
+        // $('#exampleModal .modal-title').text(data['content']['title']);
+        // $('#exampleModal .modal-body').text(data['content']['body']);
+        // $('#exampleModal').modal('show');
+        show_modal(data['content']['title'], data['content']['body']);
         $('#field_left .card').removeClass('myturn');
         $('#field_left .card').addClass('notmyturn');
         $('#field_right .card').removeClass('myturn');
@@ -309,21 +310,18 @@ class BattleshipHandler {
                     currfield = data['content']['enemy_field'][(j - 1) + "" + (i - 1)];
                     if (currfield == 2) {
                         $(col).addClass('hit');
-                    }
-                    else if (currfield == 3) {
+                    } else if (currfield == 3) {
                         $(col).addClass('missed');
-                    }
-                    else if (currfield == 6) {
+                    } else if (currfield == 6) {
                         $(col).addClass('blocked');
-                    }
-                    else if (currfield == 5) {
-                        if (data['content']['enemy_field'][(j - 2) + "" + (i - 1)] == 0)//Links
+                    } else if (currfield == 5) {
+                        if (data['content']['enemy_field'][(j - 2) + "" + (i - 1)] == 0) //Links
                             $(table.rows[i].cells[j - 1]).addClass('blocked');
-                        if (data['content']['enemy_field'][(j) + "" + (i - 1)] == 0)//Rechts
+                        if (data['content']['enemy_field'][(j) + "" + (i - 1)] == 0) //Rechts
                             $(table.rows[i].cells[j + 1]).addClass('blocked');
-                        if (data['content']['enemy_field'][(j - 1) + "" + (i - 2)] == 0)//Unten
+                        if (data['content']['enemy_field'][(j - 1) + "" + (i - 2)] == 0) //Unten
                             $(table.rows[i - 1].cells[j]).addClass('blocked');
-                        if (data['content']['enemy_field'][(j - 1) + "" + (i)] == 0)//Oben
+                        if (data['content']['enemy_field'][(j - 1) + "" + (i)] == 0) //Oben
                             $(table.rows[i + 1].cells[j]).addClass('blocked');
                         $(col).addClass('dead');
                     }
@@ -338,15 +336,12 @@ class BattleshipHandler {
                 currfield = data['content']['own_field'][(j - 1) + "" + (i - 1)];
                 if (currfield == 1) {
                     $(col).addClass('shipplaced');
-                }
-                else if (currfield == 2) {
+                } else if (currfield == 2) {
                     $(col).addClass('hit');
-                }
-                else if (currfield == 4 || currfield == 6) {
+                } else if (currfield == 4 || currfield == 6) {
                     if (!data['content']['game_started'])
                         $(col).addClass('blocked');
-                }
-                else if (currfield == 5) {
+                } else if (currfield == 5) {
                     $(col).addClass('dead');
                 }
             }

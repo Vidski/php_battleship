@@ -48,3 +48,10 @@ function getCurrentTime() {
     var d = new Date();
     return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2);
 }
+
+
+function show_modal(title, body) {
+    $('#exampleModal .modal-title').text(title);
+    $('#exampleModal .modal-body').text(body);
+    $('#exampleModal').modal('show');
+}
