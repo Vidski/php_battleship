@@ -32,7 +32,7 @@ abstract class Server
         $this->on_server_started();
         $this->server_loop();
     }
-
+    
     abstract protected function started();
     abstract protected function handle_in($user, $messageObj);
     abstract protected function handle_out();
@@ -173,3 +173,4 @@ abstract class Server
         return mask(json_encode($message));
     }
 }
+?>
