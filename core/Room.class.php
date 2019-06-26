@@ -15,9 +15,11 @@ class Room
 
     private $game; //Das Spiel was gerade in diesem Raum gespielt wird.
 
+
     private $lastAction; //letzte Action im Raum
     private $isEmpty; //bool ob der Raum leer ist
 
+  
     public function __construct($roomOwner)
     {
         $this->roomSize = 2;

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * iGame.interface.php
+ * iGame.interface.php Interface für neue Spiele
  *
- * @author  David Rydwanski
+ * @author  David Rydwanski, Stefan Hackstein
  */
 interface iGame
 {

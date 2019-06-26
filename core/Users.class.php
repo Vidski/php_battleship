@@ -1,8 +1,21 @@
 <?php
 
+/**
+ * Users.class.php Ist ein Handler für User Events
+ *
+ * @author  David Rydwanski, Stefan Hackstein
+ */
 class Users implements iHandler
 {
 
+    /**
+     * action von iHandler
+     * 
+     * Hier werden die Pakete von dem Client verarbeitet
+     *
+     * @param  Array $messageObj Das Packet von dem Client
+     * @param  User $user Der User (Client)
+     */
     public function action($messageObj, $user = null)
     {
         switch ($messageObj->action) {
@@ -17,6 +30,14 @@ class Users implements iHandler
         }
     }
 
+    /**
+     * handle_set_username
+     * 
+     * Hier wird der Name des Spielers geändert
+     *
+     * @param  Array $messageObj Das Packet von dem Client
+     * @param  User $user Der User (Client)
+     */
     private function handle_set_username($messageObj, $user)
     {
         $user->set_username(ucfirst($messageObj->username));

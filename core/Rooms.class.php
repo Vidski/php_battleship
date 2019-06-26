@@ -14,9 +14,7 @@ class Rooms implements iHandler
 
     private $rooms; //Array mit allen Räumen
 
-    /**
-     * __constructor()
-     */
+  
     public function __construct()
     {
         $this->rooms = array();
