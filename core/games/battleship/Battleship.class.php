@@ -63,7 +63,7 @@ class Battleship implements iGame, iHandler
 
     /**
      * action von iHandler
-     * 
+     *
      * Hier werden die Pakete von dem Client verarbeitet
      *
      * @param  Array $messageObj Das Packet von dem Client
@@ -364,7 +364,7 @@ class Battleship implements iGame, iHandler
         if (is_null($selectedShip)) {
             return;
         }
-
+        //TODO: GUCKE "ToDoFixFuerHandleRemove.png"!
         $shipId = $selectedShip->get_id();
         $shipPosi = $selectedShip->get_position();
         $freeFields = array();

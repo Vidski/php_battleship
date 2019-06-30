@@ -10,9 +10,9 @@ require dirname(__FILE__) . '/core/games/battleship/Battleship.class.php';
 
 /**
  * GameServer.php
- * 
+ *
  * Verwaltet alles
- * 
+ *
  * @author David Rydwanski, Stefan Hackstein
  */
 class GameServer extends Server
@@ -24,7 +24,7 @@ class GameServer extends Server
 
     /**
      * started()
-     * 
+     *
      * Hier werden die Handler und der EventManager erstellt.
      */
     protected function started()
@@ -36,9 +36,9 @@ class GameServer extends Server
 
     /**
      * handle_in($user, $messageObj)
-     * 
+     *
      * Wenn der Server ein Packet bekommt, wird die Funktion aufgerufen und das Paket an den passenden Handler weitergeleitet.
-     * 
+     *
      * @param User $user
      * @param Array $messageObj
      */
@@ -68,9 +68,9 @@ class GameServer extends Server
 
     /**
      * handle_out
-     * 
+     *
      * Die Funktion holt sich aus dem EventMananger die Events.
-     * Die gefundenen Events werden bearbeitet. 
+     * Die gefundenen Events werden bearbeitet.
      */
     protected function handle_out()
     {
@@ -89,9 +89,9 @@ class GameServer extends Server
 
     /**
      * connected($user)
-     * 
+     *
      * Wird aufgerufen wenn sich ein Spieler auf dem Server verbindet.
-     * 
+     *
      * @param User $users
      */
     protected function connected($user)
@@ -102,9 +102,9 @@ class GameServer extends Server
 
     /**
      * disconnected($user)
-     * 
+     *
      * Diese Funktion wird aufgerufen, wenn ein Spieler die Verbindung trennt.
-     * 
+     *
      * @param User $users
      */
     protected function disconnected($user)
@@ -117,9 +117,9 @@ class GameServer extends Server
 
     /**
      * execute($event)
-     * 
+     *
      * Die Funktion execute schickt das übergebene Event an die Benutzer raus.
-     * 
+     *
      * @param Event $event
      */
     private function execute($event)
@@ -137,4 +137,3 @@ class GameServer extends Server
     }
 
 }
-?>

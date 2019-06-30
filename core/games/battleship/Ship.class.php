@@ -2,7 +2,7 @@
 
 /**
  * Ship.class.php beinhaltet Informationen von dem Schiff
- * 
+ *
  * @author  David Rydwanski, Stefan Hackstein
  */
 class Ship
@@ -12,7 +12,6 @@ class Ship
     private $shipPosition; //Die Position von dem Schiff
     private $shipSize; //Die Größe von dem Schiff
     private $shipId; //Die ShipID (z.B. ship5V) wichtig für den Client
-
 
     public function __construct($shipPosition, $shipId, $shipSize)
     {
