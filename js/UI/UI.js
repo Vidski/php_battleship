@@ -27,8 +27,11 @@ $("#form_chat").submit(function (event) {
     roomHandler.send_message(message);
 });
 
+var inqueue = false;
 $('.backMenu').click(function (event) {
     event.preventDefault();
+    inqueue = false;
+    $('#queue').text("Queue");
     window.document.title = "Projekt";
     $('#battleship_game_box').fadeOut(2000, function(){
         $('#joinRoomPin').val("");
@@ -41,7 +44,15 @@ $('.backMenu').click(function (event) {
 
 $('#queue').click(function (e) { 
     e.preventDefault();
-    roomHandler.in_queue();
+    if(!inqueue){
+        inqueue = true;
+        roomHandler.in_queue();
+        $(this).text("Cancel Queue");
+    } else{
+        inqueue = false;
+        roomHandler.leave_queue();
+        $(this).text("Queue");
+    }
 });
 
 //UI EVENTS

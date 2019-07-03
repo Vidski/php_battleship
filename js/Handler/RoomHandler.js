@@ -36,6 +36,13 @@ class RoomHandler {
         }));
     }
 
+    leave_queue(){
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "leave_queue"
+        }));
+    }
+
     send_leave_room() {
        this.reset_room_for_new_game();
         websocket.send(JSON.stringify({

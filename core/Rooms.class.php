@@ -101,6 +101,9 @@ class Rooms implements iHandler
             case 'in_queue':
                 $this->handle_in_queue($messageObj, $user);
                 break;
+            case 'leave_queue':
+                QueueManager::remove_player($user);
+                break;
             default:
                 print("\! Unknown Action !\n");
                 print_r($messageObj);
@@ -121,6 +124,7 @@ class Rooms implements iHandler
      */
     private function handle_create_room($messageObj, $user)
     {
+        QueueManager::remove_player($user);
         if ($user->get_room()) {
             return null;
         }
@@ -154,6 +158,8 @@ class Rooms implements iHandler
      */
     private function handle_join_room($messageObj, $user)
     {
+        QueueManager::remove_player($user);
+
         $room = $this->get_room($messageObj->pin);
         if (is_null($room)) {
             EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('error' => 1, 'message' => 'Room not found.')));
@@ -230,7 +236,7 @@ class Rooms implements iHandler
      * handle_send_message($messageObj, $user)
      * 
      * Hier wird das Paket eines Clients verarbeitet, wenn eine Nachricht in den Chat geschrieben wurde.
-     * Der EventManager schickt die Nachrict an alle Spieler im Raum.
+     * Der EventManager schickt die Nachricht an alle Spieler im Raum.
      * 
      * @param Array $messageObj
      * @param User $user
@@ -250,6 +256,12 @@ class Rooms implements iHandler
         }
     }
 
+    /**
+     * handle_in_queue($messageObj, $user)
+     * 
+     * Hier wird das Paket eines Clients verarbeitetm wenn die Suche Startet.
+     * 
+     */
     private function handle_in_queue($messageObj, $user){
         QueueManager::add_player($this, $user);
     }
