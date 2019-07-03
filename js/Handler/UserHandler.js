@@ -5,7 +5,6 @@ class UserHandler {
             case 'set_username':
                 this.handle_set_username(data);
                 break;
-
             default:
                 break;
         }
@@ -23,6 +22,14 @@ class UserHandler {
         $('#login_box').fadeOut(function () {
             $('#menu_box').fadeIn();
         });
+    }
+
+    in_queue(player) {
+        websocket.send(JSON.stringify({
+            "handler": "queueManager",
+            "action": "in_queue",
+            "player": player
+        }));
     }
 
 }

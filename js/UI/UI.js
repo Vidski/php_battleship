@@ -39,6 +39,11 @@ $('.backMenu').click(function (event) {
     });
 });
 
+$('#queue').click(function (e) { 
+    e.preventDefault();
+    userHandler.in_queue();
+});
+
 //UI EVENTS
 function loginBoxError() {
     $('#login_box_connecting p').text("Could not connect to Server");

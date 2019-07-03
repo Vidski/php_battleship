@@ -23,6 +23,9 @@ class Users implements iHandler
                 $this->handle_set_username($messageObj, $user);
                 break;
 
+            case 'in_queue':
+                $this->handle_in_queue($massageObj, $user);
+                break;
             default:
                 print("\! Unknown Action !\n");
                 print_r($messageObj);
@@ -44,4 +47,8 @@ class Users implements iHandler
         EventManager::add_event(new Event($user, 'users_handler', 'set_username', array('username' => $user->get_username())));
     }
 
+
+    private function handle_in_queue($messageObj, $user){
+        QueueManager::add_player($user);
+    }
 }
