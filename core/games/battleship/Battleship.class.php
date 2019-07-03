@@ -364,7 +364,7 @@ class Battleship implements iGame, iHandler
         if (is_null($selectedShip)) {
             return;
         }
-        //TODO: GUCKE "ToDoFixFuerHandleRemove.png"!
+
         $shipId = $selectedShip->get_id();
         $shipPosi = $selectedShip->get_position();
         $freeFields = array();
@@ -373,8 +373,27 @@ class Battleship implements iGame, iHandler
                 if ($x < 0 || $y < 0 || $x > 9 || $y > 9) {
                     continue;
                 }
-                $field[$x . $y] = 0;
-                array_push($freeFields, $x . $y);
+                if (in_array($x . $y, $shipPosi)) {
+                    $field[$x . $y] = 0;
+                    array_push($freeFields, $x . $y);
+                    continue;
+                }
+                $delete = true;
+                for ($ry = $y - 1; $ry <= $y + 1; $ry++) {
+                    for ($rx = $x - 1; $rx <= $x + 1; $rx++) {
+                        if ($rx < 0 || $ry < 0 || $rx > 9 || $ry > 9) {
+                            continue;
+                        }
+                        if ($field[$rx . $ry] == 1 && !in_array($rx . $ry, $shipPosi)) {
+                            $delete = false;
+                            break 2;
+                        }
+                    }
+                }
+                if ($delete) {
+                    $field[$x . $y] = 0;
+                    array_push($freeFields, $x . $y);
+                }
             }
         }
         EventManager::add_event(new Event($user, 'battleship_handler', 'remove', array('id' => $shipId, 'position' => $freeFields)));
