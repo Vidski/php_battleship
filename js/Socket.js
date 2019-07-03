@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
     user = new User();
     userHandler = new UserHandler();
@@ -6,16 +6,16 @@ $(document).ready(function () {
     battleshipHandler = new BattleshipHandler();
 
     //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6966";
+    var wsUri = "ws://172.18.1.113:6969";
     //var wsUri = "ws://ux-113.web.pb.bib.de:6969"
 
     websocket = new WebSocket(wsUri);
 
-    websocket.onopen = function (ev) {
+    websocket.onopen = function(ev) {
         loginBoxSuccess();
     }
 
-    websocket.onmessage = function (ev) {
+    websocket.onmessage = function(ev) {
         data = JSON.parse(ev.data);
         console.log(data);
 
@@ -37,12 +37,12 @@ $(document).ready(function () {
         }
     }
 
-    websocket.onerror = function (ev) {
+    websocket.onerror = function(ev) {
         loginBoxError();
         console.error("WebSocket error observed:", ev);
     }
 
-    websocket.onclose = function (ev) {
+    websocket.onclose = function(ev) {
 
     }
 
