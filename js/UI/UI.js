@@ -30,9 +30,13 @@ $("#form_chat").submit(function (event) {
 $('.backMenu').click(function (event) {
     event.preventDefault();
     window.document.title = "Projekt";
-    $('#menu_box').fadeIn();
-    $('#battleship_game_box').fadeOut();
-    roomHandler.send_leave_room();
+    $('#battleship_game_box').fadeOut(2000, function(){
+        $('#joinRoomPin').val("");
+        $('#menu_box').fadeIn(2000,function(){
+            roomHandler.send_leave_room();
+        });
+
+    });
 });
 
 //UI EVENTS

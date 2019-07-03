@@ -41,7 +41,6 @@ class RoomHandler {
         $('#ships').show().children().children().children().show();
         $('#field_right').hide();
         $('#field_left .card').removeClass('notmyturn');
-        $('#joinRoomPin').val("");
     }
 
     handle_create_room(data) {

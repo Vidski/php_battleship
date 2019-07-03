@@ -6,7 +6,7 @@ $(document).ready(function() {
     battleshipHandler = new BattleshipHandler();
 
     //var wsUri = "ws://127.0.0.1:6969";
-    var wsUri = "ws://172.18.1.113:6969";
+    var wsUri = "ws://172.18.1.113:6966";
     //var wsUri = "ws://ux-113.web.pb.bib.de:6969"
 
     websocket = new WebSocket(wsUri);
