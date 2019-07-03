@@ -39,8 +39,10 @@ class QueueManager
      */
     public function add_player($roomHandler, $player)
     {
-        if(!in_array($player, self::$playersInQueue)){
+        print(count(self::$playersInQueue));
 
+        if(!in_array($player, self::$playersInQueue)){
+            print("test");
             array_push(self::$playersInQueue, $player);
 
             if(count(self::$playersInQueue) >= 2){
@@ -60,7 +62,6 @@ class QueueManager
                 foreach ($rUsers as $rUser) {
                     EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $rUser->get_username() . ' joined the room.')));
                 }
-
             }
         }
     }
@@ -86,7 +87,7 @@ class QueueManager
     public function remove_player($player){
         if(in_array($player, self::$playersInQueue)){
             $key = array_search($player, self::$playersInQueue);
-            unset($key);
+            unset(self::$playersInQueue[$key]);
             self::$playersInQueue = array_values(self::$playersInQueue);
         }
     }
