@@ -58,8 +58,6 @@ class QueueManager
                 EventManager::add_event(new Event($player2, 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
 
                 foreach ($rUsers as $rUser) {
-                    
-                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
                     EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $rUser->get_username() . ' joined the room.')));
                 }
 
