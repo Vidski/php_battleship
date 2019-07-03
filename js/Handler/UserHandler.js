@@ -24,11 +24,10 @@ class UserHandler {
         });
     }
 
-    in_queue(player) {
+    in_queue() {
         websocket.send(JSON.stringify({
-            "handler": "queueManager",
-            "action": "in_queue",
-            "player": player
+            "handler": "users_handler",
+            "action": "in_queue"
         }));
     }
 

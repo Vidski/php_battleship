@@ -24,7 +24,7 @@ class Users implements iHandler
                 break;
 
             case 'in_queue':
-                $this->handle_in_queue($massageObj, $user);
+                $this->handle_in_queue($messageObj, $user);
                 break;
             default:
                 print("\! Unknown Action !\n");

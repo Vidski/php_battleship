@@ -3,10 +3,12 @@
 require 'Server.php';
 require dirname(__FILE__) . '/core/iHandler.interface.php';
 require dirname(__FILE__) . '/core/EventManager.class.php';
+require dirname(__FILE__) . '/core/QueueManager.class.php';
 require dirname(__FILE__) . '/core/Rooms.class.php';
 require dirname(__FILE__) . '/core/Users.class.php';
 require dirname(__FILE__) . '/core/games/iGame.interface.php';
 require dirname(__FILE__) . '/core/games/battleship/Battleship.class.php';
+
 
 /**
  * GameServer.php
@@ -111,7 +113,7 @@ class GameServer extends Server
     {
         socket_getpeername($user->get_socket(), $clientIP);
         printf("%s - GameServer->disconnected()\n", $clientIP);
-
+        QueueManager::remove_player($user);
         $this->roomsHandler->on_user_disconnected($user);
     }
 
