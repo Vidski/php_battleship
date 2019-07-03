@@ -11,7 +11,7 @@ class Battleship implements iGame, iHandler
 {
 
     private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1); //Das Limit wie oft man ein Typ von Schiff platzieren darf
-    private const SHIP_LIMIT = 1; //Anzahl an Schiffen die man platizern darf
+    private const SHIP_LIMIT = 10; //Anzahl an Schiffen die man platizern darf
 
     private $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),

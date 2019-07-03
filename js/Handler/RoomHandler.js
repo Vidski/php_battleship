@@ -27,17 +27,21 @@ class RoomHandler {
     }
 
     send_leave_room() {
-        this.owner = false;
-        $('#chat_box').html("");
-        $('#ships').show();
-        $('#field_right').hide();
-        $('#field_left .card').removeClass('notmyturn');
-        $('#joinRoomPin').val("");
+       this.reset_room_for_new_game();
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
             "action": "leave_room",
             "game": "Battleship"
         }));
+    }
+
+    reset_room_for_new_game(){
+        this.owner = false;
+        $('#chat_box').html("");
+        $('#ships').show().children().children().children().show();
+        $('#field_right').hide();
+        $('#field_left .card').removeClass('notmyturn');
+        $('#joinRoomPin').val("");
     }
 
     handle_create_room(data) {
@@ -64,6 +68,8 @@ class RoomHandler {
 
     handle_join_room(data) {
         if (data['content']['error']) {
+            $('.modal-footer').hide();
+            $('.close').show();
             show_modal("⚠ Error", data['content']['message']);
             $('#btn_joinRoom').prop("disabled", false);
             return;

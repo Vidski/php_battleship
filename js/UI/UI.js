@@ -27,7 +27,7 @@ $("#form_chat").submit(function (event) {
     roomHandler.send_message(message);
 });
 
-$('.modal-footer').click(function (event) {
+$('.backMenu').click(function (event) {
     event.preventDefault();
     window.document.title = "Projekt";
     $('#menu_box').fadeIn();

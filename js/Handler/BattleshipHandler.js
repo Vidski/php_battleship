@@ -189,11 +189,13 @@ class BattleshipHandler {
 
         if (ship['height'] + y > 10 || ship['height'] + y < 0) {
             console.log("[HEIGHT] Can't place here!");
+            this.cant_place_ship("Can't place here.");
             return;
         }
 
         if (ship['width'] + x > 10) {
             console.log("[WIDTH] Can't place here!");
+            this.cant_place_ship("Can't place here.");
             return;
         }
 
@@ -220,6 +222,8 @@ class BattleshipHandler {
                 $('#field_left td[data-col="' + data['content']['placed'][index][0] + '"][data-row="' + data['content']['placed'][index][1] + '"]').removeClass('blocked');
                 $('#field_left td[data-col="' + data['content']['placed'][index][0] + '"][data-row="' + data['content']['placed'][index][1] + '"]').addClass('shipplaced');
             }
+        } else {
+            this.cant_place_ship(data['content']);
         }
     }
 
@@ -287,6 +291,7 @@ class BattleshipHandler {
         // $('#exampleModal .modal-body').text(data['content']['body']);
         // $('#exampleModal').modal('show');
         $('.modal-footer').show();
+        $('.close').hide();
         show_modal(data['content']['title'], data['content']['body']);
         $('#field_left .card').removeClass('myturn');
         $('#field_left .card').addClass('notmyturn');
@@ -347,5 +352,12 @@ class BattleshipHandler {
                 }
             }
         }
+    }
+
+    cant_place_ship(message){
+        $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + message + "</p>");
+        $('#chat_box').animate({
+            scrollTop: $('#chat_box')[0].scrollHeight
+        }, 500);
     }
 }
