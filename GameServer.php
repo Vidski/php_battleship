@@ -32,6 +32,7 @@ class GameServer extends Server
     protected function started()
     {
         EventManager::init();
+        QueueManager::init();
         $this->roomsHandler = new Rooms();
         $this->usersHandler = new Users();
     }

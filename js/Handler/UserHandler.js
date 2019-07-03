@@ -24,11 +24,6 @@ class UserHandler {
         });
     }
 
-    in_queue() {
-        websocket.send(JSON.stringify({
-            "handler": "users_handler",
-            "action": "in_queue"
-        }));
-    }
+    
 
 }

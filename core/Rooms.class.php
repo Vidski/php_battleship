@@ -97,7 +97,10 @@ class Rooms implements iHandler
             case 'send_message':
                 $this->handle_send_message($messageObj, $user);
                 break;
-
+                
+            case 'in_queue':
+                $this->handle_in_queue($messageObj, $user);
+                break;
             default:
                 print("\! Unknown Action !\n");
                 print_r($messageObj);
@@ -247,6 +250,10 @@ class Rooms implements iHandler
         }
     }
 
+    private function handle_in_queue($messageObj, $user){
+        QueueManager::add_player($this, $user);
+    }
+
     /**
      * on_user_disconnected($user)
      * 
@@ -267,6 +274,10 @@ class Rooms implements iHandler
             }
         }
     }
+
+    
+
+   
 
 }
 ?>

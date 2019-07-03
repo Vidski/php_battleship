@@ -13,6 +13,9 @@ class RoomHandler {
             case 'receive_message':
                 this.handle_receive_message(data);
                 break;
+            case 'set_owner':
+                this.handle_set_owner(data);
+                break;
             default:
                 break;
         }
@@ -23,6 +26,13 @@ class RoomHandler {
             "handler": "rooms_handler",
             "action": "create_room",
             "game": "Battleship"
+        }));
+    }
+
+    in_queue() {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "in_queue"
         }));
     }
 
@@ -77,6 +87,9 @@ class RoomHandler {
             show_modal("⚠ Error", data['content']['message']);
             return;
         }
+
+        
+
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         $('#menu_box').fadeOut();
         $('#battleship_game_box').fadeIn();
@@ -100,6 +113,10 @@ class RoomHandler {
         $('#chat_box').animate({
             scrollTop: $('#chat_box')[0].scrollHeight
         }, 500);
+    }
+
+    handle_set_owner(data){
+        this.owner = data['owner'];
     }
 
 }

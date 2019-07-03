@@ -41,7 +41,7 @@ $('.backMenu').click(function (event) {
 
 $('#queue').click(function (e) { 
     e.preventDefault();
-    userHandler.in_queue();
+    roomHandler.in_queue();
 });
 
 //UI EVENTS
