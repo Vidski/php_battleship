@@ -287,9 +287,6 @@ class BattleshipHandler {
     }
 
     handle_winner(data) {
-        // $('#exampleModal .modal-title').text(data['content']['title']);
-        // $('#exampleModal .modal-body').text(data['content']['body']);
-        // $('#exampleModal').modal('show');
         $('.modal-footer').show();
         $('.close').hide();
         show_modal(data['content']['title'], data['content']['body']);
@@ -354,7 +351,7 @@ class BattleshipHandler {
         }
     }
 
-    cant_place_ship(message){
+    cant_place_ship(message) {
         $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + message + "</p>");
         $('#chat_box').animate({
             scrollTop: $('#chat_box')[0].scrollHeight
