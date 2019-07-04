@@ -27,16 +27,31 @@ $("#form_chat").submit(function (event) {
     roomHandler.send_message(message);
 });
 
+var inqueue = false;
 $('.backMenu').click(function (event) {
     event.preventDefault();
+    inqueue = false;
+    $('#queue').text("Queue");
     window.document.title = "Projekt";
-    $('#battleship_game_box').fadeOut(2000, function(){
-        $('#joinRoomPin').val("");
-        $('#menu_box').fadeIn(2000,function(){
+    $('#joinRoomPin').val("");
+    $('#battleship_game_box').fadeOut(1000, function () {
+        $('#menu_box').fadeIn(1000, function () {
             roomHandler.send_leave_room();
         });
-
     });
+});
+
+$('#queue').click(function (e) {
+    e.preventDefault();
+    if (!inqueue) {
+        inqueue = true;
+        roomHandler.in_queue();
+        $(this).text("Cancel Queue");
+    } else {
+        inqueue = false;
+        roomHandler.leave_queue();
+        $(this).text("Queue");
+    }
 });
 
 //UI EVENTS
@@ -49,7 +64,7 @@ function loginBoxError() {
 function loginBoxSuccess() {
     $('#login_box_connecting .spinner-grow').removeClass('text-warning');
     $('#login_box_connecting .spinner-grow').addClass('text-success');
-    $('#login_box_connecting').fadeOut(2000, function () { $('#login_box_form').fadeIn(); });
+    $('#login_box_connecting').fadeOut(1000, function () { $('#login_box_form').fadeIn(1000); });
 }
 
 //HELPERS

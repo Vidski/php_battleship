@@ -13,6 +13,9 @@ class RoomHandler {
             case 'receive_message':
                 this.handle_receive_message(data);
                 break;
+            case 'set_owner':
+                this.handle_set_owner(data);
+                break;
             default:
                 break;
         }
@@ -26,8 +29,22 @@ class RoomHandler {
         }));
     }
 
+    in_queue() {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "in_queue"
+        }));
+    }
+
+    leave_queue() {
+        websocket.send(JSON.stringify({
+            "handler": "rooms_handler",
+            "action": "leave_queue"
+        }));
+    }
+
     send_leave_room() {
-       this.reset_room_for_new_game();
+        this.reset_room_for_new_game();
         websocket.send(JSON.stringify({
             "handler": "rooms_handler",
             "action": "leave_room",
@@ -35,7 +52,7 @@ class RoomHandler {
         }));
     }
 
-    reset_room_for_new_game(){
+    reset_room_for_new_game() {
         this.owner = false;
         $('#chat_box').html("");
         $('#ships').show().children().children().children().show();
@@ -47,8 +64,8 @@ class RoomHandler {
         $('#createRoomPin').val(data['content']['pin']);
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         if (data['content']['pin']) {
-            $('#menu_box').fadeOut(function () {
-                $('#battleship_game_box').fadeIn();
+            $('#menu_box').fadeOut(1000, function () {
+                $('#battleship_game_box').fadeIn(1000);
             });
             $('#chat_box').append("<p style='color: red'>Room PIN: " + data['content']['pin'] + "</p>")
         }
@@ -77,9 +94,11 @@ class RoomHandler {
             show_modal("⚠ Error", data['content']['message']);
             return;
         }
+
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
-        $('#menu_box').fadeOut();
-        $('#battleship_game_box').fadeIn();
+        $('#menu_box').fadeOut(1000, function () {
+            $('#battleship_game_box').fadeIn(1000);
+        });
         // $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")
         if (!this.owner) {
             generateTable();
@@ -100,6 +119,10 @@ class RoomHandler {
         $('#chat_box').animate({
             scrollTop: $('#chat_box')[0].scrollHeight
         }, 500);
+    }
+
+    handle_set_owner(data) {
+        this.owner = data['owner'];
     }
 
 }
