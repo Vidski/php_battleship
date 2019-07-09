@@ -50,10 +50,7 @@ class Ship
      */
     public function check_if_me($x, $y)
     {
-        if (in_array($x . $y, $this->shipPosition)) {
-            return true;
-        }
-        return false;
+        return in_array($x . $y, $this->shipPosition);
     }
 
     /**

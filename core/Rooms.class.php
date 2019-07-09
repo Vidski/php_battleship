@@ -4,16 +4,15 @@ require 'Room.class.php';
 
 /**
  * Rooms.class.php
- * 
+ *
  * Die Klasse Rooms verwaltet alle Räume, die aktuell auf dem Server laufen.
- * 
+ *
  * @author David Rydwanski, Stefan Hackstein
  */
 class Rooms implements iHandler
 {
 
     private $rooms; //Array mit allen Räumen
-
 
     public function __construct()
     {
@@ -22,9 +21,9 @@ class Rooms implements iHandler
 
     /**
      * new_room($owner)
-     * 
-     * Hier wird ein neuer Raum erstellt. 
-     * 
+     *
+     * Hier wird ein neuer Raum erstellt.
+     *
      * @param User $owner
      * @return Room $newRoom
      */
@@ -37,10 +36,10 @@ class Rooms implements iHandler
 
     /**
      * get_room($pin)
-     * 
+     *
      * Hier wird der Raum mit der übergebenen Pin gesucht.
      * Falls ein leerer Raum gefunden wurde oder eine bestimmte ZEit inaktiv ist wird der Raum gelöscht.
-     * 
+     *
      * @param INT $pin
      * @return Room $room || null
      */
@@ -61,9 +60,9 @@ class Rooms implements iHandler
 
     /**
      * action($messageObj, $user = null)
-     * 
+     *
      * Hier werden die Pakete von dem Client verarbeitet.
-     * 
+     *
      * @param Array $messageObj
      * @param User $user
      */
@@ -97,13 +96,15 @@ class Rooms implements iHandler
             case 'send_message':
                 $this->handle_send_message($messageObj, $user);
                 break;
-                
+
             case 'in_queue':
                 $this->handle_in_queue($messageObj, $user);
                 break;
+
             case 'leave_queue':
                 QueueManager::remove_player($user);
                 break;
+
             default:
                 print("\! Unknown Action !\n");
                 print_r($messageObj);
@@ -113,11 +114,11 @@ class Rooms implements iHandler
 
     /**
      * handle_create_room($messageObj, $user)
-     * 
+     *
      * Hier wird wird das Paket vom Client für die erstellung eines neuen Raumes bearbeitet.
      * Dazu wird new_room() aufgerufen, dem User wird der Raum zugewiesen und in dem Raum wird ein neues Battleship spiel gestartet.
      * Wenn alles Funktioniert hat wird dem EventManager ein Event zur bestätigung hinzugefügt.
-     * 
+     *
      * @param Array $messageObj
      * @param User $user
      * @return null falls kein Raum vorhanden ist.
@@ -145,14 +146,14 @@ class Rooms implements iHandler
 
     /**
      * handle_join_room($messageObj, $user)
-     * 
+     *
      * Hier wird wird das Paket vom Client für das beitreten eines Raumes bearbeitet.
      * Dazu wird geprüft ob der eingegeben Raum vorhanden ist, falls nicht kommt eine Fehlermeldung.
      * Zusätzlich wird geprüft ob in dem Raum noch ein Spieler fehlt, falls nicht kommt eine Fehlermelung.
      * Falls man schon in dem Raum ist, wird eine Fehlermeldung angezeigt.
-     * 
+     *
      * Falls alles okay ist wird dem Spieler der Raum zugewiesen und allen Spielern eine Nachricht über den EventManager geschickt.
-     * 
+     *
      * @param Array $messageObj
      * @param User $user
      */
@@ -189,11 +190,11 @@ class Rooms implements iHandler
 
     /**
      * handle_leave_room($messageObj, $user)
-     * 
+     *
      * Hier wird wird das Paket vom Client für das verlassen eines Raumes bearbeitet.
-     * 
+     *
      * Den Spielern wird eine Message über den EventHandler geschickt.
-     * 
+     *
      * @param Array $messageObj
      * @param User $user
      */
@@ -217,9 +218,9 @@ class Rooms implements iHandler
 
     /**
      * handle_my_room($messageObj, $user)
-     * 
+     *
      * Falls der Raum vorhanden ist wird ein Event mit den Infos des Raumes an die den Spieler geschickt.
-     * 
+     *
      * @param Array $messageObj
      * @param User $user
      */
@@ -234,10 +235,10 @@ class Rooms implements iHandler
 
     /**
      * handle_send_message($messageObj, $user)
-     * 
+     *
      * Hier wird das Paket eines Clients verarbeitet, wenn eine Nachricht in den Chat geschrieben wurde.
      * Der EventManager schickt die Nachricht an alle Spieler im Raum.
-     * 
+     *
      * @param Array $messageObj
      * @param User $user
      */
@@ -258,19 +259,20 @@ class Rooms implements iHandler
 
     /**
      * handle_in_queue($messageObj, $user)
-     * 
+     *
      * Hier wird das Paket eines Clients verarbeitetm wenn die Suche Startet.
-     * 
+     *
      */
-    private function handle_in_queue($messageObj, $user){
+    private function handle_in_queue($messageObj, $user)
+    {
         QueueManager::add_player($this, $user);
     }
 
     /**
      * on_user_disconnected($user)
-     * 
+     *
      * Diese Funktion wird aufgerufen, falls ein Spieler die Verbindung verliert.
-     * 
+     *
      * @param User $user
      */
     public function on_user_disconnected($user)
@@ -287,9 +289,4 @@ class Rooms implements iHandler
         }
     }
 
-    
-
-   
-
 }
-?>

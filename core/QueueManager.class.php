@@ -18,7 +18,7 @@ class QueueManager
 
     /**
      * init
-     * 
+     *
      * Eine neue Instance initialisieren.
      */
     public static function init()
@@ -34,14 +34,14 @@ class QueueManager
      *
      * Fügt ein Player dem Array hinzu.
      * Wenn der Array dadurch größer gleich 2 ist, wird ein neuer Raum erstellt und es wird ein Raum erstellt.
-     * 
+     *
      * @param User Der neue User
      */
     public function add_player($roomHandler, $player)
     {
-        if(!in_array($player, self::$playersInQueue)){
+        if (!in_array($player, self::$playersInQueue)) {
             array_push(self::$playersInQueue, $player);
-            if(count(self::$playersInQueue) >= 2){
+            if (count(self::$playersInQueue) >= 2) {
 
                 self::remove_player($player);
                 $newRoom = $roomHandler->new_room($player);
@@ -66,7 +66,7 @@ class QueueManager
 
     /**
      * getPlayersInQueue
-     * 
+     *
      * @return Array Gibt den Array an Spielern zurück.
      */
     public function getPlayersInQueue()
@@ -76,14 +76,15 @@ class QueueManager
 
     /**
      * remove_player($player)
-     * 
-     * Hier wir der Spieler aus dem Array entfernt. 
+     *
+     * Hier wir der Spieler aus dem Array entfernt.
      * Wird aufgerufen, wenn ein Spiel gefunden wurde, der Spieler Disconnected oder er die Suche abbricht.
-     * 
+     *
      * @param User $player Spieler der entfernt werden soll.
      */
-    public function remove_player($player){
-        if(in_array($player, self::$playersInQueue)){
+    public function remove_player($player)
+    {
+        if (in_array($player, self::$playersInQueue)) {
             $key = array_search($player, self::$playersInQueue);
             unset(self::$playersInQueue[$key]);
             self::$playersInQueue = array_values(self::$playersInQueue);
