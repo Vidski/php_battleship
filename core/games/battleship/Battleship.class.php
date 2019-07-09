@@ -10,10 +10,11 @@ require 'Ship.class.php';
 class Battleship implements iGame, iHandler
 {
 
-    private $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1); //Das Limit wie oft man ein Typ von Schiff platzieren darf
-    private const SHIP_LIMIT = 1; //Anzahl an Schiffen die man platizern darf
+    protected $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1); //Das Limit wie oft man ein Typ von Schiff platzieren darf
+    protected const SHIP_LIMIT = 1; //Anzahl an Schiffen die man platizern darf
+    protected const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
-    private $shipSizes = array(
+    protected $shipSizes = array(
         "ship2V" => array('x' => 1, 'y' => 2),
         "ship3V" => array('x' => 1, 'y' => 3),
         "ship4V" => array('x' => 1, 'y' => 4),
@@ -27,7 +28,6 @@ class Battleship implements iGame, iHandler
     private $gameStarted; //Hat das Spiel bereits begonnen?
     private $playerTurn; //Welcher Spieler grad am Zug ist
     private $lastMove; //Wird bei jeder Action aktualisiert ( $lastMove = time() )
-    private const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
     private $playerOne; //Spieler Eins
     private $playerOneReady; //Spieler Eins ist bereit (?)
