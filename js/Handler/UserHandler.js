@@ -5,7 +5,6 @@ class UserHandler {
             case 'set_username':
                 this.handle_set_username(data);
                 break;
-
             default:
                 break;
         }
@@ -20,9 +19,11 @@ class UserHandler {
     }
 
     handle_set_username(data) {
-        $('#login_box').fadeOut(function () {
-            $('#menu_box').fadeIn();
+        $('#login_box').fadeOut(1000, function () {
+            $('#menu_box').fadeIn(1000);
         });
     }
+
+
 
 }
