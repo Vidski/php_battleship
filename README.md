@@ -1,11 +1,5 @@
 # php_server
 
-**TODOS**
-
-Nach einem Game werden die versenkten Schiffe nicht neu gesetzt.
-
-
-
 **Naming Conventions**
 
 | Classes | Methods | Properties | Functions | Variables | Interfaces |
