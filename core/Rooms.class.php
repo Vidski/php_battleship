@@ -102,7 +102,7 @@ class Rooms implements iHandler
                 break;
 
             case 'leave_queue':
-                QueueManager::remove_player($user);
+                $this->handle_leave_queue($messageObj, $user);
                 break;
 
             default:
@@ -266,6 +266,17 @@ class Rooms implements iHandler
     private function handle_in_queue($messageObj, $user)
     {
         QueueManager::add_player($this, $user);
+    }
+
+    /**
+     * handle_leave_queue($messageObj, $user)
+     *
+     * Hier wird das Paket eines Clients verarbeitetm wenn die Suche abgebrochen wird.
+     *
+     */
+    private function handle_leave_queue($messageObj, $user)
+    {
+        QueueManager::remove_player($user);
     }
 
     /**
