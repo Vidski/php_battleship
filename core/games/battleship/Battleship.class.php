@@ -238,12 +238,6 @@ class Battleship implements iGame, iHandler
             $field = &$this->playerTwoField;
             $ships = &$this->playerTwoShips;
         } else {
-            echo ("\n");
-            echo ($this->playerOne->get_username());
-            echo ("\n");
-            echo ($this->playerTwo->get_username());
-            print_r($user);
-            echo ("\n");
             return;
         }
 
