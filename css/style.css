@@ -126,6 +126,16 @@ th {
     pointer-events: unset;
 }
 
+.exit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 20px;
+}
+
 .blocked {
     background-color: #b3b3b3;
     background-image: url("../assets/cross_2.png");

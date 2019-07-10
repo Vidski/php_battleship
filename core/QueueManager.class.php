@@ -43,22 +43,44 @@ class QueueManager
             array_push(self::$playersInQueue, $player);
             if (count(self::$playersInQueue) >= 2) {
 
-                self::remove_player($player);
-                $newRoom = $roomHandler->new_room($player);
-                $player->set_room($newRoom);
-                $player2 = self::$playersInQueue[0];
-                self::remove_player($player2);
-                $player2->set_room($newRoom);
-                $player->get_room()->new_game(new Battleship($player, $player2));
-                $newRoom->add_player($player2);
+                $rejoinRoom = false;
+                $joinPlayer = 0;
+                $hostPlayer = 0;
+                if (!is_null(self::$playersInQueue[0]->get_room()) && !$room->is_empty()) {
+                    $rejoinRoom = true;
+                    $hostPlayer = 0;
+                    $joinPlayer = 1;
+                } else if (!is_null(self::$playersInQueue[1]->get_room()) && !$room->is_empty()) {
+                    $rejoinRoom = true;
+                    $hostPlayer = 1;
+                    $joinPlayer = 0;
+                }
+
+                if ($rejoinRoom) {
+                    $newRoom = self::$playersInQueue[$hostPlayer]->get_room();
+                    if ($newRoom->get_game()->missing_player()) {
+                        EventManager::add_event(new Event(self::$playersInQueue[$joinPlayer], 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
+                        $newRoom->add_player(self::$playersInQueue[$joinPlayer]);
+                        $newRoom->get_game()->add_player(self::$playersInQueue[$joinPlayer]);
+                        self::remove_player(self::$playersInQueue[$joinPlayer]);
+                        self::remove_player(self::$playersInQueue[$hostPlayer]);
+                    }
+                } else {
+                    self::remove_player($player);
+                    $newRoom = $roomHandler->new_room($player);
+                    $newRoom->set_public(true);
+                    $player2 = self::$playersInQueue[0];
+                    self::remove_player($player2);
+                    $player->get_room()->new_game(new Battleship($player, $player2));
+                    $newRoom->add_player($player2);
+                    $rUsers = $newRoom->get_players();
+                    EventManager::add_event(new Event($player, 'rooms_handler', 'create_room', array('pin' => $newRoom->get_pin())));
+                    EventManager::add_event(new Event($player2, 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
+                }
+
                 $rUsers = $newRoom->get_players();
-                EventManager::add_event(new Event($player, 'rooms_handler', 'create_room', array('pin' => $newRoom->get_pin())));
-                EventManager::add_event(new Event($player2, 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
-
                 foreach ($rUsers as $rUser) {
-                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $player->get_username() . ' created the room.')));
-                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $player2->get_username() . ' joined the room.')));
-
+                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $rUsers[0]->get_username() . ' versus ' . $rUsers[1]->get_username())));
                 }
             }
         }

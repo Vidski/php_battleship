@@ -19,6 +19,7 @@
     <div id="battleship_game_box" class="container" style="padding-top: 50px;">
         <!-- Battlefield -->
         <div class="row justify-content-center align-items-center">
+        <button class="btn btn-danger exit backMenu" type="submit">Exit</button>
             <div class="col-lg-6" id="ships">
                 <div class="card">
                     <div class="card-body">

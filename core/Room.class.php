@@ -12,6 +12,7 @@ class Room
     private $roomOwner; //Eigentümer des Raumes.
     private $roomPlayers; //Arry mit allen Spielern im Raum.
     private $roomPin; //PIN des Raumes um dem Raum beizutreten.
+    private $roomIsPublic;
 
     private $game; //Das Spiel was gerade in diesem Raum gespielt wird.
 
@@ -23,6 +24,7 @@ class Room
         $this->roomSize = 2;
         $this->roomOwner = $roomOwner;
         $this->roomPlayers = array();
+        $this->roomIsPublic = false;
         $this->add_player($this->roomOwner);
         $this->roomPin = $this->random_pin();
         $this->isEmpty = false;
@@ -45,6 +47,7 @@ class Room
             return false;
         }
         array_push($this->roomPlayers, $user);
+        $user->set_room($this);
         return true;
     }
 
@@ -161,7 +164,7 @@ class Room
     /**
      * is_empty()
      *
-     * Getter für den Boolean isEmpty()
+     * Getter für den Boolean isEmpty
      *
      * @return bool $this->isEmpty
      */
@@ -180,6 +183,30 @@ class Room
     private function random_pin()
     {
         return rand(1000, 9999);
+    }
+
+    /**
+     * set_public($bool)
+     *
+     * hier wird der Raum Private/Öffentlich gesetzt.
+     *
+     * @param iGame $game
+     */
+    public function set_public($bool)
+    {
+        $this->roomIsPublic = $bool;
+    }
+
+    /**
+     * is_public()
+     *
+     * Getter für den Boolean roomIsPublic
+     *
+     * @return bool $this->roomIsPublic
+     */
+    public function is_public()
+    {
+        return $this->roomIsPublic;
     }
 
 }
