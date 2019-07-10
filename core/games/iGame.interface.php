@@ -11,5 +11,6 @@ interface iGame
     public function remove_player($player);
     public function game_started();
     public function missing_player();
+    public function get_max_players();
     public function destroy_time();
 }

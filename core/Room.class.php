@@ -19,9 +19,9 @@ class Room
     private $lastAction; //letzte Action im Raum
     private $isEmpty; //bool ob der Raum leer ist
 
-    public function __construct($roomOwner)
+    public function __construct($roomOwner, $roomSize)
     {
-        $this->roomSize = 2;
+        $this->roomSize = $roomSize;
         $this->roomOwner = $roomOwner;
         $this->roomPlayers = array();
         $this->roomIsPublic = false;
@@ -55,7 +55,7 @@ class Room
      * leave_room($user)
      *
      * Hier wird ein Spieler aus dem Raum genommen.
-     * Falls der Spieler nicht mehr in dem Raum ist, wird false zurück gegeben.
+     * Falls der Spieler nicht mehr in dem Raum ist, wird false zurückgegeben.
      *
      * @param User $user
      * @return bool

@@ -132,9 +132,10 @@ class Rooms implements iHandler
 
         switch ($messageObj->game) {
             case 'Battleship':
-                $newRoom = $this->new_room($user);
+                $game = new Battleship($user, null);
+                $newRoom = $this->new_room($user, $game->get_max_players());
                 $user->set_room($newRoom);
-                $user->get_room()->new_game(new Battleship($user, null));
+                $user->get_room()->new_game($game);
                 break;
 
             default:
@@ -219,10 +220,6 @@ class Rooms implements iHandler
                     break;
                 }
             }
-        }
-
-        if ($room->get_game()) {
-            $room->get_game()->remove_player($user);
         }
 
         EventManager::add_event(new Event($user, 'rooms_handler', 'leave_room', array('left' => true)));

@@ -12,6 +12,7 @@ class Battleship implements iGame, iHandler
 
     protected $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1); //Das Limit wie oft man ein Typ von Schiff platzieren darf
     protected const SHIP_LIMIT = 10; //Anzahl an Schiffen die man platizern darf
+    protected const MAX_PLAYERS = 2;
     protected const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
     protected $shipSizes = array(
@@ -237,6 +238,12 @@ class Battleship implements iGame, iHandler
             $field = &$this->playerTwoField;
             $ships = &$this->playerTwoShips;
         } else {
+            echo ("\n");
+            echo ($this->playerOne->get_username());
+            echo ("\n");
+            echo ($this->playerTwo->get_username());
+            print_r($user);
+            echo ("\n");
             return;
         }
 
@@ -578,6 +585,18 @@ class Battleship implements iGame, iHandler
     public function missing_player()
     {
         return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
+    }
+
+    /**
+     * game_started
+     *
+     * Gibt die maximale Anzahl der Spieler in dem Spiel zurück.
+     *
+     * @return int
+     */
+    public function get_max_players()
+    {
+        return Battleship::MAX_PLAYERS;
     }
 
     /**

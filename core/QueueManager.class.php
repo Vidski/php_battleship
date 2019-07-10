@@ -46,11 +46,11 @@ class QueueManager
                 $rejoinRoom = false;
                 $joinPlayer = 0;
                 $hostPlayer = 0;
-                if (!is_null(self::$playersInQueue[0]->get_room()) && !$room->is_empty()) {
+                if (!is_null(self::$playersInQueue[0]->get_room()) && !self::$playersInQueue[0]->get_room()->is_empty()) {
                     $rejoinRoom = true;
                     $hostPlayer = 0;
                     $joinPlayer = 1;
-                } else if (!is_null(self::$playersInQueue[1]->get_room()) && !$room->is_empty()) {
+                } else if (!is_null(self::$playersInQueue[1]->get_room()) && !self::$playersInQueue[1]->get_room()->is_empty()) {
                     $rejoinRoom = true;
                     $hostPlayer = 1;
                     $joinPlayer = 0;
