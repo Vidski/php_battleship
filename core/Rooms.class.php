@@ -27,9 +27,9 @@ class Rooms implements iHandler
      * @param User $owner
      * @return Room $newRoom
      */
-    public function new_room($owner)
+    public function new_room($owner, $size)
     {
-        $newRoom = new Room($owner);
+        $newRoom = new Room($owner, $size);
         array_push($this->rooms, $newRoom);
         return $newRoom;
     }
@@ -213,15 +213,6 @@ class Rooms implements iHandler
             return;
         }
 
-        if ($room->is_public()) {
-            foreach ($room->get_players() as $p) {
-                if (!is_null($p)) {
-                    QueueManager::add_player($this, $p);
-                    break;
-                }
-            }
-        }
-
         EventManager::add_event(new Event($user, 'rooms_handler', 'leave_room', array('left' => true)));
 
         $username = $user->get_username();
@@ -230,6 +221,15 @@ class Rooms implements iHandler
             EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $username . ' left the room.')));
             if ($room->is_public()) {
                 EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => 'Looking for new player...')));
+            }
+        }
+
+        if ($room->is_public()) {
+            foreach ($room->get_players() as $p) {
+                if (!is_null($p)) {
+                    QueueManager::add_player($this, $p);
+                    break;
+                }
             }
         }
     }

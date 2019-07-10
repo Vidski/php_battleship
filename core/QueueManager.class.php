@@ -62,17 +62,16 @@ class QueueManager
                         EventManager::add_event(new Event(self::$playersInQueue[$joinPlayer], 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
                         $newRoom->add_player(self::$playersInQueue[$joinPlayer]);
                         $newRoom->get_game()->add_player(self::$playersInQueue[$joinPlayer]);
-                        self::remove_player(self::$playersInQueue[$joinPlayer]);
-                        self::remove_player(self::$playersInQueue[$hostPlayer]);
                     }
                 } else {
-                    self::remove_player($player);
-                    $newRoom = $roomHandler->new_room($player);
-                    $newRoom->set_public(true);
                     $player2 = self::$playersInQueue[0];
-                    self::remove_player($player2);
-                    $player->get_room()->new_game(new Battleship($player, $player2));
+
+                    $game = new Battleship($player, $player2);
+                    $newRoom = $roomHandler->new_room($player, $game->get_max_players());
+                    $newRoom->set_public(true);
+                    $newRoom->new_game($game);
                     $newRoom->add_player($player2);
+
                     $rUsers = $newRoom->get_players();
                     EventManager::add_event(new Event($player, 'rooms_handler', 'create_room', array('pin' => $newRoom->get_pin())));
                     EventManager::add_event(new Event($player2, 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $newRoom->get_pin())));
@@ -80,8 +79,11 @@ class QueueManager
 
                 $rUsers = $newRoom->get_players();
                 foreach ($rUsers as $rUser) {
-                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $rUsers[0]->get_username() . ' versus ' . $rUsers[1]->get_username())));
+                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $player->get_username() . ' joined the room.')));
+                    EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => self::$playersInQueue[0]->get_username() . ' vs ' . self::$playersInQueue[1]->get_username())));
                 }
+                self::remove_player(self::$playersInQueue[1]);
+                self::remove_player(self::$playersInQueue[0]);
             }
         }
     }
