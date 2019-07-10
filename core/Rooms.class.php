@@ -177,7 +177,6 @@ class Rooms implements iHandler
             return;
         }
 
-        $user->set_room($room);
         $username = $user->get_username();
         $rUsers = $room->get_players();
         EventManager::add_event(new Event($user, 'rooms_handler', 'join_room', array('joined' => true, 'pin' => $messageObj->pin)));
@@ -209,10 +208,32 @@ class Rooms implements iHandler
             return;
         }
 
+        if ($room->get_game()->game_started()) {
+            return;
+        }
+
+        if ($room->is_public()) {
+            foreach ($room->get_players() as $p) {
+                if (!is_null($p)) {
+                    QueueManager::add_player($this, $p);
+                    break;
+                }
+            }
+        }
+
+        if ($room->get_game()) {
+            $room->get_game()->remove_player($user);
+        }
+
+        EventManager::add_event(new Event($user, 'rooms_handler', 'leave_room', array('left' => true)));
+
         $username = $user->get_username();
         $rUsers = $room->get_players();
         foreach ($rUsers as $rUser) {
             EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $username . ' left the room.')));
+            if ($room->is_public()) {
+                EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => 'Looking for new player...')));
+            }
         }
     }
 

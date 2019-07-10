@@ -64,7 +64,7 @@ class RoomHandler {
         $('#createRoomPin').val(data['content']['pin']);
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
         if (data['content']['pin']) {
-            $('#menu_box').fadeOut(1000, function () {
+            $('#menu_box').fadeOut(1000, function() {
                 $('#battleship_game_box').fadeIn(1000);
             });
             $('#chat_box').append("<p style='color: red'>Room PIN: " + data['content']['pin'] + "</p>")
@@ -96,7 +96,7 @@ class RoomHandler {
         }
 
         window.document.title = window.document.title + " | Room - " + data['content']['pin'];
-        $('#menu_box').fadeOut(1000, function () {
+        $('#menu_box').fadeOut(1000, function() {
             $('#battleship_game_box').fadeIn(1000);
         });
         // $('#chat_box').append("<p>" + "[" + getCurrentTime() + "] " + data['content']['message'] + "</p>")

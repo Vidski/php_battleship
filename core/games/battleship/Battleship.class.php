@@ -11,7 +11,7 @@ class Battleship implements iGame, iHandler
 {
 
     protected $shipLimit = array("ship2" => 4, "ship3" => 3, "ship4" => 2, "ship5" => 1); //Das Limit wie oft man ein Typ von Schiff platzieren darf
-    protected const SHIP_LIMIT = 1; //Anzahl an Schiffen die man platizern darf
+    protected const SHIP_LIMIT = 10; //Anzahl an Schiffen die man platizern darf
     protected const DESTROY_TIME = 600; //Falls in <Sekunden> keine Action passiert wird das Spiel gelöscht
 
     protected $shipSizes = array(
@@ -578,6 +578,18 @@ class Battleship implements iGame, iHandler
     public function missing_player()
     {
         return is_null($this->playerOne) || $this->playerOne->disconnected() || is_null($this->playerTwo) || $this->playerTwo->disconnected() ? true : false;
+    }
+
+    /**
+     * game_started
+     *
+     * Gibt zurück ob das Spiel bereits gestartet ist.
+     *
+     * @return bool
+     */
+    public function game_started()
+    {
+        return $this->gameStarted;
     }
 
     /**
