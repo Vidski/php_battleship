@@ -313,6 +313,18 @@ class Rooms implements iHandler
                 $room->get_game()->remove_player($user);
                 foreach ($rUsers as $rUser) {
                     EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => $user->get_username() . ' left the room.')));
+                    if ($room->is_public()) {
+                        EventManager::add_event(new Event($rUser, 'rooms_handler', 'receive_message', array('message' => 'Looking for new player...')));
+                    }
+                }
+            }
+        }
+
+        if ($room->is_public()) {
+            foreach ($room->get_players() as $p) {
+                if (!is_null($p)) {
+                    QueueManager::add_player($this, $p);
+                    break;
                 }
             }
         }
