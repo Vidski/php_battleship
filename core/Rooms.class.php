@@ -224,7 +224,7 @@ class Rooms implements iHandler
             }
         }
 
-        if ($room->is_public()) {
+        if ($room->is_public() && !$room->get_game()->game_started()) {
             foreach ($room->get_players() as $p) {
                 if (!is_null($p)) {
                     QueueManager::add_player($this, $p);
@@ -318,13 +318,13 @@ class Rooms implements iHandler
                     }
                 }
             }
-        }
 
-        if ($room->is_public()) {
-            foreach ($room->get_players() as $p) {
-                if (!is_null($p)) {
-                    QueueManager::add_player($this, $p);
-                    break;
+            if ($room->is_public() && !$room->get_game()->game_started()) {
+                foreach ($room->get_players() as $p) {
+                    if (!is_null($p)) {
+                        QueueManager::add_player($this, $p);
+                        break;
+                    }
                 }
             }
         }
