@@ -1,170 +1,176 @@
 <?php
-
 require 'socketfunctions.inc.php';
-require dirname(__FILE__) . '\game\Game.class.php';
+require dirname(__FILE__) . '/core/User.class.php';
 
-class Server
+abstract class Server
 {
+    //CONFIG
+    protected $host;
+    protected $port;
 
-    private $host;
-    private $port;
-    private $clientSockets;
-    private $serverSocket;
-
-    private $GAME;
+    //ARRAYS
+    protected $server;
+    protected $sockets;
+    protected $users;
 
     public function __construct($host, $port)
     {
         $this->host = $host;
         $this->port = $port;
-        $this->clientSockets = array();
-        $this->serverSocket = null;
 
-        $this->GAME = new Game($this);
+        $this->server = null;
+        $this->sockets = array();
+        $this->users = array();
 
-        $this->server_start();
-    }
+        $this->server = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) or die("Could not create socket\n");
+        socket_set_option($this->server, SOL_SOCKET, SO_REUSEADDR, 1);
+        socket_bind($this->server, $this->host, $this->port) or die("Could not bind socket\n");
+        socket_listen($this->server) or die("Could not set up socket listener\n");
 
-    //SERVER STARTEN
-    private function server_start()
-    {
-        $this->serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) or die("Could not create socket\n");
-
-        socket_set_option($this->serverSocket, SOL_SOCKET, SO_REUSEADDR, 1);
-        socket_bind($this->serverSocket, $this->host, $this->port) or die("Could not bind socket\n");
-        socket_listen($this->serverSocket) or die("Could not set up socket listener\n");
+        $this->sockets['s'] = $this->server;
 
         $this->on_server_started();
         $this->server_loop();
     }
+    
+    abstract protected function started();
+    abstract protected function handle_in($user, $messageObj);
+    abstract protected function handle_out();
+    abstract protected function connected($user);
+    abstract protected function disconnected($user);
 
-    //HAUPT LOOP FÜR DIE ÜBERWACHUNG VON CLIENTS
-    private function server_loop()
+    //MAIN LOOP
+    protected function server_loop()
     {
-        while (1) {
-            $socketsToWatch = $this->clientSockets;
-            $socketsToWatch[] = $this->serverSocket;
-            $anzahlAktiveSockets = socket_select($socketsToWatch, $null, $null, $null);
-
-            if ($anzahlAktiveSockets === false) {
-                die;
+        while (true) {
+            if (empty($this->sockets)) {
+                $this->sockets['s'] = $this->server;
             }
 
-            if ($anzahlAktiveSockets == 0) {
-                continue;
-            }
+            $read = $this->sockets;
+            $write = $except = null;
+            socket_select($read, $write, $except, null);
 
-            if (in_array($this->serverSocket, $socketsToWatch)) {
-                $neuerSocket = socket_accept($this->serverSocket);
-                socket_getpeername($neuerSocket, $clientIP);
-
-                $header = socket_read($neuerSocket, 1024);
-                perform_handshaking($header, $neuerSocket, $this->host, $this->port);
-
-                $this->clientSockets[] = $neuerSocket;
-                $index = array_search($this->serverSocket, $socketsToWatch);
-                unset($socketsToWatch[$index]);
-
-                $this->on_client_connected($neuerSocket);
-            }
-
-            foreach ($socketsToWatch as $socket) {
-                socket_getpeername($socket, $clientIP);
-
-                $ende = false;
-                $text = (socket_read($socket, 1024));
-                $msgObj = "";
-
-                if ($text === false || $text == "") {
-                    $ende = true;
+            foreach ($read as $socket) {
+                if ($socket == $this->server) {
+                    $client = socket_accept($socket);
+                    if ($client < 0) {
+                        continue;
+                    } else {
+                        $this->on_client_connect($client);
+                    }
                 } else {
-                    $text = unmask($text);
-                }
-
-                //End of Text prüfen, wird vom Browser beim Fenster schließen geschickt:
-                if (preg_match('/\x03/', $text)) {
-                    $ende = true;
-                } else if (strlen($text) > 0) {
-                    $msgObj = json_decode($text);
-                }
-
-                if ($ende || (isset($msgObj->message) && $msgObj->message == "exit")) {
-                    $index = array_search($socket, $this->clientSockets);
-                    unset($this->clientSockets[$index]);
-                    socket_close($socket);
-
-                    $this->on_client_disconnected($clientIP);
-                } else {
-                    if (isset($msgObj->message)) {
-                        $this->on_message_received($socket, $msgObj);
+                    $user = $this->get_user($socket);
+                    if (!$user->did_handshake()) {
+                        $header = socket_read($socket, 1024);
+                        perform_handshaking($header, $socket, $this->host, $this->port);
+                        $user->handshake();
+                        $this->connected($user);
+                    } else {
+                        $ende = false;
+                        $text = (socket_read($socket, 1024));
+                        $messageObj = "";
+                        if ($text === false || $text == "") {
+                            $ende = true;
+                        } else {
+                            $text = unmask($text);
+                        }
+                        if (preg_match('/\x03/', $text)) {
+                            $ende = true;
+                        } else if (strlen($text) > 0) {
+                            $messageObj = json_decode($text);
+                        }
+                        if ($ende) {
+                            $this->on_client_disconnect($user->get_socket());
+                        } else {
+                            if (isset($messageObj->handler)) {
+                                try {
+                                    $this->handle_in($user, $messageObj);
+                                } catch (\Throwable $th) {
+                                    print("Something went wrong processing this package:\n");
+                                    print_r($messageObj);
+                                    print($th);
+                                }
+                            }
+                        }
                     }
                 }
             }
+            $this->handle_out();
         }
     }
 
     //SERVER WURDE ERFOLGREICH GESTARTED
-    private function on_server_started()
+    protected function on_server_started()
     {
-        printf("Server running on %s:%d \n", $this->host, $this->port);
+        printf("Server running on %s:%d \n\n", $this->host, $this->port);
+        $this->started();
     }
 
-    //EIN NEUER CLIENT WURDE ERFOLGREICH VERBUNDEN
-    private function on_client_connected($socket)
+    //EINE NEUER CLIENT WURDE GEFUNDEN
+    protected function on_client_connect($socket)
     {
-        socket_getpeername($socket, $cip);
-        printf("%s connected \n", $cip);
+        socket_getpeername($socket, $clientIP);
+        printf("%s - Server->on_client_connect()\n", $clientIP);
+
+        $user = new User(uniqid('u'), $socket);
+        $this->users[$user->get_id()] = $user;
+        $this->sockets[$user->get_id()] = $socket;
+        $this->on_client_connecting($user);
     }
 
-    //EIN CLIENT HAT DIE VERBINDUNG ABGEBROCHEN
-    private function on_client_disconnected($cip)
+    //DER CLIENT IST VEBUNDEN WURDE ABER NOCH NICHT GEHANDSHAKED
+    protected function on_client_connecting($user)
     {
-        printf("%s disconnected \n", $cip);
+        socket_getpeername($user->get_socket(), $clientIP);
+        printf("%s - Server->on_client_connecting()\n", $clientIP);
     }
 
-    //SERVER HAT EINE NACHRICHT VON EINEM CLIENT ERHALTEN
-    private function on_message_received($socket, $msgObj)
+    //DER CLIENT HAT DIE VERBINDUNG VERLOREN
+    protected function on_client_disconnect($socket)
     {
-        //GAME HANDLER
-        $action = $this->GAME->handler_action($msgObj);
+        socket_getpeername($socket, $clientIP);
+        printf("%s - Server->on_client_disconnect()\n", $clientIP);
+        $dUser = $this->get_user($socket);
 
-        //print_r($action);
-        if ($action === null) {
-            return;
+        if ($dUser !== null) {
+            unset($this->users[$dUser->get_id()]);
+
+            if (array_key_exists($dUser->get_id(), $this->sockets)) {
+                unset($this->sockets[$dUser->get_id()]);
+            }
+
+            $this->disconnected($dUser);
+            socket_close($dUser->get_socket());
+            $dUser->disconnect();
         }
-
-        if ($action['function'] === 'send_message') {
-            unset($action['function']);
-            $this->send_message($socket, $action);
-        } else if ($action['function'] === 'send_message_all') {
-            unset($action['function']);
-            $this->send_message_all($action);
-        }
     }
 
-    //SENDE NACHRICHT AN CLIENT
-    //$message ist ein Array z.B. array("foo" => "bar", "foo" => "bar");
-    private function send_message($socket, $message)
+    //SEND MESSAGE ZUM CLIENT
+    protected function send_message($user, $message)
     {
         $message = $this->encode_and_mask($message);
-        socket_write($socket, $message, strlen($message));
+        if (!$user->disconnected()) {
+            socket_write($user->get_socket(), $message, strlen($message));
+        }
+
     }
 
-    //SENDE NACHRICHT AN ALLE CLIENTS
-    //$message ist ein Array z.B. array("foo" => "bar", "foo" => "bar");
-    private function send_message_all($message)
+    //GETTER
+    protected function get_user($socket)
     {
-        $clientSockets = $this->clientSockets;
-        $message = $this->encode_and_mask($message);
-        foreach ($clientSockets as $socket) {
-            socket_write($socket, $message, strlen($message));
+        foreach ($this->users as $user) {
+            if ($user->get_socket() == $socket) {
+                return $user;
+            }
         }
+        return null;
     }
 
     //JSON ENCODEN UND MASKIEREN DER PACKETE
-    private function encode_and_mask($message)
+    protected function encode_and_mask($message)
     {
         return mask(json_encode($message));
     }
-
 }
+?>

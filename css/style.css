@@ -1,0 +1,223 @@
+#login_box {
+    margin-top: 150px;
+}
+
+#login_box_form {
+    display: none;
+}
+
+#menu_box {
+    display: none;
+    margin-top: 150px;
+}
+
+#battleship_game_box {
+    display: none;
+}
+
+#chat_box {
+    overflow: auto;
+    height: 150px;
+}
+
+#chat_box p {
+    line-height: 1;
+}
+
+#left_side {
+    border-color: blue;
+}
+
+#right_side {
+    border-color: red;
+}
+
+#field_right {
+    display: none;
+}
+
+#battleshipcover {
+    transition: 0.25s linear;
+}
+
+#battleshipcover:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px 0px #007bff;
+}
+
+
+/* BATTLEFIELD */
+
+td,
+th {
+    padding: 0 !important;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    vertical-align: middle !important;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
+}
+
+.table {
+    width: unset !important;
+    margin-bottom: 0;
+}
+
+.table td,
+.table th {
+    border: 1px solid black;
+}
+
+.table thead th {
+    border-bottom: 0;
+}
+
+#field_right .table .ui-droppable:hover {
+    background-image: url("../assets/cross.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.shipplaced {
+    background-color: red;
+    background-image: unset;
+    /* pointer-events: none; */
+}
+
+.missed {
+    background-color: rgba(255, 255, 0, 0.5) !important;
+    background-image: url("../assets/dot.png") !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.hit {
+    background-color: rgba(255, 0, 0, 0.5) !important;
+    background-image: url("../assets/cross.png") !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.dead {
+    background-color: rgba(255, 0, 0, 0.5) !important;
+    background-image: url("../assets/carbon_dark.png") !important;
+    background-repeat: repeat;
+    pointer-events: none;
+}
+
+.notmyturn {
+    border: 1px solid rgba(0, 0, 0, .125);
+    opacity: .5;
+    pointer-events: none;
+}
+
+.myturn {
+    border: 1px solid rgba(0, 0, 255, 1);
+    opacity: 1;
+    pointer-events: unset;
+}
+
+.exit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 20px;
+}
+
+.blocked {
+    background-color: #b3b3b3;
+    background-image: url("../assets/cross_2.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+
+/* SHIPS */
+
+.ship {
+    float: left;
+    z-index: 1000;
+    margin: 5px;
+    background-color: red;
+    background-image: url("../assets/grid.png");
+    background-repeat: repeat;
+}
+
+.ship_field {
+    background-color: red;
+}
+
+.ship2V {
+    width: 44px;
+    height: 88px;
+}
+
+.ship3V {
+    width: 44px;
+    height: 132px;
+}
+
+.ship4V {
+    width: 44px;
+    height: 176px;
+}
+
+.ship5V {
+    width: 44px;
+    height: 220px;
+}
+
+.ship2H {
+    height: 44px;
+    width: 88px;
+}
+
+.ship3H {
+    height: 44px;
+    width: 132px;
+}
+
+.ship4H {
+    height: 44px;
+    width: 176px;
+}
+
+.ship5H {
+    height: 44px;
+    width: 220px;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+}
