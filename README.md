@@ -1,4 +1,4 @@
-# php_server
+# php_battleships
 
 **Naming Conventions**
 
